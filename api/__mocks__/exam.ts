@@ -1,8 +1,10 @@
+export const examChallengeId = '647e22d18acb466c97ccbef8';
+
 export const examJson = {
-  id: '647e22d18acb466c97ccbef8',
+  id: examChallengeId,
   title: 'Exam Certification',
-  numberOfQuestionsInExam: 1,
-  passingPercent: 70,
+  numberOfQuestionsInExam: 3,
+  passingPercent: 10,
   prerequisites: [
     {
       id: '647f85d407d29547b3bee1bb',
@@ -38,8 +40,24 @@ export const examJson = {
         { id: 'wycrnloajd', answer: 'Q2: Wrong Answer 6' }
       ],
       correctAnswers: [
-        { id: 't9ezcsupdl', answer: 'Q1: Correct Answer 1' },
-        { id: 'agert35dk0', answer: 'Q1: Correct Answer 2' }
+        { id: 't9ezcsupdl', answer: 'Q2: Correct Answer 1' },
+        { id: 'agert35dk0', answer: 'Q2: Correct Answer 2' }
+      ]
+    },
+    {
+      id: 'oqis5gzs0a',
+      question: 'Question 3?',
+      wrongAnswers: [
+        { id: 'ojhnoxh5ra', answer: 'Q3: Wrong Answer 1' },
+        { id: 'onx06if0ub', answer: 'Q3: Wrong Answer 2' },
+        { id: 'zbxnsko71c', answer: 'Q3: Wrong Answer 3' },
+        { id: 'bqv5y68jyd', answer: 'Q3: Wrong Answer 4' },
+        { id: 'i5xipitise', answer: 'Q3: Wrong Answer 5' },
+        { id: 'wycrnloajf', answer: 'Q3: Wrong Answer 6' }
+      ],
+      correctAnswers: [
+        { id: 't9ezcsupda', answer: 'Q3: Correct Answer 1' },
+        { id: 'agert35dkb', answer: 'Q3: Correct Answer 2' }
       ]
     }
   ]
@@ -49,12 +67,47 @@ export const completedTrophyChallenges = [
   {
     id: '647f85d407d29547b3bee1bb',
     solution: 'challenge-solution',
-    completedDate: 1695064765244
+    completedDate: 1695064765244,
+    files: []
   }
 ];
 
-// failed
-export const userExam1 = {
+export type ExamSubmission = {
+  userExamQuestions: {
+    id: string;
+    question: string;
+    answer: {
+      id: string;
+      answer: string;
+    };
+  }[];
+  examTimeInSeconds: number;
+};
+
+// failed: 0 correct
+export const examWithZeroCorrect: ExamSubmission = {
+  userExamQuestions: [
+    {
+      id: '3bbl2mx2mq',
+      question: 'Question 1?',
+      answer: { id: 'g489kbwn6a', answer: 'Q1: Wrong Answer 4' }
+    },
+    {
+      id: 'oqis5gzs0h',
+      question: 'Question 2?',
+      answer: { id: 'i5xipitiss', answer: 'Q2: Wrong Answer 5' }
+    },
+    {
+      id: 'oqis5gzs0a',
+      question: 'Question 3?',
+      answer: { id: 'ojhnoxh5ra', answer: 'Q3: Wrong Answer 1' }
+    }
+  ],
+  examTimeInSeconds: 20
+};
+
+// passed: 1 correct
+export const examWithOneCorrect: ExamSubmission = {
   userExamQuestions: [
     {
       id: '3bbl2mx2mq',
@@ -65,13 +118,18 @@ export const userExam1 = {
       id: 'oqis5gzs0h',
       question: 'Question 2?',
       answer: { id: 'i5xipitiss', answer: 'Q2: Wrong Answer 5' }
+    },
+    {
+      id: 'oqis5gzs0a',
+      question: 'Question 3?',
+      answer: { id: 'ojhnoxh5ra', answer: 'Q3: Wrong Answer 1' }
     }
   ],
   examTimeInSeconds: 20
 };
 
-// passed
-export const userExam2 = {
+// passed: 2 correct
+export const examWithTwoCorrect: ExamSubmission = {
   userExamQuestions: [
     {
       id: '3bbl2mx2mq',
@@ -81,26 +139,98 @@ export const userExam2 = {
     {
       id: 'oqis5gzs0h',
       question: 'Question 2?',
-      answer: { id: 't9ezcsupdl', answer: 'Q1: Correct Answer 1' }
+      answer: { id: 't9ezcsupdl', answer: 'Q2: Correct Answer 1' }
+    },
+    {
+      id: 'oqis5gzs0a',
+      question: 'Question 3?',
+      answer: { id: 'ojhnoxh5ra', answer: 'Q3: Wrong Answer 1' }
     }
   ],
   examTimeInSeconds: 20
 };
 
-export const mockResults1 = {
-  numberOfCorrectAnswers: 1,
-  numberOfQuestionsInExam: 2,
-  percentCorrect: 50,
-  passingPercent: 70,
+// passed: 3 correct
+export const examWithAllCorrect: ExamSubmission = {
+  userExamQuestions: [
+    {
+      id: '3bbl2mx2mq',
+      question: 'Question 1?',
+      answer: { id: 'dzlokqdc73', answer: 'Q1: Correct Answer 1' }
+    },
+    {
+      id: 'oqis5gzs0h',
+      question: 'Question 2?',
+      answer: { id: 't9ezcsupdl', answer: 'Q2: Correct Answer 1' }
+    },
+    {
+      id: 'oqis5gzs0a',
+      question: 'Question 3?',
+      answer: { id: 'agert35dkb', answer: 'Q3: Correct Answer 2' }
+    }
+  ],
+  examTimeInSeconds: 20
+};
+
+export const mockResultsZeroCorrect = {
+  numberOfCorrectAnswers: 0,
+  numberOfQuestionsInExam: 3,
+  percentCorrect: 0,
+  passingPercent: 10,
   passed: false,
   examTimeInSeconds: 20
 };
 
-export const mockResults2 = {
-  numberOfCorrectAnswers: 2,
-  numberOfQuestionsInExam: 2,
-  percentCorrect: 100,
-  passingPercent: 70,
+export const mockResultsOneCorrect = {
+  numberOfCorrectAnswers: 1,
+  numberOfQuestionsInExam: 3,
+  percentCorrect: 33.3,
+  passingPercent: 10,
   passed: true,
   examTimeInSeconds: 20
+};
+
+export const mockResultsTwoCorrect = {
+  numberOfCorrectAnswers: 2,
+  numberOfQuestionsInExam: 3,
+  percentCorrect: 66.7,
+  passingPercent: 10,
+  passed: true,
+  examTimeInSeconds: 20
+};
+
+export const mockResultsAllCorrect = {
+  numberOfCorrectAnswers: 3,
+  numberOfQuestionsInExam: 3,
+  percentCorrect: 100,
+  passingPercent: 10,
+  passed: true,
+  examTimeInSeconds: 20
+};
+
+const completedExamChallenge = {
+  id: examChallengeId,
+  challengeType: 17,
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  completedDate: expect.any(Number)
+};
+
+export const completedExamChallengeZeroCorrect = {
+  ...completedExamChallenge,
+  examResults: mockResultsZeroCorrect
+};
+
+export const completedExamChallengeOneCorrect = {
+  ...completedExamChallenge,
+  examResults: mockResultsOneCorrect
+};
+
+export const completedExamChallengeTwoCorrect = {
+  ...completedExamChallenge,
+  examResults: mockResultsTwoCorrect
+};
+
+export const completedExamChallengeAllCorrect = {
+  ...completedExamChallenge,
+  examResults: mockResultsAllCorrect
 };

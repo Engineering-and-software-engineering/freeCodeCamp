@@ -26,7 +26,7 @@ assert(code.match(/<\/figure>/g).length >= 2);
 There should be a second `figure` element right above the second `section` element's closing tag. You have them in the wrong order.
 
 ```js
-assert($('main > section')[1].lastElementChild.nodeName === 'FIGURE');
+assert.strictEqual(document.querySelectorAll('main > section')?.[1]?.lastElementChild?.nodeName, 'FIGURE');
 ```
 
 You should have a third `img` element nested in the `figure` element.
@@ -38,7 +38,7 @@ assert(
 );
 ```
 
-The third image should have an `src` attribute set to `https://cdn.freecodecamp.org/curriculum/cat-photo-app/cats.jpg`.
+The third image should have a `src` attribute set to `https://cdn.freecodecamp.org/curriculum/cat-photo-app/cats.jpg`.
 
 ```js
 const catsImg = document.querySelectorAll('figure > img')[1];

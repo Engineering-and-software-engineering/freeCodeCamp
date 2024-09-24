@@ -1,5 +1,7 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+
 import translations from '../client/i18n/locales/english/translations.json';
+import { alertToBeVisible } from './utils/alerts';
 
 test.use({ storageState: 'playwright/.auth/certified-user.json' });
 
@@ -55,7 +57,7 @@ test.describe('Certification page - Non Microsoft', () => {
     await expect(linkedinLink).toBeVisible();
     await expect(linkedinLink).toHaveAttribute(
       'href',
-      `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=Responsive%20Web%20Design&organizationId=4831032&issueYear=2018&issueMonth=8&certUrl=https://freecodecamp.org/certification/certifieduser/responsive-web-design`
+      `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=Responsive%20Web%20Design&organizationId=4831032&issueYear=2018&issueMonth=8&certUrl=https://freecodecamp.org/certification/certifieduser/responsive-web-design&certId=certifieduser-rwd`
     );
 
     const twitterLink = certLink.getByTestId('twitter-share-btn');
@@ -111,6 +113,53 @@ test.describe('Certification page - Non Microsoft', () => {
     await expect(personalPortfolioWebpageLink).toHaveAttribute(
       'href',
       '/learn/2022/responsive-web-design/build-a-personal-portfolio-webpage-project/build-a-personal-portfolio-webpage'
+    );
+
+    await expect(
+      page.getByText(
+        'If you suspect that any of these projects violate the academic honesty policy, please report this to our team.'
+      )
+    ).toBeVisible();
+
+    const policyLink = projectLinks.getByRole('link', {
+      name: 'academic honesty policy'
+    });
+    await expect(policyLink).toHaveAttribute(
+      'href',
+      'https://www.freecodecamp.org/news/academic-honesty-policy/'
+    );
+
+    const reportLink = projectLinks.getByRole('link', {
+      name: 'report this to our team'
+    });
+    await expect(reportLink).toHaveAttribute(
+      'href',
+      '/user/certifieduser/report-user'
+    );
+  });
+});
+
+test.describe('Invalid certification page', () => {
+  const testInvalidCertification = async ({ page }: { page: Page }) => {
+    {
+      await page.goto('/certification/certifieduser/invalid-certification');
+      await expect(page).toHaveURL('/');
+      await alertToBeVisible(page, translations.flash['certificate-missing']);
+    }
+  };
+  test.describe('for authenticated user', () => {
+    test.use({ storageState: 'playwright/.auth/certified-user.json' });
+    test(
+      'it should redirect to / and display an error message',
+      testInvalidCertification
+    );
+  });
+
+  test.describe('for unauthenticated user', () => {
+    test.use({ storageState: { cookies: [], origins: [] } });
+    test(
+      'it should redirect to / and display an error message',
+      testInvalidCertification
     );
   });
 });
@@ -169,7 +218,7 @@ test.describe('Certification page - Microsoft', () => {
     await expect(linkedinLink).toBeVisible();
     await expect(linkedinLink).toHaveAttribute(
       'href',
-      'https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=Foundational%20C%23%20with%20Microsoft&organizationId=4831032&issueYear=2023&issueMonth=9&certUrl=https://freecodecamp.org/certification/certifieduser/foundational-c-sharp-with-microsoft'
+      'https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=Foundational%20C%23%20with%20Microsoft&organizationId=4831032&issueYear=2023&issueMonth=9&certUrl=https://freecodecamp.org/certification/certifieduser/foundational-c-sharp-with-microsoft&certId=certifieduser-fcswm'
     );
 
     const twitterLink = certLink.getByTestId('twitter-share-btn');
@@ -190,5 +239,11 @@ test.describe('Certification page - Microsoft', () => {
       'href',
       '/learn/foundational-c-sharp-with-microsoft/foundational-c-sharp-with-microsoft-certification-exam/foundational-c-sharp-with-microsoft-certification-exam'
     );
+
+    await expect(
+      page.getByText(
+        'If you suspect that any of these projects violate the academic honesty policy, please report this to our team.'
+      )
+    ).toHaveCount(0);
   });
 });

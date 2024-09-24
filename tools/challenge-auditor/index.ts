@@ -12,7 +12,7 @@ import { getChallengesForLang } from '../../curriculum/get-challenges';
 import {
   SuperBlocks,
   getAuditedSuperBlocks
-} from '../../shared/config/superblocks';
+} from '../../shared/config/curriculum';
 
 // TODO: re-organise the types to a common 'types' folder that can be shared
 // between the workspaces so we don't have to declare ChallengeNode here and in
@@ -43,7 +43,7 @@ const superBlockFolderMap = {
   'coding-interview-prep': '11-coding-interview-prep',
   'relational-database': '13-relational-database',
   '2022/responsive-web-design': '14-responsive-web-design-22',
-  '2022/javascript-algorithms-and-data-structures':
+  'javascript-algorithms-and-data-structures-v8':
     '15-javascript-algorithms-and-data-structures-22',
   'the-odin-project': '16-the-odin-project',
   'college-algebra-with-python': '17-college-algebra-with-python',
@@ -52,7 +52,10 @@ const superBlockFolderMap = {
     '19-foundational-c-sharp-with-microsoft',
   'upcoming-python': '20-upcoming-python',
   'a2-english-for-developers': '21-a2-english-for-developers',
-  'example-certification': '99-example-certification'
+  'rosetta-code': '22-rosetta-code',
+  'python-for-everybody': '23-python-for-everybody',
+  'b1-english-for-developers': '24-b1-english-for-developers',
+  'front-end-development': '25-front-end-development'
 };
 
 // These blocks are in the incorrect superblock. They should be moved but, for
@@ -98,6 +101,9 @@ void (async () => {
       join(englishCurriculumDirectory, englishSuperblock)
     );
     for (const englishBlock of englishBlocks) {
+      if (englishBlock.endsWith('.txt')) {
+        continue;
+      }
       const englishChallenges = await readdir(
         join(englishCurriculumDirectory, englishSuperblock, englishBlock)
       );
@@ -120,6 +126,8 @@ void (async () => {
     });
     const langCurriculumDirectory = join(
       process.cwd(),
+      'curriculum',
+      'i18n-curriculum',
       'curriculum',
       'challenges',
       lang

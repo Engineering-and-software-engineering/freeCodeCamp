@@ -1,12 +1,21 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   devLogin,
   setupServer,
   superRequest,
-  createSuperRequest
+  createSuperRequest,
+  defaultUserId,
+  defaultUserEmail
 } from '../../jest.utils';
+import { formatMessage } from '../plugins/redirect-with-message';
 import { createUserInput } from '../utils/create-user';
-
-import { isPictureWithProtocol } from './settings';
+import { API_LOCATION, HOME_LOCATION } from '../utils/env';
+import {
+  isPictureWithProtocol,
+  getWaitMessage,
+  validateSocialUrl
+} from './settings';
 
 const baseProfileUI = {
   isLocked: false,
@@ -57,10 +66,8 @@ describe('settingRoutes', () => {
       });
 
       expect(response.body).toEqual({
-        code: 'FST_CSRF_MISSING_SECRET',
-        error: 'Forbidden',
-        message: 'Missing csrf secret',
-        statusCode: 403
+        message: 'flash.generic-error',
+        type: 'danger'
       });
       expect(response.statusCode).toEqual(403);
     });
@@ -71,10 +78,8 @@ describe('settingRoutes', () => {
       }).set('Cookie', ['_csrf=foo', 'csrf-token=bar']);
 
       expect(response.body).toEqual({
-        code: 'FST_CSRF_INVALID_TOKEN',
-        error: 'Forbidden',
-        message: 'Invalid csrf token',
-        statusCode: 403
+        message: 'flash.generic-error',
+        type: 'danger'
       });
       expect(response.statusCode).toEqual(403);
     });
@@ -96,11 +101,13 @@ describe('settingRoutes', () => {
 
   describe('Authenticated user', () => {
     let superPut: ReturnType<typeof createSuperRequest>;
+    let superGet: ReturnType<typeof createSuperRequest>;
 
     // Authenticate user
     beforeAll(async () => {
       const setCookies = await devLogin();
       superPut = createSuperRequest({ method: 'PUT', setCookies });
+      superGet = createSuperRequest({ method: 'GET', setCookies });
       // This is not strictly necessary, since the defaultUser has this
       // profileUI, but we're interested in how the profileUI is updated. As
       // such, setting this explicitly isolates these tests.
@@ -118,6 +125,221 @@ describe('settingRoutes', () => {
           data: createUserInput(otherDeveloperUserEmail)
         });
       }
+    });
+
+    describe('/confirm-email', () => {
+      const defaultErrorMessage = {
+        type: 'danger',
+        content:
+          'Oops! Something went wrong. Please try again in a moment or contact support@freecodecamp.org if the error persists.'
+      } as const;
+
+      const successMessage = {
+        type: 'success',
+        content: 'flash.email-valid'
+      } as const;
+
+      const validToken =
+        '4kZFEVHChxzY7kX1XSzB4uhh8fcUwcqAGWV9hv25hsI6nviVlwzXCv2YE9lENYGy';
+      // This is a valid id for a token, but it doesn't exist in the database
+      const validButMissingToken =
+        '4kZFEVHChxzY7kX1XSzB4uhh8fcUwcqAGWV9hv25hsI6nviVlwzXCv2YE9lENYGY';
+      const tokenWithMissingUser =
+        '4kZFEVHChxzY7kX1XSzB4uhh8fcUwcqAGWV9hv25hsI6nviVlwzXCv2YE9lENYGH';
+      const expiredToken =
+        '4kZFEVHChxzY7kX1XSzB4uhh8fcUwcqAGWV9hv25hsI6nviVlwzXCv2YE9lENYGE';
+
+      const tokens = [validToken, tokenWithMissingUser, expiredToken];
+      const newEmail = 'anything@goes.com';
+      const encodedEmail = Buffer.from(newEmail).toString('base64');
+      const notEmail = Buffer.from('foobar.com').toString('base64');
+
+      beforeEach(async () => {
+        await fastifyTestInstance.prisma.authToken.create({
+          data: {
+            created: new Date(),
+            id: validToken,
+            ttl: 1000,
+            userId: defaultUserId
+          }
+        });
+
+        await fastifyTestInstance.prisma.authToken.create({
+          data: {
+            created: new Date(),
+            id: tokenWithMissingUser,
+            ttl: 1000,
+            // Random ObjectId
+            userId: '6650ac23ccc46c0349a86dee'
+          }
+        });
+
+        await fastifyTestInstance.prisma.authToken.create({
+          data: {
+            created: new Date(Date.now() - 1000),
+            id: expiredToken,
+            ttl: 1000,
+            userId: defaultUserId
+          }
+        });
+
+        // We expect these properties to be changed by the endpoint, so they
+        // need to be set so that change can be confirmed.
+        await fastifyTestInstance.prisma.user.update({
+          where: { id: defaultUserId },
+          data: {
+            newEmail,
+            emailVerified: false,
+            emailVerifyTTL: new Date(),
+            emailAuthLinkTTL: new Date()
+          }
+        });
+      });
+
+      afterEach(async () => {
+        await fastifyTestInstance.prisma.authToken.deleteMany({
+          where: { id: { in: tokens } }
+        });
+        await fastifyTestInstance.prisma.user.update({
+          where: { id: defaultUserId },
+          data: { newEmail: null, email: defaultUserEmail, emailVerified: true }
+        });
+      });
+
+      it('should reject requests without params', async () => {
+        const resNoParams = await superGet('/confirm-email');
+
+        expect(resNoParams.headers.location).toBe(
+          `${HOME_LOCATION}?` + formatMessage(defaultErrorMessage)
+        );
+        expect(resNoParams.status).toBe(302);
+      });
+
+      it('should reject requests which have an invalid token param', async () => {
+        const res = await superGet(
+          // token should be 64 characters long
+          `/confirm-email?email=${encodedEmail}&token=tooshort`
+        );
+
+        expect(res.headers.location).toBe(
+          `${HOME_LOCATION}?` + formatMessage(defaultErrorMessage)
+        );
+        expect(res.status).toBe(302);
+      });
+
+      it('should reject requests which have an invalid email param', async () => {
+        const res = await superGet(
+          `/confirm-email?email=${notEmail}&token=${validToken}`
+        );
+
+        expect(res.headers.location).toBe(
+          `${HOME_LOCATION}?` + formatMessage(defaultErrorMessage)
+        );
+        expect(res.status).toBe(302);
+      });
+
+      it('should reject requests when the auth token is not in the database', async () => {
+        const res = await superGet(
+          `/confirm-email?email=${encodedEmail}&token=${validButMissingToken}`
+        );
+
+        expect(res.headers.location).toBe(
+          `${HOME_LOCATION}?` + formatMessage(defaultErrorMessage)
+        );
+        expect(res.status).toBe(302);
+      });
+
+      it('should reject requests when the auth token exists, but the user does not', async () => {
+        const res = await superGet(
+          `/confirm-email?email=${encodedEmail}&token=${validButMissingToken}`
+        );
+
+        expect(res.headers.location).toBe(
+          `${HOME_LOCATION}?` + formatMessage(defaultErrorMessage)
+        );
+        expect(res.status).toBe(302);
+      });
+
+      // TODO(Post-MVP): there's no need to keep the auth token around if,
+      // somehow, the user is missing
+      it.todo(
+        'should delete the auth token if there is no user associated with it'
+      );
+
+      it('should reject requests when the email param is different from user.newEmail', async () => {
+        await fastifyTestInstance.prisma.user.update({
+          where: { id: defaultUserId },
+          data: { newEmail: 'an@oth.er' }
+        });
+
+        const res = await superGet(
+          `/confirm-email?email=${encodedEmail}&token=${validToken}`
+        );
+
+        expect(res.headers.location).toBe(
+          `${HOME_LOCATION}?` + formatMessage(defaultErrorMessage)
+        );
+        expect(res.status).toBe(302);
+      });
+
+      it('should reject requests if the auth token has expired', async () => {
+        const res = await superGet(
+          `/confirm-email?email=${encodedEmail}&token=${expiredToken}`
+        );
+
+        expect(res.headers.location).toBe(
+          `${HOME_LOCATION}?` +
+            formatMessage({
+              content:
+                'The link to confirm your new email address has expired. Please try again.',
+              type: 'info'
+            })
+        );
+        expect(res.status).toBe(302);
+      });
+
+      it('should update the user email', async () => {
+        const res = await superGet(
+          `/confirm-email?email=${encodedEmail}&token=${validToken}`
+        );
+        const user = await fastifyTestInstance.prisma.user.findUniqueOrThrow({
+          where: { id: defaultUserId }
+        });
+
+        expect(res.headers.location).toBe(
+          `${HOME_LOCATION}?` + formatMessage(successMessage)
+        );
+        expect(user.email).toBe(newEmail);
+      });
+
+      it('should clean up the user record', async () => {
+        await superGet(
+          `/confirm-email?email=${encodedEmail}&token=${validToken}`
+        );
+
+        const user = await fastifyTestInstance.prisma.user.findUniqueOrThrow({
+          where: { id: defaultUserId }
+        });
+
+        expect(user.newEmail).toBeNull();
+        expect(user.emailVerified).toBe(true);
+        expect(user.emailVerifyTTL).toBeNull();
+        expect(user.emailAuthLinkTTL).toBeNull();
+      });
+
+      it('should remove the auth token on success', async () => {
+        await superGet(
+          `/confirm-email?email=${encodedEmail}&token=${validToken}`
+        );
+
+        const authToken = await fastifyTestInstance.prisma.authToken.findUnique(
+          {
+            where: { id: validToken }
+          }
+        );
+
+        expect(authToken).toBeNull();
+      });
     });
 
     describe('/update-my-profileui', () => {
@@ -171,6 +393,7 @@ describe('settingRoutes', () => {
     });
 
     describe('/update-my-email', () => {
+      let sendEmailSpy: jest.SpyInstance;
       beforeEach(async () => {
         await fastifyTestInstance.prisma.user.updateMany({
           where: { email: developerUserEmail },
@@ -181,47 +404,56 @@ describe('settingRoutes', () => {
             emailAuthLinkTTL: null
           }
         });
+
+        sendEmailSpy = jest
+          .spyOn(fastifyTestInstance, 'sendEmail')
+          .mockImplementationOnce(jest.fn());
       });
-      test('PUT returns 200 status code with "success" message', async () => {
+
+      afterEach(async () => {
+        jest.clearAllMocks();
+        await fastifyTestInstance.prisma.authToken.deleteMany({
+          where: { userId: defaultUserId }
+        });
+      });
+      test('PUT returns 200 status code with "info" message', async () => {
         const response = await superPut('/update-my-email').send({
           email: 'foo@foo.com'
         });
 
-        expect(response?.body).toEqual({
-          message: 'flash.email-valid',
-          type: 'success'
+        expect(response.body).toEqual({
+          message:
+            'Check your email and click the link we sent you to confirm your new email address.',
+          type: 'info'
         });
-        expect(response?.statusCode).toEqual(200);
+        expect(response.statusCode).toEqual(200);
       });
 
       test("PUT updates the user's record in preparation for receiving auth email", async () => {
+        const timeBefore = Date.now();
         const response = await superPut('/update-my-email').send({
           email: unusedEmailOne
         });
 
         const user = await fastifyTestInstance.prisma.user.findFirstOrThrow({
           where: { email: developerUserEmail },
-          select: { emailVerifyTTL: true, emailVerified: true, newEmail: true }
+          select: {
+            emailAuthLinkTTL: true,
+            emailVerifyTTL: true,
+            emailVerified: true,
+            newEmail: true
+          }
         });
-        const emailVerifyTTL = user?.emailVerifyTTL;
-        expect(emailVerifyTTL).toBeTruthy();
-        // This throw is to mollify TS (if this is necessary a lot, create a
-        // helper)
-        if (!emailVerifyTTL) {
-          throw new Error('emailVerifyTTL is not defined');
-        }
 
-        expect(response?.statusCode).toEqual(200);
+        // expect the emailVerifyTTL and emailAuthLinkTTL to be set to the current time
+        expect(user.emailVerifyTTL!.getTime()).toBeGreaterThan(timeBefore);
+        expect(user.emailVerifyTTL!.getTime()).toBeLessThan(Date.now());
+        expect(user.emailAuthLinkTTL!.getTime()).toBeGreaterThan(timeBefore);
+        expect(user.emailAuthLinkTTL!.getTime()).toBeLessThan(Date.now());
 
-        // expect the emailVerifyTTL to be within 10 seconds of the current time
-        const tenSeconds = 10 * 1000;
-        expect(emailVerifyTTL.getTime()).toBeGreaterThan(
-          Date.now() - tenSeconds
-        );
-        expect(emailVerifyTTL.getTime()).toBeLessThan(Date.now() + tenSeconds);
-
-        expect(user?.emailVerified).toEqual(false);
-        expect(user?.newEmail).toEqual(unusedEmailOne);
+        expect(user.emailVerified).toEqual(false);
+        expect(user.newEmail).toEqual(unusedEmailOne);
+        expect(response.statusCode).toEqual(200);
       });
 
       test('PUT rejects invalid email addresses', async () => {
@@ -231,11 +463,11 @@ describe('settingRoutes', () => {
 
         // We cannot use fastify's default validation failure response here
         // because the client consumes the response and displays it to the user.
-        expect(response?.body).toEqual({
+        expect(response.body).toEqual({
           type: 'danger',
           message: 'Email format is invalid'
         });
-        expect(response?.statusCode).toEqual(400);
+        expect(response.statusCode).toEqual(400);
       });
 
       test('PUT accepts requests to update to the current email address (ignoring case) if it is not verified', async () => {
@@ -247,10 +479,11 @@ describe('settingRoutes', () => {
           email: developerUserEmail.toUpperCase()
         });
 
-        expect(response?.statusCode).toEqual(200);
-        expect(response?.body).toEqual({
-          message: 'flash.email-valid',
-          type: 'success'
+        expect(response.statusCode).toEqual(200);
+        expect(response.body).toEqual({
+          message:
+            'Check your email and click the link we sent you to confirm your new email address.',
+          type: 'info'
         });
       });
 
@@ -259,12 +492,12 @@ describe('settingRoutes', () => {
           email: developerUserEmail.toUpperCase()
         });
 
-        expect(response?.body).toEqual({
+        expect(response.body).toEqual({
           type: 'info',
           message: `${developerUserEmail} is already associated with this account.
 You can update a new email address instead.`
         });
-        expect(response?.statusCode).toEqual(400);
+        expect(response.statusCode).toEqual(400);
       });
 
       test('PUT rejects a request to update to the same email (ignoring case) twice', async () => {
@@ -272,7 +505,7 @@ You can update a new email address instead.`
           email: unusedEmailOne
         });
 
-        expect(successResponse?.statusCode).toEqual(200);
+        expect(successResponse.statusCode).toEqual(200);
 
         const failResponse = await superPut('/update-my-email').send({
           email: unusedEmailOne.toUpperCase()
@@ -291,11 +524,11 @@ Please wait 5 minutes to resend an authentication link.`
           email: otherDeveloperUserEmail
         });
 
-        expect(response?.body).toEqual({
+        expect(response.body).toEqual({
           type: 'info',
           message: `${otherDeveloperUserEmail} is already associated with another account.`
         });
-        expect(response?.statusCode).toEqual(400);
+        expect(response.statusCode).toEqual(400);
       });
 
       test('PUT rejects the second request if is immediately after the first', async () => {
@@ -303,7 +536,7 @@ Please wait 5 minutes to resend an authentication link.`
           email: unusedEmailOne
         });
 
-        expect(successResponse?.statusCode).toEqual(200);
+        expect(successResponse.statusCode).toEqual(200);
 
         const failResponse = await superPut('/update-my-email').send({
           email: unusedEmailTwo
@@ -317,7 +550,60 @@ Please wait 5 minutes to resend an authentication link.`
         });
       });
 
-      // TODO: test that the correct email gets sent
+      test('PUT sends an email to the new email address', async () => {
+        jest
+          .spyOn(fastifyTestInstance.prisma.authToken, 'create')
+          .mockImplementationOnce(() =>
+            // @ts-expect-error This is a mock implementation, all we're
+            // interested in is the id.
+            Promise.resolve({
+              id: '123'
+            })
+          );
+        await superPut('/update-my-email').send({
+          email: unusedEmailOne
+        });
+
+        const expectedLink = `${API_LOCATION}/confirm-email?email=${Buffer.from(unusedEmailOne).toString('base64')}&token=123&emailChange=true`;
+        expect(sendEmailSpy).toHaveBeenCalledWith({
+          from: 'team@freecodecamp.org',
+          to: unusedEmailOne,
+          subject:
+            'Please confirm your updated email address for freeCodeCamp.org',
+          text: `Please confirm this email address for freeCodeCamp.org:
+
+${expectedLink}
+
+Happy coding!
+
+- The freeCodeCamp.org Team
+`
+        });
+      });
+
+      test('PUT creates an auth token record for the requesting user', async () => {
+        const noToken = await fastifyTestInstance.prisma.authToken.findFirst({
+          where: { userId: defaultUserId }
+        });
+        expect(noToken).toBeNull();
+
+        await superPut('/update-my-email').send({
+          email: unusedEmailOne
+        });
+
+        const token = await fastifyTestInstance.prisma.authToken.findFirst({
+          where: { userId: defaultUserId }
+        });
+
+        expect(token).toEqual({
+          ttl: 15 * 60 * 1000,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          created: expect.any(Date),
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          id: expect.any(String),
+          userId: defaultUserId
+        });
+      });
     });
 
     describe('/update-my-theme', () => {
@@ -409,10 +695,10 @@ Please wait 5 minutes to resend an authentication link.`
           username: 'TwaHa1'
         });
 
-        expect(response.body).toEqual({
+        expect(response.body).toStrictEqual({
           message: 'flash.username-updated',
           type: 'success',
-          username: 'TwaHa1'
+          variables: { username: 'TwaHa1' }
         });
 
         const user = await fastifyTestInstance.prisma.user.findFirst({
@@ -470,10 +756,10 @@ Please wait 5 minutes to resend an authentication link.`
           username: 'TWaha3'
         });
 
-        expect(response.body).toEqual({
+        expect(response.body).toStrictEqual({
           message: 'flash.username-updated',
           type: 'success',
-          username: 'TWaha3'
+          variables: { username: 'TWaha3' }
         });
         expect(response.statusCode).toEqual(200);
       });
@@ -530,12 +816,39 @@ Please wait 5 minutes to resend an authentication link.`
         expect(response.statusCode).toEqual(200);
       });
 
-      test('PUT returns 400 status code with invalid socials setting', async () => {
+      test('PUT accepts empty strings for socials', async () => {
+        const response = await superPut('/update-my-socials').send({
+          website: 'https://www.freecodecamp.org/',
+          twitter: '',
+          linkedin: '',
+          githubProfile: ''
+        });
+
+        expect(response.body).toEqual({
+          message: 'flash.updated-socials',
+          type: 'success'
+        });
+        expect(response.statusCode).toEqual(200);
+      });
+
+      test('PUT rejects non-url values', async () => {
         const response = await superPut('/update-my-socials').send({
           website: 'invalid',
-          twitter: 'invalid',
-          linkedin: 'invalid',
-          githubProfile: 'invalid'
+          twitter: '',
+          linkedin: '',
+          githubProfile: ''
+        });
+
+        expect(response.body).toEqual(updateErrorResponse);
+        expect(response.statusCode).toEqual(400);
+      });
+
+      test('PUT only accepts urls to certain domains', async () => {
+        const response = await superPut('/update-my-socials').send({
+          website: '',
+          twitter: '',
+          linkedin: '',
+          githubProfile: 'https://x.com/should-be-github'
         });
 
         expect(response.body).toEqual(updateErrorResponse);
@@ -608,6 +921,43 @@ Please wait 5 minutes to resend an authentication link.`
           type: 'success'
         });
         expect(response.statusCode).toEqual(200);
+      });
+
+      test('PUT with empty strings clears the values in about settings ', async () => {
+        const initialResponse = await superPut('/update-my-about').send({
+          about: 'Teacher at freeCodeCamp',
+          name: 'Quincy Larson',
+          location: 'USA',
+          picture:
+            'https://cdn.freecodecamp.org/platform/english/images/quincy-larson-signature.svg'
+        });
+
+        expect(initialResponse.body).toEqual({
+          message: 'flash.updated-about-me',
+          type: 'success'
+        });
+        expect(initialResponse.statusCode).toEqual(200);
+
+        const response = await superPut('/update-my-about').send({
+          about: '',
+          name: '',
+          location: '',
+          picture: ''
+        });
+
+        expect(response.body).toEqual({
+          message: 'flash.updated-about-me',
+          type: 'success'
+        });
+        expect(response.statusCode).toEqual(200);
+
+        const user = await fastifyTestInstance?.prisma.user.findFirst({
+          where: { email: 'foo@bar.com' }
+        });
+        expect(user?.about).toEqual('');
+        expect(user?.name).toEqual('');
+        expect(user?.location).toEqual('');
+        expect(user?.picture).toEqual('');
       });
     });
 
@@ -689,6 +1039,35 @@ Please wait 5 minutes to resend an authentication link.`
         expect(response.statusCode).toEqual(400);
       });
     });
+
+    describe('/update-my-classroom-mode', () => {
+      test('PUT returns 200 status code with "success" message', async () => {
+        const response = await superPut('/update-my-classroom-mode').send({
+          isClassroomAccount: true
+        });
+
+        expect(response.body).toEqual({
+          message: 'flash.classroom-mode-updated',
+          type: 'success'
+        });
+
+        expect(response.statusCode).toEqual(200);
+      });
+
+      test('After updating the classroom mode, the user should have this property set', async () => {
+        await superPut('/update-my-classroom-mode').send({
+          isClassroomAccount: false
+        });
+
+        const user = await fastifyTestInstance?.prisma.user.findFirst({
+          where: {
+            email: developerUserEmail
+          }
+        });
+
+        expect(user?.isClassroomAccount).toEqual(false);
+      });
+    });
   });
 
   describe('Unauthenticated User', () => {
@@ -698,6 +1077,19 @@ Please wait 5 minutes to resend an authentication link.`
     beforeAll(async () => {
       const res = await superRequest('/status/ping', { method: 'GET' });
       setCookies = res.get('Set-Cookie');
+    });
+
+    describe('/confirm-email', () => {
+      it('redirects to the HOME_LOCATION with flash message', async () => {
+        const res = await superRequest('/confirm-email', {
+          method: 'GET'
+        }).set('Referer', 'https://who.knows/');
+
+        expect(res.status).toBe(302);
+        expect(res.headers).toMatchObject({
+          location: `http://localhost:8000?${formatMessage({ type: 'info', content: 'Only authenticated users can access this route. Please sign in and try again.' })}`
+        });
+      });
     });
 
     const endpoints: { path: string; method: 'PUT' }[] = [
@@ -723,17 +1115,89 @@ Please wait 5 minutes to resend an authentication link.`
       });
     });
   });
+
+  describe('isPictureWithProtocol', () => {
+    test('Valid protocol', () => {
+      expect(isPictureWithProtocol('https://www.example.com/')).toEqual(true);
+      expect(isPictureWithProtocol('http://www.example.com/')).toEqual(true);
+    });
+
+    test('Invalid protocol', () => {
+      expect(isPictureWithProtocol('htps://www.example.com/')).toEqual(false);
+      expect(isPictureWithProtocol('tp://www.example.com/')).toEqual(false);
+      expect(isPictureWithProtocol('www.example.com/')).toEqual(false);
+    });
+  });
 });
 
-describe('isPictureWithProtocol', () => {
-  test('Valid protocol', () => {
-    expect(isPictureWithProtocol('https://www.example.com/')).toEqual(true);
-    expect(isPictureWithProtocol('http://www.example.com/')).toEqual(true);
+describe('getWaitMessage', () => {
+  const sec = 1000;
+  const min = 60 * 1000;
+  it.each([
+    {
+      sentAt: new Date(0),
+      now: new Date(0),
+      expected: 'Please wait 5 minutes to resend an authentication link.'
+    },
+    {
+      sentAt: new Date(0),
+      now: new Date(59 * sec),
+      expected: 'Please wait 5 minutes to resend an authentication link.'
+    },
+    {
+      sentAt: new Date(0),
+      now: new Date(4 * min),
+      expected: 'Please wait 1 minute to resend an authentication link.'
+    },
+    {
+      sentAt: new Date(0),
+      now: new Date(4 * min + 59 * sec),
+      expected: 'Please wait 1 minute to resend an authentication link.'
+    },
+    {
+      sentAt: new Date(0),
+      now: new Date(5 * min),
+      expected: null
+    }
+  ])(
+    `returns "$expected" when sentAt is $sentAt and now is $now`,
+    ({ sentAt, now, expected }) => {
+      expect(getWaitMessage({ sentAt, now })).toEqual(expected);
+    }
+  );
+
+  it('returns null when sentAt is null', () => {
+    expect(getWaitMessage({ sentAt: null, now: new Date(0) })).toBeNull();
+  });
+  it('uses the current time when now is not provided', () => {
+    expect(getWaitMessage({ sentAt: new Date() })).toEqual(
+      'Please wait 5 minutes to resend an authentication link.'
+    );
+  });
+});
+
+describe('validateSocialUrl', () => {
+  it.each(['githubProfile', 'linkedin', 'twitter'] as const)(
+    'accepts empty strings for %s',
+    social => {
+      expect(validateSocialUrl('', social)).toBe(true);
+    }
+  );
+
+  it.each([
+    ['githubProfile', 'https://something.com/user'],
+    ['linkedin', 'https://www.x.com/in/username'],
+    ['twitter', 'https://www.toomanyexes.com/username']
+  ] as const)('rejects invalid urls for %s', (social, url) => {
+    expect(validateSocialUrl(url, social)).toBe(false);
   });
 
-  test('Invalid protocol', () => {
-    expect(isPictureWithProtocol('htps://www.example.com/')).toEqual(false);
-    expect(isPictureWithProtocol('tp://www.example.com/')).toEqual(false);
-    expect(isPictureWithProtocol('www.example.com/')).toEqual(false);
+  it.each([
+    ['githubProfile', 'https://something.github.com/user'],
+    ['linkedin', 'https://www.linkedin.com/in/username'],
+    ['twitter', 'https://twitter.com/username'],
+    ['twitter', 'https://x.com/username']
+  ] as const)('accepts valid urls for %s', (social, url) => {
+    expect(validateSocialUrl(url, social)).toBe(true);
   });
 });

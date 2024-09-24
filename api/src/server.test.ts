@@ -5,7 +5,7 @@ jest.mock('./utils/env', () => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
     ...jest.requireActual('./utils/env'),
-    COOKIE_DOMAIN: '.freecodecamp.org'
+    COOKIE_DOMAIN: 'freecodecamp.org'
   };
 });
 
@@ -33,16 +33,6 @@ describe('server', () => {
   });
 
   describe('GET /', () => {
-    test('have a 200 response', async () => {
-      const res = await superRequest('/', { method: 'GET' });
-      expect(res.statusCode).toBe(200);
-    });
-
-    test('return { "hello": "world"}', async () => {
-      const res = await superRequest('/', { method: 'GET' });
-      expect(res.body).toEqual({ hello: 'world' });
-    });
-
     test('should have OWASP recommended headers', async () => {
       const res = await superRequest('/', { method: 'GET' });
       expect(res.headers).toMatchObject({

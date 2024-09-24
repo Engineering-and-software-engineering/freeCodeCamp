@@ -1,9 +1,10 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import translations from '../client/i18n/locales/english/translations.json';
+import { focusEditor } from './utils/editor';
 
 test.beforeEach(async ({ page }) => {
   await page.goto(
-    '/learn/2022/responsive-web-design/learn-html-by-building-a-cat-photo-app/step-2'
+    '/learn/2022/responsive-web-design/learn-html-by-building-a-cat-photo-app/step-3'
   );
 });
 
@@ -29,7 +30,8 @@ test.describe('Challenge Preview Component', () => {
     page,
     isMobile
   }) => {
-    await page.getByLabel('Editor content').click();
+    await focusEditor({ page, isMobile });
+
     await page.keyboard.insertText('<h1>FreeCodeCamp</h1>');
     if (isMobile) {
       await page

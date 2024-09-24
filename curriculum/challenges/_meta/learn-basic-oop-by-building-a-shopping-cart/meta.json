@@ -1,17 +1,12 @@
 {
   "name": "Learn Basic OOP by Building a Shopping Cart",
-  "isUpcomingChange": true,
+  "isUpcomingChange": false,
   "usesMultifileEditor": true,
   "hasEditableBoundaries": true,
   "dashedName": "learn-basic-oop-by-building-a-shopping-cart",
   "helpCategory": "JavaScript",
-  "order": 13,
-  "time": "5 hours",
-  "template": "",
-  "required": [],
-  "superBlock": "2022/javascript-algorithms-and-data-structures",
-  "superOrder": 4,
-  "isBeta": true,
+  "order": 18,
+  "superBlock": "javascript-algorithms-and-data-structures-v8",
   "challengeOrder": [
     {
       "id": "63ec14d1c216aa063f0be4af",

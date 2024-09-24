@@ -38,10 +38,10 @@ export const durationKeysConfig = ['month', 'one-time'];
 export const donationOneTimeConfig = [100000, 25000, 6000];
 export const donationSubscriptionConfig = {
   duration: {
-    month: 'Monthly'
+    month: 'monthly'
   },
   plans: {
-    month: [25000, 3500, 500]
+    month: subscriptionAmounts
   }
 };
 
@@ -51,10 +51,10 @@ export const paypalConfigTypes = {
   live: {
     month: {
       500: { planId: 'P-6B636789V3105190KMTJFH7A' },
-      1000: { planId: 'P-61K21421WY874920PL6E36YI' },
-      2000: { planId: 'P-31999436LF709112VL6E374A' },
+      1000: { planId: 'P-53P76823N8780520DMVTWF3I' },
+      2000: { planId: 'P-8HY47434FB9663500MVTWFOA' },
       3000: { planId: 'P-1KY930839N8045117L6E4BKY' },
-      4000: { planId: 'P-0JW4843250567551AL6E4CAI' },
+      4000: { planId: 'P-0MH28916302828423MVTWEBI' },
       5000: { planId: 'P-0WR49877YD949401BL6E4CTA' }
     }
   },
@@ -123,3 +123,27 @@ export enum PaymentProvider {
   Stripe = 'stripe',
   StripeCard = 'stripe card'
 }
+
+const stripeProductIds = {
+  live: {
+    month: {
+      500: 'prod_Cc9bIxB2NvjpLy',
+      1000: 'prod_BuiSxWk7jGSFlJ',
+      2000: 'prod_IElpZVK7kOn6Fe',
+      4000: 'prod_IElq1foW39g3Cx'
+    }
+  },
+  staging: {
+    month: {
+      500: 'prod_GD1GGbJsqQaupl',
+      1000: 'prod_GD1IzNEXfSCGgy',
+      2000: 'prod_IEkNp8M03xvsuB',
+      4000: 'prod_IEkPebxS63mVbs'
+    }
+  }
+};
+
+export const allStripeProductIdsArray = [
+  ...Object.values(stripeProductIds['live']['month']),
+  ...Object.values(stripeProductIds['staging']['month'])
+];

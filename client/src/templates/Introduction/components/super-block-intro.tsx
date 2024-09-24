@@ -1,16 +1,55 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { SuperBlocks } from '../../../../../shared/config/superblocks';
+import { Alert } from '@freecodecamp/ui';
+import { SuperBlocks } from '../../../../../shared/config/curriculum';
 import { SuperBlockIcon } from '../../../assets/icons/superblock-icon';
-import { Spacer } from '../../../components/helpers';
+import { Spacer, Link } from '../../../components/helpers';
 
 interface SuperBlockIntroProps {
   superBlock: SuperBlocks;
+  onCertificationDonationAlertClick: () => void;
+  isDonating: boolean;
 }
+
+export const ConditionalDonationAlert = ({
+  superBlock,
+  onCertificationDonationAlertClick,
+  isDonating
+}: SuperBlockIntroProps): JSX.Element => {
+  const { t } = useTranslation();
+
+  const betaCertifications = [
+    SuperBlocks.JsAlgoDataStructNew,
+    SuperBlocks.A2English,
+    SuperBlocks.UpcomingPython,
+    SuperBlocks.FrontEndDevelopment,
+    SuperBlocks.SciCompPy
+  ];
+
+  if (!isDonating && betaCertifications.includes(superBlock))
+    return (
+      <Alert variant='info' className='annual-donation-alert'>
+        <p>{t('donate.beta-certification')}</p>
+        <hr />
+        <p className='btn-container'>
+          <Link
+            className='btn donate-button'
+            key='donate'
+            sameTab={false}
+            to='/donate'
+            onClick={onCertificationDonationAlertClick}
+          >
+            {t('buttons.donate-now')}
+          </Link>
+        </p>
+      </Alert>
+    );
+  return <></>;
+};
 
 function SuperBlockIntro(props: SuperBlockIntroProps): JSX.Element {
   const { t } = useTranslation();
-  const { superBlock } = props;
+  const { superBlock, onCertificationDonationAlertClick, isDonating } = props;
 
   const superBlockIntroObj: {
     title: string;
@@ -39,13 +78,18 @@ function SuperBlockIntro(props: SuperBlockIntroProps): JSX.Element {
       <SuperBlockIcon className='cert-header-icon' superBlock={superBlock} />
       <Spacer size='medium' />
       {superBlockIntroText.map((str, i) => (
-        <p key={i}>{str}</p>
+        <p dangerouslySetInnerHTML={{ __html: str }} key={i} />
       ))}
       {superBlockNoteText && (
         <div className='alert alert-info' style={{ marginTop: '2rem' }}>
           {superBlockNoteText}
         </div>
       )}
+      <ConditionalDonationAlert
+        superBlock={superBlock}
+        onCertificationDonationAlertClick={onCertificationDonationAlertClick}
+        isDonating={isDonating}
+      />
     </>
   );
 }

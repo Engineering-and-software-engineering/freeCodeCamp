@@ -1,12 +1,15 @@
 import { type FastifyPluginCallbackTypebox } from '@fastify/type-provider-typebox';
 import jwt from 'jsonwebtoken';
 import { uniqBy } from 'lodash';
+import { CompletedExam, ExamResults } from '@prisma/client';
+import isURL from 'validator/lib/isURL';
 
 import { challengeTypes } from '../../../shared/config/challenge-types';
-import { schemas } from '../schemas';
+import * as schemas from '../schemas';
 import {
   jsCertProjectIds,
   multifileCertProjectIds,
+  multifilePythonCertProjectIds,
   updateUserChallengeData,
   type CompletedChallenge,
   saveUserChallengeData,
@@ -21,19 +24,30 @@ import { getChallenges } from '../utils/get-challenges';
 import { ProgressTimestamp, getPoints } from '../utils/progress';
 import {
   validateExamFromDbSchema,
-  validateGeneratedExamSchema
+  validateGeneratedExamSchema,
+  validateUserCompletedExamSchema,
+  validateExamResultsSchema
 } from '../utils/exam-schemas';
-import { generateRandomExam } from '../utils/exam';
+import { generateRandomExam, createExamResults } from '../utils/exam';
 import {
   canSubmitCodeRoadCertProject,
-  createProject,
-  updateProject,
   verifyTrophyWithMicrosoft
 } from './helpers/challenge-helpers';
 
 interface JwtPayload {
   userToken: string;
 }
+
+// TODO(Post-MVP): This could be narrowed down to only the fields needed by
+// specific endpoints, but that means complicating the update helper.
+const userChallengeSelect = {
+  id: true,
+  completedChallenges: true,
+  partiallyCompletedChallenges: true,
+  progressTimestamps: true,
+  needsModeration: true,
+  savedChallenges: true
+};
 
 /**
  * Plugin for the challenge submission endpoints.
@@ -48,11 +62,6 @@ export const challengeRoutes: FastifyPluginCallbackTypebox = (
   done
 ) => {
   const challenges = getChallenges();
-
-  // @ts-expect-error - @fastify/csrf-protection needs to update their types
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  fastify.addHook('onRequest', fastify.csrfProtection);
-  fastify.addHook('onRequest', fastify.authenticateSession);
 
   fastify.post(
     '/coderoad-challenge-completed',
@@ -146,7 +155,7 @@ export const challengeRoutes: FastifyPluginCallbackTypebox = (
           };
 
           await fastify.prisma.user.update({
-            where: { id: req.session.user.id },
+            where: { id: req.user?.id },
             data: {
               partiallyCompletedChallenges: uniqBy(
                 [finalChallenge, ...partiallyCompletedChallenges],
@@ -161,6 +170,7 @@ export const challengeRoutes: FastifyPluginCallbackTypebox = (
           });
         }
       } catch {
+        // TODO(Post-MVP): don't catch, just let Sentry handle this.
         void reply.code(400);
         return {
           type: 'error',
@@ -188,76 +198,69 @@ export const challengeRoutes: FastifyPluginCallbackTypebox = (
       }
     },
     async (req, reply) => {
+      // TODO: considering validation is determined by `challengeType`, it should not come from the client
+      //       Determine `challengeType` by `id`
       const { id: projectId, challengeType, solution, githubLink } = req.body;
-      const userId = req.session.user.id;
+      const userId = req.user?.id;
 
-      try {
-        const user = await fastify.prisma.user.findUniqueOrThrow({
-          where: { id: userId },
-          select: {
-            completedChallenges: true,
-            partiallyCompletedChallenges: true,
-            progressTimestamps: true
-          }
-        });
-
-        if (
-          challengeType === challengeTypes.codeAllyCert &&
-          !canSubmitCodeRoadCertProject(projectId, user)
-        ) {
-          void reply.code(403);
-          return {
+      // If `backEndProject`:
+      // - `solution` needs to exist, but does not have to be valid URL
+      // - `githubLink` needs to exist and be valid URL
+      if (challengeType === challengeTypes.backEndProject) {
+        if (!solution || !isURL(githubLink + '')) {
+          return void reply.code(403).send({
             type: 'error',
-            message:
-              'You have to complete the project before you can submit a URL.'
-          } as const;
+            message: 'That does not appear to be a valid challenge submission.'
+          });
         }
-
-        const completedDate = Date.now();
-        const oldChallenge = user.completedChallenges?.find(
-          ({ id }) => id === projectId
-        );
-        const updatedChallenge = {
-          challengeType,
-          solution,
-          githubLink
-        };
-        const newChallenge = {
-          ...updatedChallenge,
-          id: projectId,
-          completedDate
-        };
-        const alreadyCompleted = !!oldChallenge;
-        const progressTimestamps =
-          user.progressTimestamps as ProgressTimestamp[];
-        const points = getPoints(progressTimestamps);
-
-        const data = alreadyCompleted
-          ? updateProject(projectId, updatedChallenge)
-          : createProject(projectId, newChallenge, progressTimestamps);
-
-        await fastify.prisma.user.update({
-          where: { id: userId },
-          data
+      } else if (solution && !isURL(solution + '')) {
+        return void reply.code(403).send({
+          type: 'error',
+          message: 'That does not appear to be a valid challenge submission.'
         });
+      }
 
+      const user = await fastify.prisma.user.findUniqueOrThrow({
+        where: { id: userId },
+        select: userChallengeSelect
+      });
+
+      if (
+        challengeType === challengeTypes.codeAllyCert &&
+        !canSubmitCodeRoadCertProject(projectId, user)
+      ) {
+        void reply.code(403);
         return {
-          alreadyCompleted,
-          // TODO(Post-MVP): audit the client and remove this if the client does
-          // not use it.
-          completedDate,
-          points: alreadyCompleted ? points : points + 1
-        };
-      } catch (err) {
-        // TODO: send to Sentry
-        fastify.log.error(err);
-        void reply.code(500);
-        return {
+          type: 'error',
           message:
-            'Oops! Something went wrong. Please try again in a moment or contact support@freecodecamp.org if the error persists.',
-          type: 'danger'
+            'You have to complete the project before you can submit a URL.'
         } as const;
       }
+
+      const challenge = {
+        challengeType,
+        solution,
+        githubLink,
+        id: projectId,
+        completedDate: Date.now()
+      };
+      const progressTimestamps = user.progressTimestamps as ProgressTimestamp[];
+      const points = getPoints(progressTimestamps);
+
+      const { alreadyCompleted, completedDate } = await updateUserChallengeData(
+        fastify,
+        user,
+        projectId,
+        challenge
+      );
+
+      return {
+        alreadyCompleted,
+        // TODO(Post-MVP): audit the client and remove this if the client does
+        // not use it.
+        completedDate,
+        points: alreadyCompleted ? points : points + 1
+      };
     }
   );
 
@@ -274,42 +277,34 @@ export const challengeRoutes: FastifyPluginCallbackTypebox = (
         }
       }
     },
-    async (req, reply) => {
-      try {
-        const user = await fastify.prisma.user.findUniqueOrThrow({
-          where: { id: req.session.user.id }
-        });
-        const progressTimestamps = user.progressTimestamps as
-          | ProgressTimestamp[]
-          | null;
-        const points = getPoints(progressTimestamps);
+    async req => {
+      const user = await fastify.prisma.user.findUniqueOrThrow({
+        where: { id: req.user?.id },
 
-        const completedChallenge = {
-          completedDate: Date.now(),
-          ...req.body
-        };
+        select: userChallengeSelect
+      });
+      const progressTimestamps = user.progressTimestamps as
+        | ProgressTimestamp[]
+        | null;
+      const points = getPoints(progressTimestamps);
 
-        const { alreadyCompleted } = await updateUserChallengeData(
-          fastify,
-          user,
-          req.body.id,
-          completedChallenge
-        );
+      const completedChallenge = {
+        completedDate: Date.now(),
+        ...req.body
+      };
 
-        return {
-          alreadyCompleted,
-          points: alreadyCompleted ? points : points + 1,
-          completedDate: completedChallenge.completedDate
-        };
-      } catch (error) {
-        fastify.log.error(error);
-        void reply.code(500);
-        return {
-          message:
-            'Oops! Something went wrong. Please try again in a moment or contact support@freecodecamp.org if the error persists.',
-          type: 'danger'
-        } as const;
-      }
+      const { alreadyCompleted } = await updateUserChallengeData(
+        fastify,
+        user,
+        req.body.id,
+        completedChallenge
+      );
+
+      return {
+        alreadyCompleted,
+        points: alreadyCompleted ? points : points + 1,
+        completedDate: completedChallenge.completedDate
+      };
     }
   );
 
@@ -326,54 +321,46 @@ export const challengeRoutes: FastifyPluginCallbackTypebox = (
         }
       }
     },
-    async (req, reply) => {
-      try {
-        const { id, files, challengeType } = req.body;
+    async req => {
+      const { id, files, challengeType } = req.body;
 
-        const user = await fastify.prisma.user.findUniqueOrThrow({
-          where: { id: req.session.user.id }
-        });
-        const RawProgressTimestamp = user.progressTimestamps as
-          | ProgressTimestamp[]
-          | null;
-        const points = getPoints(RawProgressTimestamp);
+      const user = await fastify.prisma.user.findUniqueOrThrow({
+        where: { id: req.user?.id },
+        select: userChallengeSelect
+      });
+      const RawProgressTimestamp = user.progressTimestamps as
+        | ProgressTimestamp[]
+        | null;
+      const points = getPoints(RawProgressTimestamp);
 
-        const completedChallenge: CompletedChallenge = {
-          id,
-          files,
-          completedDate: Date.now()
-        };
+      const completedChallenge: CompletedChallenge = {
+        id,
+        files,
+        completedDate: Date.now()
+      };
 
-        if (challengeType === challengeTypes.multifileCertProject) {
-          completedChallenge.isManuallyApproved = true;
-          user.needsModeration = true;
-        }
-
-        if (
-          jsCertProjectIds.includes(id) ||
-          multifileCertProjectIds.includes(id)
-        ) {
-          completedChallenge.challengeType = challengeType;
-        }
-
-        const { alreadyCompleted, userSavedChallenges: savedChallenges } =
-          await updateUserChallengeData(fastify, user, id, completedChallenge);
-
-        return {
-          alreadyCompleted,
-          points: alreadyCompleted ? points : points + 1,
-          completedDate: completedChallenge.completedDate,
-          savedChallenges
-        };
-      } catch (error) {
-        fastify.log.error(error);
-        void reply.code(500);
-        return {
-          message:
-            'Oops! Something went wrong. Please try again in a moment or contact support@freecodecamp.org if the error persists.',
-          type: 'danger'
-        } as const;
+      if (challengeType === challengeTypes.multifileCertProject) {
+        completedChallenge.isManuallyApproved = false;
+        user.needsModeration = true;
       }
+
+      if (
+        jsCertProjectIds.includes(id) ||
+        multifileCertProjectIds.includes(id) ||
+        multifilePythonCertProjectIds.includes(id)
+      ) {
+        completedChallenge.challengeType = challengeType;
+      }
+
+      const { alreadyCompleted, userSavedChallenges: savedChallenges } =
+        await updateUserChallengeData(fastify, user, id, completedChallenge);
+
+      return {
+        alreadyCompleted,
+        points: alreadyCompleted ? points : points + 1,
+        completedDate: completedChallenge.completedDate,
+        savedChallenges
+      };
     }
   );
 
@@ -391,44 +378,36 @@ export const challengeRoutes: FastifyPluginCallbackTypebox = (
       }
     },
     async (req, reply) => {
-      try {
-        const { files, id: challengeId } = req.body;
-        const user = await fastify.prisma.user.findUniqueOrThrow({
-          where: { id: req.session.user.id }
-        });
-        const challenge = {
-          id: challengeId,
-          files
-        };
+      const { files, id: challengeId } = req.body;
+      const user = await fastify.prisma.user.findUniqueOrThrow({
+        where: { id: req.user?.id }
+      });
+      const challenge = {
+        id: challengeId,
+        files
+      };
 
-        if (!multifileCertProjectIds.includes(challengeId)) {
-          void reply.code(403);
-          return 'That challenge type is not saveable.';
-        }
-
-        const userSavedChallenges = saveUserChallengeData(
-          challengeId,
-          user.savedChallenges,
-          challenge
-        );
-
-        await fastify.prisma.user.update({
-          where: { id: user.id },
-          data: {
-            savedChallenges: userSavedChallenges
-          }
-        });
-
-        return { savedChallenges: userSavedChallenges };
-      } catch (error) {
-        fastify.log.error(error);
-        void reply.code(500);
-        return {
-          message:
-            'Oops! Something went wrong. Please try again in a moment or contact support@freecodecamp.org if the error persists.',
-          type: 'danger'
-        } as const;
+      if (
+        !multifileCertProjectIds.includes(challengeId) &&
+        !multifilePythonCertProjectIds.includes(challengeId)
+      ) {
+        void reply.code(403).send('That challenge type is not saveable.');
       }
+
+      const userSavedChallenges = saveUserChallengeData(
+        challengeId,
+        user.savedChallenges,
+        challenge
+      );
+
+      await fastify.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          savedChallenges: userSavedChallenges
+        }
+      });
+
+      void reply.send({ savedChallenges: userSavedChallenges });
     }
   );
 
@@ -446,72 +425,66 @@ export const challengeRoutes: FastifyPluginCallbackTypebox = (
       }
     },
     async (req, reply) => {
-      try {
-        const { id } = req.params;
+      const { id } = req.params;
 
-        const { completedChallenges } =
-          await fastify.prisma.user.findUniqueOrThrow({
-            where: { id: req.session.user.id },
-            select: { completedChallenges: true }
-          });
-
-        const examFromDb = await fastify.prisma.exam.findUnique({
-          where: { id }
+      const { completedChallenges } =
+        await fastify.prisma.user.findUniqueOrThrow({
+          where: { id: req.user?.id },
+          select: { completedChallenges: true }
         });
 
-        if (!examFromDb) {
-          void reply.code(500);
-          return {
-            error: 'An error occurred trying to get the exam from the database.'
-          };
-        }
+      const examFromDb = await fastify.prisma.exam.findUnique({
+        where: { id }
+      });
 
-        const validExamFromDbSchema = validateExamFromDbSchema(examFromDb);
-
-        if ('error' in validExamFromDbSchema) {
-          void reply.code(500);
-          return {
-            error:
-              'An error occurred validating the exam information from the database.'
-          };
-        }
-
-        const { prerequisites, numberOfQuestionsInExam, title } = examFromDb;
-
-        // Validate User has completed prerequisite challenges
-        const prerequisiteIds = prerequisites.map(p => p.id);
-        const completedPrerequisites = completedChallenges.filter(c =>
-          prerequisiteIds.includes(c.id)
-        );
-
-        if (completedPrerequisites.length !== prerequisiteIds.length) {
-          void reply.code(403);
-          return {
-            error: `You have not completed the required challenges to start the '${title}'.`
-          };
-        }
-
-        const randomizedExam = generateRandomExam(examFromDb);
-        const validGeneratedExamSchema = validateGeneratedExamSchema(
-          randomizedExam,
-          numberOfQuestionsInExam
-        );
-
-        if ('error' in validGeneratedExamSchema) {
-          void reply.code(500);
-          return { error: 'An error occurred trying to randomize the exam.' };
-        }
-
-        return {
-          generatedExam: randomizedExam
-        };
-      } catch (error) {
-        fastify.log.error(error);
+      if (!examFromDb) {
         void reply.code(500);
         return {
-          error: 'Something went wrong trying to generate your exam.'
+          error: 'An error occurred trying to get the exam from the database.'
         };
       }
+
+      const validExamFromDbSchema = validateExamFromDbSchema(examFromDb);
+
+      if ('error' in validExamFromDbSchema) {
+        void reply.code(500);
+        return {
+          error:
+            'An error occurred validating the exam information from the database.'
+        };
+      }
+
+      const { prerequisites, numberOfQuestionsInExam, title } = examFromDb;
+
+      // Validate User has completed prerequisite challenges
+      const prerequisiteIds = prerequisites.map(p => p.id);
+      const completedPrerequisites = completedChallenges.filter(c =>
+        prerequisiteIds.includes(c.id)
+      );
+
+      if (completedPrerequisites.length !== prerequisiteIds.length) {
+        void reply.code(403);
+        return {
+          error: `You have not completed the required challenges to start the '${title}'.`
+        };
+      }
+
+      const randomizedExam = generateRandomExam(examFromDb);
+      const validGeneratedExamSchema = validateGeneratedExamSchema(
+        randomizedExam,
+        numberOfQuestionsInExam
+      );
+
+      if (validGeneratedExamSchema.error) {
+        fastify.log.error(validGeneratedExamSchema.error);
+        fastify.Sentry.captureException(validGeneratedExamSchema.error);
+        void reply.code(500);
+        return { error: 'An error occurred trying to randomize the exam.' };
+      }
+
+      return {
+        generatedExam: randomizedExam
+      };
     }
   );
 
@@ -542,7 +515,7 @@ export const challengeRoutes: FastifyPluginCallbackTypebox = (
         }
 
         const msUser = await fastify.prisma.msUsername.findFirst({
-          where: { userId: req.session.user.id }
+          where: { userId: req.user?.id }
         });
 
         if (!msUser || !msUser.msUsername) {
@@ -566,37 +539,26 @@ export const challengeRoutes: FastifyPluginCallbackTypebox = (
         }
 
         const user = await fastify.prisma.user.findUniqueOrThrow({
-          where: { id: req.session.user.id },
-          select: { completedChallenges: true, progressTimestamps: true }
+          where: { id: req.user?.id },
+          select: userChallengeSelect
         });
 
-        const { completedChallenges } = user;
         const progressTimestamps =
           user.progressTimestamps as ProgressTimestamp[];
-        const oldChallenge = completedChallenges.find(
-          ({ id }) => id === challengeId
-        );
-        const alreadyCompleted = !!oldChallenge;
-        const completedDate = alreadyCompleted
-          ? oldChallenge.completedDate
-          : Date.now();
 
-        if (!alreadyCompleted) {
-          const newChallenge = {
-            id: challengeId,
-            completedDate,
-            solution: msTrophyStatus.msGameStatusApiUrl
-          };
-          await fastify.prisma.user.update({
-            where: { id: req.session.user.id },
-            data: {
-              completedChallenges: {
-                push: newChallenge
-              },
-              progressTimestamps: [...progressTimestamps, completedDate]
-            }
-          });
-        }
+        const completedChallenge = {
+          id: challengeId,
+          solution: msTrophyStatus.msUserAchievementsApiUrl,
+          completedDate: Date.now()
+        };
+
+        const { alreadyCompleted, completedDate } =
+          await updateUserChallengeData(
+            fastify,
+            user,
+            challengeId,
+            completedChallenge
+          );
 
         return {
           alreadyCompleted,
@@ -605,11 +567,211 @@ export const challengeRoutes: FastifyPluginCallbackTypebox = (
         };
       } catch (error) {
         fastify.log.error(error);
+        fastify.Sentry.captureException(error);
         void reply.code(500);
         return {
           type: 'error',
           message: 'flash.ms.trophy.err-5'
         } as const;
+      }
+    }
+  );
+
+  fastify.post(
+    '/exam-challenge-completed',
+    {
+      schema: schemas.examChallengeCompleted,
+      errorHandler(error, request, reply) {
+        if (error.validation) {
+          void reply.code(400);
+          void reply.send({
+            error: 'Valid request body not found in attempt to submit exam.'
+          });
+        } else {
+          fastify.errorHandler(error, request, reply);
+        }
+      }
+    },
+    async (req, reply) => {
+      try {
+        const userId = req.user?.id;
+        const { userCompletedExam, id, challengeType } = req.body;
+
+        const { completedChallenges, completedExams, progressTimestamps } =
+          await fastify.prisma.user.findUniqueOrThrow({
+            where: { id: userId },
+            select: {
+              completedChallenges: true,
+              completedExams: true,
+              progressTimestamps: true
+            }
+          });
+
+        const examFromDb = await fastify.prisma.exam.findUnique({
+          where: { id }
+        });
+
+        if (!examFromDb) {
+          void reply.code(400);
+          return {
+            error: 'An error occurred trying to get the exam from the database.'
+          };
+        }
+
+        const validExamFromDbSchema = validateExamFromDbSchema(examFromDb);
+        if ('error' in validExamFromDbSchema) {
+          void reply.code(500);
+          return {
+            error:
+              'An error occurred validating the exam information from the database.'
+          };
+        }
+
+        const { prerequisites, numberOfQuestionsInExam, title } = examFromDb;
+
+        const prerequisiteIds = prerequisites.map(p => p.id);
+        const completedPrerequisites = completedChallenges.filter(c =>
+          prerequisiteIds.includes(c.id)
+        );
+
+        if (completedPrerequisites.length !== prerequisiteIds.length) {
+          void reply.code(403);
+          return {
+            error: `You have not completed the required challenges to start the '${title}'.`
+          };
+        }
+
+        const validUserCompletedExam = validateUserCompletedExamSchema(
+          userCompletedExam,
+          numberOfQuestionsInExam
+        );
+        if ('error' in validUserCompletedExam) {
+          fastify.log.error(validUserCompletedExam.error);
+          void reply.code(400);
+          return {
+            error: 'An error occurred validating the submitted exam.'
+          };
+        }
+
+        const examResults = createExamResults(userCompletedExam, examFromDb);
+
+        const validExamResults = validateExamResultsSchema(examResults);
+        if ('error' in validExamResults) {
+          fastify.log.error(validExamResults.error);
+          void reply.code(500);
+          return {
+            error: 'An error occurred validating the submitted exam.'
+          };
+        }
+
+        const newCompletedChallenges: CompletedChallenge[] =
+          completedChallenges;
+        const newCompletedExams: CompletedExam[] = completedExams;
+        const newProgressTimeStamps = progressTimestamps as ProgressTimestamp[];
+        const completedDate = Date.now();
+
+        const newCompletedChallenge = {
+          id,
+          challengeType,
+          completedDate,
+          examResults
+        };
+
+        // Always push to completedExams[] to keep a record of all exams taken.
+        newCompletedExams.push(newCompletedChallenge);
+
+        let addPoint = false;
+
+        const alreadyCompletedIndex = completedChallenges.findIndex(
+          c => c.id === id
+        );
+
+        const alreadyCompleted = alreadyCompletedIndex >= 0;
+
+        if (examResults.passed) {
+          if (alreadyCompleted) {
+            const { percentCorrect } = examResults;
+            const oldChallenge = completedChallenges[
+              alreadyCompletedIndex
+            ] as CompletedChallenge;
+            const oldResults = oldChallenge?.examResults as ExamResults;
+
+            const newChallenge = oldChallenge;
+            newChallenge ? (newChallenge.examResults = examResults) : null;
+
+            // only update if it's a better result
+            if (percentCorrect > oldResults.percentCorrect) {
+              const updatedChallege = {
+                id,
+                challengeType: oldChallenge.challengeType,
+                completedDate: oldChallenge.completedDate,
+                examResults
+              };
+
+              newCompletedChallenges[alreadyCompletedIndex] = updatedChallege;
+
+              // TODO(Post-MVP): Try to DRY the updates.
+              // updateUserChallengeData, for all its faults, handles the
+              // update/insert logic well.
+              await fastify.prisma.user.update({
+                where: { id: userId },
+                data: {
+                  completedExams: newCompletedExams,
+                  completedChallenges: newCompletedChallenges
+                }
+              });
+            } else {
+              await fastify.prisma.user.update({
+                where: { id: userId },
+                data: {
+                  completedExams: newCompletedExams
+                }
+              });
+            }
+
+            // not already completed, push to completedChallenges
+          } else {
+            addPoint = true;
+            newCompletedChallenges.push(newCompletedChallenge);
+
+            await fastify.prisma.user.update({
+              where: { id: userId },
+              data: {
+                completedExams: newCompletedExams,
+                completedChallenges: newCompletedChallenges,
+                progressTimestamps: [
+                  ...newProgressTimeStamps,
+                  newCompletedChallenge.completedDate
+                ]
+              }
+            });
+          }
+
+          // exam not passed
+        } else {
+          await fastify.prisma.user.update({
+            where: { id: userId },
+            data: {
+              completedExams: newCompletedExams
+            }
+          });
+        }
+
+        const points = getPoints(newProgressTimeStamps);
+
+        return {
+          alreadyCompleted,
+          points: addPoint ? points + 1 : points,
+          completedDate,
+          examResults
+        };
+      } catch (error) {
+        fastify.log.error(error);
+        fastify.Sentry.captureException(error);
+        void reply.code(500);
+        return {
+          error: 'An error occurred trying to submit your exam.'
+        };
       }
     }
   );

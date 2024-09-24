@@ -117,34 +117,15 @@ class InternetSettings extends Component<InternetProps, InternetState> {
 
   isFormPristine = () => {
     const { formValues, originalValues } = this.state;
-    return (Object.keys(originalValues) as Array<keyof Socials>)
-      .map(key => originalValues[key] === formValues[key])
-      .every(bool => bool);
-  };
-
-  isFormValid = (): boolean => {
-    const { formValues, originalValues } = this.state;
-    const valueReducer = (obj: Socials) => {
-      return Object.values(obj).reduce(
-        (acc, cur): boolean => (acc ? acc : cur !== ''),
-        false
-      ) as boolean;
-    };
-
-    const formHasValues = valueReducer(formValues);
-    const OriginalHasValues = valueReducer(originalValues);
-
-    // check if user had values but wants to delete them all
-    if (OriginalHasValues && !formHasValues) return true;
-
-    return (Object.keys(formValues) as Array<keyof Socials>).reduce(
-      (bool: boolean, key: keyof Socials): boolean => {
-        const maybeUrl = formValues[key];
-        return maybeUrl ? isURL(maybeUrl) : bool;
-      },
-      false
+    return (Object.keys(originalValues) as Array<keyof Socials>).every(
+      key => originalValues[key] === formValues[key]
     );
   };
+
+  isFormValid = (): boolean =>
+    Object.values(this.state.formValues).every(
+      (value: string) => value === '' || isURL(value)
+    );
 
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -197,9 +178,7 @@ class InternetSettings extends Component<InternetProps, InternetState> {
     const isDisabled = this.isFormPristine() || !this.isFormValid();
     return (
       <>
-        <SectionHeader dataPlaywrightTestLabel='your-internet-presence-header'>
-          {t('settings.headings.internet')}
-        </SectionHeader>
+        <SectionHeader>{t('settings.headings.internet')}</SectionHeader>
         <FullWidthRow>
           <form
             id='internet-presence'
@@ -211,13 +190,16 @@ class InternetSettings extends Component<InternetProps, InternetState> {
                 controlId='internet-github'
                 validationState={githubProfileValidation}
               >
-                <ControlLabel>GitHub</ControlLabel>
+                <ControlLabel htmlFor='internet-github-input'>
+                  GitHub
+                </ControlLabel>
                 <FormControl
                   data-playwright-test-label='internet-github-input'
                   onChange={this.createHandleChange('githubProfile')}
                   placeholder='https://github.com/user-name'
                   type='url'
                   value={githubProfile}
+                  id='internet-github-input'
                 />
                 {this.renderCheck(
                   githubProfile,
@@ -230,13 +212,15 @@ class InternetSettings extends Component<InternetProps, InternetState> {
                 controlId='internet-linkedin'
                 validationState={linkedinValidation}
               >
-                <ControlLabel>LinkedIn</ControlLabel>
+                <ControlLabel htmlFor='internet-linkedin-input'>
+                  LinkedIn
+                </ControlLabel>
                 <FormControl
-                  data-playwright-test-label='internet-linkedin-input'
                   onChange={this.createHandleChange('linkedin')}
                   placeholder='https://www.linkedin.com/in/user-name'
                   type='url'
                   value={linkedin}
+                  id='internet-linkedin-input'
                 />
                 {this.renderCheck(
                   linkedin,
@@ -246,16 +230,18 @@ class InternetSettings extends Component<InternetProps, InternetState> {
                 <Info message={linkedinValidationMessage} />
               </FormGroup>
               <FormGroup
-                controlId='internet-picture'
+                controlId='internet-twitter'
                 validationState={twitterValidation}
               >
-                <ControlLabel>Twitter</ControlLabel>
+                <ControlLabel htmlFor='internet-twitter-input'>
+                  Twitter
+                </ControlLabel>
                 <FormControl
-                  data-playwright-test-label='internet-twitter-input'
                   onChange={this.createHandleChange('twitter')}
                   placeholder='https://twitter.com/user-name'
                   type='url'
                   value={twitter}
+                  id='internet-twitter-input'
                 />
                 {this.renderCheck(
                   twitter,
@@ -268,13 +254,15 @@ class InternetSettings extends Component<InternetProps, InternetState> {
                 controlId='internet-website'
                 validationState={websiteValidation}
               >
-                <ControlLabel>{t('settings.labels.personal')}</ControlLabel>
+                <ControlLabel htmlFor='internet-website-input'>
+                  {t('settings.labels.personal')}
+                </ControlLabel>
                 <FormControl
-                  data-playwright-test-label='internet-website-input'
                   onChange={this.createHandleChange('website')}
                   placeholder='https://example.com'
                   type='url'
                   value={website}
+                  id='internet-website-input'
                 />
                 {this.renderCheck(
                   website,
@@ -285,9 +273,8 @@ class InternetSettings extends Component<InternetProps, InternetState> {
               </FormGroup>
             </div>
             <BlockSaveButton
-              data-playwright-test-label='internet-save-button'
-              aria-disabled={isDisabled}
-              bgSize='lg'
+              disabled={isDisabled}
+              bgSize='large'
               {...(isDisabled && { tabIndex: -1 })}
             >
               {t('buttons.save')}{' '}

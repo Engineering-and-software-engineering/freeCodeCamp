@@ -92,7 +92,6 @@ const ShowProjectLinks = (props: ShowProjectLinksProps): JSX.Element => {
     return (
       <SolutionDisplayWidget
         completedChallenge={completedProject}
-        dataCy={`${projectTitle} solution`}
         projectTitle={projectTitle}
         displayContext='certification'
         showUserCode={showUserCode}
@@ -106,7 +105,7 @@ const ShowProjectLinks = (props: ShowProjectLinksProps): JSX.Element => {
     if (certName === 'Legacy Full Stack') {
       const certs = [
         { title: 'Responsive Web Design' },
-        { title: 'JavaScript Algorithms and Data Structures' },
+        { title: 'Legacy JavaScript Algorithms and Data Structures' },
         { title: 'Front End Development Libraries' },
         { title: 'Data Visualization' },
         { title: 'Back End Development and APIs' },
@@ -138,12 +137,12 @@ const ShowProjectLinks = (props: ShowProjectLinksProps): JSX.Element => {
       <>
         {projects.map(({ link, title, id }) => (
           <tr key={id}>
-            <td>
+            <td className='col-xs-8'>
               <Link to={link}>
                 {t(`certification.projects.title.${title}`, title)}
               </Link>
             </td>
-            <td colSpan={2}>{getProjectSolution(id, title)}</td>
+            <td className='col-xs-4'>{getProjectSolution(id, title)}</td>
           </tr>
         ))}
       </>
@@ -157,6 +156,16 @@ const ShowProjectLinks = (props: ShowProjectLinksProps): JSX.Element => {
   } = props;
   const { completedChallenge, showCode, projectTitle } = solutionState;
   const examResults = completedChallenge?.examResults;
+
+  const getCertHeading = (certName: string) => {
+    if (certName == 'Legacy Full Stack') {
+      return 'certification.project.heading-legacy-full-stack';
+    } else if (certName == 'Foundational C# with Microsoft') {
+      return 'certification.project.heading-exam';
+    } else {
+      return 'certification.project.heading';
+    }
+  };
 
   const challengeData: CompletedChallenge | null = completedChallenge
     ? {
@@ -175,13 +184,8 @@ const ShowProjectLinks = (props: ShowProjectLinksProps): JSX.Element => {
   if (!isCertName(certName)) return <div> Unknown Certification</div>;
 
   return (
-    <div data-cy='solution-widget' data-playwright-test-label='project-links'>
-      {t(
-        certName === 'Legacy Full Stack'
-          ? 'certification.project.heading-legacy-full-stack'
-          : 'certification.project.heading',
-        { user: name }
-      )}
+    <div data-playwright-test-label='project-links'>
+      {t(getCertHeading(certName), { user: name })}
       <Spacer size='medium' />
       <Table striped>
         <thead>
@@ -209,29 +213,30 @@ const ShowProjectLinks = (props: ShowProjectLinksProps): JSX.Element => {
         challengeData={challengeData}
         closeText={t('buttons.close')}
         previewTitle={projectTitle}
-        showProjectPreview={true}
       />
       <ExamResultsModal projectTitle={projectTitle} examResults={examResults} />
 
-      <Trans i18nKey='certification.project.footnote'>
-        If you suspect that any of these projects violate the{' '}
-        <a
-          href='https://www.freecodecamp.org/news/academic-honesty-policy/'
-          rel='noreferrer'
-          target='_blank'
-        >
-          academic honesty policy
-        </a>
-        , please{' '}
-        <a
-          href={`/user/${username}/report-user`}
-          rel='noreferrer'
-          target='_blank'
-        >
-          report this to our team
-        </a>
-        .
-      </Trans>
+      {certName != 'Foundational C# with Microsoft' && (
+        <Trans i18nKey='certification.project.footnote'>
+          If you suspect that any of these projects violate the{' '}
+          <a
+            href='https://www.freecodecamp.org/news/academic-honesty-policy/'
+            rel='noreferrer'
+            target='_blank'
+          >
+            academic honesty policy
+          </a>
+          , please{' '}
+          <a
+            href={`/user/${username}/report-user`}
+            rel='noreferrer'
+            target='_blank'
+          >
+            report this to our team
+          </a>
+          .
+        </Trans>
+      )}
     </div>
   );
 };

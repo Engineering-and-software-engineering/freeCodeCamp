@@ -1,7 +1,6 @@
 // Package Utilities
-import { Button } from '@freecodecamp/react-bootstrap';
 import { graphql } from 'gatsby';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { ObserveKeys } from 'react-hotkeys';
 import type { TFunction } from 'i18next';
@@ -10,23 +9,27 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import type { Dispatch } from 'redux';
 import { createSelector } from 'reselect';
-import { Container, Col, Row } from '@freecodecamp/ui';
+import { Container, Col, Row, Button } from '@freecodecamp/ui';
+import ShortcutsModal from '../components/shortcuts-modal';
 
 // Local Utilities
 import Spacer from '../../../components/helpers/spacer';
 import LearnLayout from '../../../components/layouts/learn';
-import { ChallengeNode, ChallengeMeta } from '../../../redux/prop-types';
+import { ChallengeNode, ChallengeMeta, Test } from '../../../redux/prop-types';
 import Hotkeys from '../components/hotkeys';
 import ChallengeTitle from '../components/challenge-title';
 import CompletionModal from '../components/completion-modal';
 import HelpModal from '../components/help-modal';
+import FillInTheBlanks from '../components/fill-in-the-blanks';
 import PrismFormatted from '../components/prism-formatted';
 import {
   challengeMounted,
   updateChallengeMeta,
   openModal,
-  updateSolutionFormValues
+  updateSolutionFormValues,
+  initTests
 } from '../redux/actions';
+import Scene from '../components/scene/scene';
 import { isChallengeCompletedSelector } from '../redux/selectors';
 
 // Styles
@@ -43,6 +46,7 @@ const mapStateToProps = createSelector(
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
+      initTests,
       updateChallengeMeta,
       challengeMounted,
       updateSolutionFormValues,
@@ -58,6 +62,7 @@ interface ShowFillInTheBlankProps {
   data: { challengeNode: ChallengeNode };
   description: string;
   isChallengeCompleted: boolean;
+  initTests: (xs: Test[]) => void;
   openCompletionModal: () => void;
   openHelpModal: () => void;
   pageContext: {
@@ -75,6 +80,7 @@ interface ShowFillInTheBlankState {
   allBlanksFilled: boolean;
   feedback: string | null;
   showFeedback: boolean;
+  isScenePlaying: boolean;
 }
 
 // Component
@@ -106,7 +112,8 @@ class ShowFillInTheBlank extends Component<
       answersCorrect: emptyArray,
       allBlanksFilled: false,
       feedback: null,
-      showFeedback: false
+      showFeedback: false,
+      isScenePlaying: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -117,10 +124,16 @@ class ShowFillInTheBlank extends Component<
       challengeMounted,
       data: {
         challengeNode: {
-          challenge: { title, challengeType, helpCategory }
+          challenge: {
+            fields: { tests },
+            title,
+            challengeType,
+            helpCategory
+          }
         }
       },
       pageContext: { challengeMeta },
+      initTests,
       updateChallengeMeta
     } = this.props;
     updateChallengeMeta({
@@ -129,6 +142,7 @@ class ShowFillInTheBlank extends Component<
       challengeType,
       helpCategory
     });
+    initTests(tests);
     challengeMounted(challengeMeta.id);
     this.container.current?.focus();
   }
@@ -178,7 +192,7 @@ class ShowFillInTheBlank extends Component<
     const blankAnswers = blanks.map(b => b.answer);
 
     const newAnswersCorrect = userAnswers.map(
-      (userAnswer, i) => userAnswer === blankAnswers[i]
+      (userAnswer, i) => !!userAnswer && userAnswer.trim() === blankAnswers[i]
     );
 
     const hasWrongAnswer = newAnswersCorrect.some(a => a === false);
@@ -222,24 +236,11 @@ class ShowFillInTheBlank extends Component<
     });
   };
 
-  addCodeTags(str: string, index: number, numberOfBlanks: number): string {
-    if (index === 0) return `${str}</code>`;
-    if (index < numberOfBlanks) return `<code>${str}</code>`;
-    return `<code>${str}`;
-  }
-
-  addPrismClass(index: number, numberOfBlanks: number): string {
-    if (index === 0) return `first-code-tag`;
-    if (index < numberOfBlanks) return `middle-code-tag`;
-    return `last-code-tag`;
-  }
-
-  addInputClass(index: number): string {
-    const { answersCorrect } = this.state;
-    if (answersCorrect[index] === true) return 'green-underline';
-    if (answersCorrect[index] === false) return 'red-underline';
-    return '';
-  }
+  setIsScenePlaying = (shouldPlay: boolean) => {
+    this.setState({
+      isScenePlaying: shouldPlay
+    });
+  };
 
   render() {
     const {
@@ -253,8 +254,8 @@ class ShowFillInTheBlank extends Component<
             block,
             translationPending,
             fields: { blockName },
-            fillInTheBlank: { sentence, blanks },
-            audioPath
+            fillInTheBlank,
+            scene
           }
         }
       },
@@ -272,15 +273,13 @@ class ShowFillInTheBlank extends Component<
 
     const { allBlanksFilled, feedback, showFeedback, showWrong } = this.state;
 
-    const splitSentence = sentence.replace(/^<p>|<\/p>$/g, '').split('_');
-    const blankAnswers = blanks.map(b => b.answer);
-
     return (
       <Hotkeys
         executeChallenge={() => this.handleSubmit()}
         containerRef={this.container}
         nextChallengePath={nextChallengePath}
         prevChallengePath={prevChallengePath}
+        playScene={() => this.setIsScenePlaying(true)}
       >
         <LearnLayout>
           <Helmet
@@ -298,93 +297,48 @@ class ShowFillInTheBlank extends Component<
 
               <Col md={8} mdOffset={2} sm={10} smOffset={1} xs={12}>
                 <PrismFormatted text={description} />
-                {audioPath && (
+                <Spacer size='medium' />
+              </Col>
+
+              {scene && (
+                <Scene
+                  scene={scene}
+                  isPlaying={this.state.isScenePlaying}
+                  setIsPlaying={this.setIsScenePlaying}
+                />
+              )}
+
+              <Col md={8} mdOffset={2} sm={10} smOffset={1} xs={12}>
+                {instructions && (
                   <>
+                    <PrismFormatted text={instructions} />
                     <Spacer size='small' />
-                    <Spacer size='small' />
-                    {/* TODO: Add tracks for audio elements */}
-                    {/* eslint-disable-next-line jsx-a11y/media-has-caption*/}
-                    <audio className='audio' controls>
-                      <source
-                        src={`https://cdn.freecodecamp.org/${audioPath}`}
-                        type='audio/mp3'
-                      ></source>
-                    </audio>
                   </>
                 )}
-                <Spacer size='medium' />
-                <PrismFormatted text={instructions} />
-                <Spacer size='medium' />
-                <h2>{t('learn.fill-in-the-blank')}</h2>
-                <Spacer size='small' />
-                <ObserveKeys>
-                  <div>
-                    <p>
-                      {splitSentence.map((s, i) => {
-                        return (
-                          <Fragment key={i}>
-                            <PrismFormatted
-                              text={this.addCodeTags(s, i, blankAnswers.length)}
-                              className={`code-tag ${this.addPrismClass(
-                                i,
-                                blankAnswers.length
-                              )}`}
-                              useSpan
-                              noAria
-                            />
-                            {blankAnswers[i] && (
-                              <input
-                                type='text'
-                                maxLength={blankAnswers[i].length + 3}
-                                className={`fill-in-the-blank-input ${this.addInputClass(
-                                  i
-                                )}`}
-                                onChange={this.handleInputChange}
-                                data-index={i}
-                                style={{
-                                  width: `${blankAnswers[i].length * 11 + 11}px`
-                                }}
-                              />
-                            )}
-                          </Fragment>
-                        );
-                      })}
-                    </p>
-                  </div>
+
+                {/* what we want to observe is ctrl/cmd + enter, but ObserveKeys is buggy and throws an error
+                if it encounters a key combination, so we have to pass in the individual keys to observe */}
+                <ObserveKeys only={['ctrl', 'cmd', 'enter']}>
+                  <FillInTheBlanks
+                    fillInTheBlank={fillInTheBlank}
+                    answersCorrect={this.state.answersCorrect}
+                    showFeedback={showFeedback}
+                    feedback={feedback}
+                    showWrong={showWrong}
+                    handleInputChange={this.handleInputChange}
+                  />
                 </ObserveKeys>
-                <Spacer size='medium' />
-                {showFeedback && feedback && (
-                  <>
-                    <PrismFormatted text={feedback} />
-                    <Spacer size='small' />
-                  </>
-                )}
-                <div
-                  style={{
-                    textAlign: 'center'
-                  }}
-                >
-                  {showWrong ? (
-                    <span>{t('learn.wrong-answer')}</span>
-                  ) : (
-                    <span>{t('learn.check-answer')}</span>
-                  )}
-                </div>
                 <Spacer size='medium' />
                 <Button
                   block={true}
-                  bsStyle='primary'
+                  variant='primary'
                   disabled={!allBlanksFilled}
                   onClick={() => this.handleSubmit()}
                 >
                   {t('buttons.check-answer')}
                 </Button>
-                <Button
-                  block={true}
-                  bsStyle='primary'
-                  className='btn-invert'
-                  onClick={openHelpModal}
-                >
+                <Spacer size='xxSmall' />
+                <Button block={true} variant='primary' onClick={openHelpModal}>
                   {t('buttons.ask-for-help')}
                 </Button>
                 <Spacer size='large' />
@@ -393,6 +347,7 @@ class ShowFillInTheBlank extends Component<
               <HelpModal challengeTitle={title} challengeBlock={blockName} />
             </Row>
           </Container>
+          <ShortcutsModal />
         </LearnLayout>
       </Hotkeys>
     );
@@ -407,8 +362,8 @@ export default connect(
 )(withTranslation()(ShowFillInTheBlank));
 
 export const query = graphql`
-  query FillInTheBlankChallenge($slug: String!) {
-    challengeNode(challenge: { fields: { slug: { eq: $slug } } }) {
+  query FillInTheBlankChallenge($id: String!) {
+    challengeNode(id: { eq: $id }) {
       challenge {
         title
         description
@@ -420,6 +375,10 @@ export const query = graphql`
         fields {
           blockName
           slug
+          tests {
+            text
+            testString
+          }
         }
         fillInTheBlank {
           sentence
@@ -428,8 +387,44 @@ export const query = graphql`
             feedback
           }
         }
+        scene {
+          setup {
+            background
+            characters {
+              character
+              position {
+                x
+                y
+                z
+              }
+              opacity
+            }
+            audio {
+              filename
+              startTime
+              startTimestamp
+              finishTimestamp
+            }
+            alwaysShowDialogue
+          }
+          commands {
+            background
+            character
+            position {
+              x
+              y
+              z
+            }
+            opacity
+            startTime
+            finishTime
+            dialogue {
+              text
+              align
+            }
+          }
+        }
         translationPending
-        audioPath
       }
     }
   }

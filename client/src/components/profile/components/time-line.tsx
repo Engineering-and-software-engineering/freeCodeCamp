@@ -1,4 +1,3 @@
-import { Button, Modal } from '@freecodecamp/react-bootstrap';
 import Loadable from '@loadable/component';
 import { graphql, useStaticQuery } from 'gatsby';
 import { reverse, sortBy } from 'lodash-es';
@@ -6,7 +5,7 @@ import React, { useMemo, useState } from 'react';
 import type { TFunction } from 'i18next';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import { Table } from '@freecodecamp/ui';
+import { Table, Button, Modal } from '@freecodecamp/ui';
 
 import envData from '../../../../config/env.json';
 import { getLangCode } from '../../../../../shared/config/i18n';
@@ -17,8 +16,9 @@ import { CompletedChallenge } from '../../../redux/prop-types';
 import ProjectPreviewModal from '../../../templates/Challenges/components/project-preview-modal';
 import ExamResultsModal from '../../SolutionViewer/exam-results-modal';
 import { openModal } from '../../../templates/Challenges/redux/actions';
-import { Link, FullWidthRow } from '../../helpers';
+import { Link, FullWidthRow, Spacer } from '../../helpers';
 import { SolutionDisplayWidget } from '../../solution-display-widget';
+import { SuperBlocks } from '../../../../../shared/config/curriculum';
 import TimelinePagination from './timeline-pagination';
 
 const SolutionViewer = Loadable(
@@ -176,7 +176,8 @@ function TimelineInner({
 
   return (
     <FullWidthRow>
-      <h2 className='text-center'>{t('profile.timeline')}</h2>
+      <h2>{t('profile.timeline')}</h2>
+      <Spacer size='small' />
       {completedMap.length === 0 ? (
         <p className='text-center'>
           {t('profile.none-completed')}&nbsp;
@@ -197,19 +198,13 @@ function TimelineInner({
         </Table>
       )}
       {id && (
-        <Modal
-          aria-labelledby='contained-modal-title'
-          onHide={closeSolution}
-          show={solutionOpen}
-        >
-          <Modal.Header closeButton={true}>
-            <Modal.Title id='contained-modal-title' className='text-center'>
-              {`${username}'s Solution to ${
-                idToNameMap.get(id)?.challengeTitle ?? ''
-              }`}
-            </Modal.Title>
+        <Modal onClose={closeSolution} open={solutionOpen} size='large'>
+          <Modal.Header showCloseButton={true} closeButtonClassNames='close'>
+            {`${username}'s Solution to ${
+              idToNameMap.get(id)?.challengeTitle ?? ''
+            }`}
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body alignment='left'>
             <SolutionViewer
               challengeFiles={challengeData.challengeFiles}
               solution={challengeData.solution ?? ''}
@@ -234,7 +229,6 @@ function TimelineInner({
         challengeData={challengeData}
         closeText={t('buttons.close')}
         previewTitle={projectTitle}
-        showProjectPreview={true}
       />
       <ExamResultsModal
         projectTitle={projectTitle}
@@ -295,9 +289,11 @@ function useIdToNameMap(t: TFunction): Map<string, NameMap> {
       }
     }) => {
       const blockNameTitle = t(`intro:${superBlock}.blocks.${blockName}.title`);
+      const shouldAppendBlockNameToTitle =
+        hasEditableBoundaries || superBlock === SuperBlocks.A2English;
       idToNameMap.set(id, {
         challengeTitle: `${
-          hasEditableBoundaries ? blockNameTitle + ' - ' : ''
+          shouldAppendBlockNameToTitle ? blockNameTitle + ' - ' : ''
         }${title}`,
         challengePath: slug
       });

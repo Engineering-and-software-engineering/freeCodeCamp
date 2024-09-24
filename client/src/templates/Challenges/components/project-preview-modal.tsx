@@ -1,6 +1,6 @@
-import { Button, Modal } from '@freecodecamp/react-bootstrap';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Button, Modal } from '@freecodecamp/ui';
 
 import type { CompletedChallenge } from '../../../redux/prop-types';
 import {
@@ -16,7 +16,6 @@ import './project-preview-modal.css';
 
 interface ProjectPreviewMountedPayload {
   challengeData: CompletedChallenge | null;
-  showProjectPreview: boolean;
 }
 
 interface Props {
@@ -25,7 +24,6 @@ interface Props {
   projectPreviewMounted: (payload: ProjectPreviewMountedPayload) => void;
   challengeData: CompletedChallenge | null;
   setEditorFocusability: (focusability: boolean) => void;
-  showProjectPreview: boolean;
   previewTitle: string;
   closeText: string;
 }
@@ -45,7 +43,6 @@ function ProjectPreviewModal({
   projectPreviewMounted,
   challengeData,
   setEditorFocusability,
-  showProjectPreview,
   previewTitle,
   closeText
 }: Props): JSX.Element {
@@ -55,41 +52,25 @@ function ProjectPreviewModal({
 
   return (
     <Modal
-      data-playwright-test-label='project-preview-modal'
-      bsSize='lg'
-      data-cy='project-preview-modal'
-      dialogClassName='project-preview-modal'
-      onHide={() => {
+      size='large'
+      onClose={() => {
         closeModal('projectPreview');
         setEditorFocusability(true);
       }}
-      show={isOpen}
+      open={isOpen}
     >
-      <Modal.Header
-        className='project-preview-modal-header fcc-modal'
-        closeButton={true}
-      >
-        <Modal.Title
-          className='text-center'
-          data-playwright-test-label='project-preview-modal-title'
-        >
-          {previewTitle}
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body className='project-preview-modal-body text-center'>
+      <Modal.Header closeButtonClassNames='close'>{previewTitle}</Modal.Header>
+      <Modal.Body>
         <Preview
           previewId={projectPreviewId}
-          previewMounted={() =>
-            projectPreviewMounted({ challengeData, showProjectPreview })
-          }
+          previewMounted={() => projectPreviewMounted({ challengeData })}
         />
       </Modal.Body>
       <Modal.Footer>
         <Button
           block={true}
-          bsSize='lg'
-          bsStyle='primary'
-          data-playwright-test-label='project-preview-modal-closeButton'
+          size='large'
+          variant='primary'
           onClick={() => {
             closeModal('projectPreview');
             setEditorFocusability(true);

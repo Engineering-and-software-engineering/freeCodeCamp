@@ -7,6 +7,7 @@ import {
   challengeDataSelector,
   challengeMetaSelector
 } from '../templates/Challenges/redux/selectors';
+import { createFiles } from '../templates/Challenges/redux/actions';
 import { mapFilesToChallengeFiles, postSaveChallenge } from '../utils/ajax';
 import {
   bodySizeFits,
@@ -34,7 +35,10 @@ function* saveChallengeSaga() {
   }
 
   // only allow saving of multifileCertProject's
-  if (challengeType === challengeTypes.multifileCertProject) {
+  if (
+    challengeType === challengeTypes.multifileCertProject ||
+    challengeType === challengeTypes.multifilePythonCertProject
+  ) {
     const body = standardizeRequestBody({ id, challengeFiles, challengeType });
     const bodySizeInBytes = getStringSizeInBytes(body);
 
@@ -53,6 +57,7 @@ function* saveChallengeSaga() {
         if (data?.message) {
           yield put(createFlashMessage(data));
         } else if (data?.savedChallenges) {
+          yield put(createFiles(challengeFiles));
           yield put(
             saveChallengeComplete(
               mapFilesToChallengeFiles(data.savedChallenges)

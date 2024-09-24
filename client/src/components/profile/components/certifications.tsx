@@ -2,11 +2,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { Col, Row } from '@freecodecamp/ui';
 
 import { certificatesByNameSelector } from '../../../redux/selectors';
 import type { CurrentCert } from '../../../redux/prop-types';
-import { FullWidthRow, Link, Spacer } from '../../helpers';
+import { FullWidthRow, Spacer, ButtonLink } from '../../helpers';
 import './certifications.css';
 
 const mapStateToProps = (
@@ -47,22 +46,18 @@ interface CertButtonProps {
 function CertButton({ username, cert }: CertButtonProps): JSX.Element {
   const { t } = useTranslation();
   return (
-    <>
-      <Row>
-        <Col className='certifications' sm={10} smOffset={1}>
-          <Link
-            className='btn btn-lg btn-primary btn-block'
-            to={`/certification/${username}/${cert.certSlug}`}
-            data-cy='claimed-certification'
-          >
-            {t('buttons.view-cert-title', {
-              certTitle: t(`certification.title.${cert.certSlug}`)
-            })}
-          </Link>
-        </Col>
-      </Row>
+    <li>
+      <ButtonLink
+        block
+        size='large'
+        href={`/certification/${username}/${cert.certSlug}`}
+      >
+        {t('buttons.view-cert-title', {
+          certTitle: t(`certification.title.${cert.certSlug}`)
+        })}
+      </ButtonLink>
       <Spacer size='small' />
-    </>
+    </li>
   );
 }
 
@@ -75,36 +70,45 @@ function Certificates({
 }: CertificationProps): JSX.Element {
   const { t } = useTranslation();
   return (
-    <FullWidthRow className='certifications'>
-      <h2 className='text-center'>{t('profile.fcc-certs')}</h2>
+    <FullWidthRow className='profile-certifications'>
+      <h2 id='fcc-certifications'>{t('profile.fcc-certs')}</h2>
       <br />
       {hasModernCert && currentCerts ? (
-        currentCerts
-          .filter(({ show }) => show)
-          .map(cert => (
-            <CertButton key={cert.certSlug} cert={cert} username={username} />
-          ))
+        <ul aria-labelledby='fcc-certifications'>
+          {currentCerts
+            .filter(({ show }) => show)
+            .map(cert => (
+              <CertButton key={cert.certSlug} cert={cert} username={username} />
+            ))}
+        </ul>
       ) : (
         <p className='text-center'>{t('profile.no-certs')}</p>
       )}
-      {hasLegacyCert ? (
+      {hasLegacyCert && (
         <div>
-          <br />
-          <h3 className='text-center'>{t('settings.headings.legacy-certs')}</h3>
-          <br />
-          {legacyCerts &&
-            legacyCerts
-              .filter(({ show }) => show)
-              .map(cert => (
-                <CertButton
-                  key={cert.certSlug}
-                  cert={cert}
-                  username={username}
-                />
-              ))}
-          <Spacer size='large' />
+          <Spacer size='medium' />
+          <h3 id='legacy-certifications'>
+            {t('settings.headings.legacy-certs')}
+          </h3>
+          <Spacer size='medium' />
+          {legacyCerts && (
+            <>
+              <ul aria-labelledby='legacy-certifications'>
+                {legacyCerts
+                  .filter(({ show }) => show)
+                  .map(cert => (
+                    <CertButton
+                      key={cert.certSlug}
+                      cert={cert}
+                      username={username}
+                    />
+                  ))}
+              </ul>
+              <Spacer size='medium' />
+            </>
+          )}
         </div>
-      ) : null}
+      )}
       <hr />
     </FullWidthRow>
   );

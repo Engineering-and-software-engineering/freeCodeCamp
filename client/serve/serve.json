@@ -20,7 +20,7 @@
       ]
     },
     {
-      "source": "{misc/*.js,sw.js}",
+      "source": "{misc/*.js,sw.js,python-input-sw.js}",
       "headers": [
         {
           "key": "Cache-Control",
@@ -29,11 +29,20 @@
       ]
     },
     {
-      "source": "{js/sass.sync.js,css/bootstrap.min.css}",
+      "source": "{js/sass.sync.js}",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=14400, stale-while-revalidate=172800, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "manifest.webmanifest",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=86400, must-revalidate"
         }
       ]
     }
@@ -93,6 +102,10 @@
     {
       "source": "/learn/responsive-web-design/applied-visual-design/adjust-the-size-of-a-header-versus-a-paragraph-tag",
       "destination": "/learn/responsive-web-design/applied-visual-design/adjust-the-size-of-a-heading-element-versus-a-paragraph-element"
+    },
+    {
+      "source": "/learn/project-euler/project-euler-problems-1-to-100/problem-1-multiples-of-3-and-5",
+      "destination": "/learn/project-euler/project-euler-problems-1-to-100/problem-1-multiples-of-3-or-5"
     }
   ]
 }

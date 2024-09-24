@@ -9,10 +9,6 @@
   white-space: pre-line;
 }
 
-.cert-btn {
-  margin-top: 40px;
-}
-
 .landing-page ul {
   list-style: none;
   padding-inline-start: 0;
@@ -25,13 +21,7 @@
   margin-top: 0;
 }
 
-.landing-page h1,
-.landing-page h2 {
-  font-family: var(--font-family-sans-serif);
-}
-
 .landing-page .landing-page-happy {
-  font-family: var(--font-family-monospace);
   font-size: 1.1rem;
   margin-top: 0;
 }
@@ -47,6 +37,9 @@ figcaption.caption {
   background-color: var(--gray-75);
   color: var(--gray-15);
   padding-inline: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .as-seen-in .big-heading {
@@ -77,7 +70,6 @@ figcaption.caption {
 .faq-question {
   font-weight: bold;
   font-size: 1.25rem;
-  font-family: var(--font-family-sans-serif);
   margin-bottom: 1.2rem;
 }
 
@@ -151,7 +143,6 @@ figcaption.caption {
 }
 
 .testimonial-meta h3 {
-  font-family: var(--font-family-sans-serif);
   font-size: 1.3rem;
   font-weight: normal;
   margin-bottom: 0;
@@ -166,6 +157,8 @@ figcaption.caption {
 .testimonial-image {
   height: var(--image-size);
   width: var(--image-size);
+  /* Override the default max-width (100%) set by Tailwind */
+  max-width: var(--image-size);
 }
 
 .testimonials-footer {
@@ -185,10 +178,11 @@ figcaption.caption {
 .as-seen-in,
 .certification-section,
 .testimonials {
-  padding-block: 4vw;
+  padding: 4vw 15px;
 }
 
-.certification-section {
+.certification-section,
+.faq-section {
   padding-inline: 4vw;
 }
 
@@ -220,4 +214,46 @@ figcaption.caption {
   .testimonials-footer {
     padding: 40px;
   }
+}
+
+/* AB testing styles */
+.landing-page-b .mega-heading {
+  font-size: 2rem;
+  margin: 0px 0px 1rem;
+  font-weight: 700;
+  line-height: 3rem;
+}
+
+@media (min-width: 500px) {
+  .landing-page-b .mega-heading {
+    font-size: 3rem;
+  }
+}
+
+.landing-page-b .landing-top .btn-cta-big {
+  margin: 0px;
+  min-width: 300px;
+  max-width: fit-content;
+  padding: 12px;
+}
+
+.landing-page-b .logo-row-title {
+  font-weight: normal;
+}
+
+.landing-page-b {
+  overflow-x: hidden;
+}
+
+figure.ui-images {
+  position: absolute;
+  left: 50%;
+  height: auto;
+  width: 750px;
+  top: 3vw;
+}
+
+figure.ui-images img {
+  width: 100%;
+  height: auto;
 }

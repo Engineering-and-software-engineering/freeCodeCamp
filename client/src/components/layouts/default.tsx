@@ -1,10 +1,10 @@
 import React, { ReactNode, useEffect } from 'react';
 import Helmet from 'react-helmet';
 import { useTranslation, withTranslation } from 'react-i18next';
+import { useMediaQuery } from 'react-responsive';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { createSelector } from 'reselect';
-import { useStaticQuery, graphql } from 'gatsby';
 
 import latoBoldURL from '../../../static/fonts/lato/Lato-Bold.woff';
 import latoLightURL from '../../../static/fonts/lato/Lato-Light.woff';
@@ -17,8 +17,7 @@ import { isBrowser } from '../../../utils';
 import {
   fetchUser,
   onlineStatusChange,
-  serverStatusChange,
-  updateAllChallengesInfo
+  serverStatusChange
 } from '../../redux/actions';
 import {
   isSignedInSelector,
@@ -26,16 +25,10 @@ import {
   userSelector,
   isOnlineSelector,
   isServerOnlineSelector,
-  showCodeAllySelector,
   userFetchStateSelector
 } from '../../redux/selectors';
 
-import {
-  UserFetchState,
-  User,
-  AllChallengeNode,
-  CertificateNode
-} from '../../redux/prop-types';
+import { UserFetchState, User } from '../../redux/prop-types';
 import BreadCrumb from '../../templates/Challenges/components/bread-crumb';
 import Flash from '../Flash';
 import { flashMessageSelector, removeFlashMessage } from '../Flash/redux';
@@ -44,9 +37,14 @@ import StagingWarningModal from '../staging-warning-modal';
 import Footer from '../Footer';
 import Header from '../Header';
 import OfflineWarning from '../OfflineWarning';
-import { Loader } from '../helpers';
+import { Loader, Spacer } from '../helpers';
+import {
+  MAX_MOBILE_WIDTH,
+  EX_SMALL_VIEWPORT_HEIGHT
+} from '../../../config/misc';
 import envData from '../../../config/env.json';
 
+import '@freecodecamp/ui/dist/base.css';
 // preload common fonts
 import './fonts.css';
 import './global.css';
@@ -60,7 +58,6 @@ const mapStateToProps = createSelector(
   isOnlineSelector,
   isServerOnlineSelector,
   userFetchStateSelector,
-  showCodeAllySelector,
   userSelector,
   (
     isSignedIn,
@@ -69,7 +66,6 @@ const mapStateToProps = createSelector(
     isOnline: boolean,
     isServerOnline: boolean,
     fetchState: UserFetchState,
-    showCodeAlly: boolean,
     user: User
   ) => ({
     isSignedIn,
@@ -80,7 +76,6 @@ const mapStateToProps = createSelector(
     isServerOnline,
     fetchState,
     theme: user.theme,
-    showCodeAlly,
     user
   })
 );
@@ -93,8 +88,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
       fetchUser,
       removeFlashMessage,
       onlineStatusChange,
-      serverStatusChange,
-      updateAllChallengesInfo
+      serverStatusChange
     },
     dispatch
   );
@@ -106,9 +100,9 @@ interface DefaultLayoutProps extends StateProps, DispatchProps {
   pathname: string;
   showFooter?: boolean;
   isChallenge?: boolean;
+  usesMultifileEditor?: boolean;
   block?: string;
   examInProgress: boolean;
-  showCodeAlly: boolean;
   superBlock?: string;
 }
 
@@ -131,19 +125,24 @@ function DefaultLayout({
   removeFlashMessage,
   showFooter = true,
   isChallenge = false,
+  usesMultifileEditor,
   block,
   superBlock,
   theme,
-  showCodeAlly,
   user,
-  fetchUser,
-  updateAllChallengesInfo
+  fetchUser
 }: DefaultLayoutProps): JSX.Element {
   const { t } = useTranslation();
-  const { challengeEdges, certificateNodes } = useGetAllBlockIds();
+  const isMobileLayout = useMediaQuery({ maxWidth: MAX_MOBILE_WIDTH });
+  const isProject = /project$/.test(block as string);
+  const isRenderBreadcrumbOnMobile =
+    isMobileLayout && (isProject || !usesMultifileEditor);
+  const isRenderBreadcrumb = !isMobileLayout || isRenderBreadcrumbOnMobile;
+  const isExSmallViewportHeight = useMediaQuery({
+    maxHeight: EX_SMALL_VIEWPORT_HEIGHT
+  });
   useEffect(() => {
     // componentDidMount
-    updateAllChallengesInfo({ challengeEdges, certificateNodes });
     if (!isSignedIn) {
       fetchUser();
     }
@@ -248,14 +247,18 @@ function DefaultLayout({
             />
           ) : null}
           <SignoutModal />
-          {isChallenge && !showCodeAlly && !examInProgress && (
-            <div className='breadcrumbs-demo'>
-              <BreadCrumb
-                block={block as string}
-                superBlock={superBlock as string}
-              />
-            </div>
-          )}
+          {isChallenge &&
+            !examInProgress &&
+            (isRenderBreadcrumb ? (
+              <div className='breadcrumbs-demo'>
+                <BreadCrumb
+                  block={block as string}
+                  superBlock={superBlock as string}
+                />
+              </div>
+            ) : (
+              <Spacer size={isExSmallViewportHeight ? 'xxSmall' : 'small'} />
+            ))}
           {fetchState.complete && children}
         </div>
         {showFooter && <Footer />}
@@ -263,50 +266,6 @@ function DefaultLayout({
     );
   }
 }
-
-// TODO: get challenge nodes directly rather than wrapped in edges
-const useGetAllBlockIds = () => {
-  const {
-    allChallengeNode: { edges: challengeEdges },
-    allCertificateNode: { nodes: certificateNodes }
-  }: {
-    allChallengeNode: AllChallengeNode;
-    allCertificateNode: { nodes: CertificateNode[] };
-  } = useStaticQuery(graphql`
-    query getBlockNode {
-      allChallengeNode(
-        sort: {
-          fields: [
-            challenge___superOrder
-            challenge___order
-            challenge___challengeOrder
-          ]
-        }
-      ) {
-        edges {
-          node {
-            challenge {
-              block
-              id
-            }
-          }
-        }
-      }
-      allCertificateNode {
-        nodes {
-          challenge {
-            certification
-            tests {
-              id
-            }
-          }
-        }
-      }
-    }
-  `);
-
-  return { challengeEdges, certificateNodes };
-};
 
 DefaultLayout.displayName = 'DefaultLayout';
 

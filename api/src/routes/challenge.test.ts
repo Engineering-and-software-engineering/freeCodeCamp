@@ -4,6 +4,7 @@ const mockVerifyTrophyWithMicrosoft = jest.fn();
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { omit } from 'lodash';
+import { Static } from '@fastify/type-provider-typebox';
 
 import { challengeTypes } from '../../../shared/config/challenge-types';
 import {
@@ -13,10 +14,26 @@ import {
   superRequest,
   seedExam,
   defaultUserEmail,
-  createSuperRequest
+  createSuperRequest,
+  defaultUsername
 } from '../../jest.utils';
-import { completedTrophyChallenges } from '../../__mocks__/exam';
-import { GeneratedAnswer } from '../utils/exam-types';
+import {
+  completedExamChallengeOneCorrect,
+  completedExamChallengeTwoCorrect,
+  completedExamChallengeAllCorrect,
+  completedTrophyChallenges,
+  examChallengeId,
+  mockResultsZeroCorrect,
+  mockResultsTwoCorrect,
+  mockResultsAllCorrect,
+  examWithZeroCorrect,
+  examWithOneCorrect,
+  examWithTwoCorrect,
+  examWithAllCorrect,
+  type ExamSubmission
+} from '../../__mocks__/exam';
+import { Answer } from '../utils/exam-types';
+import type { getSessionUser } from '../schemas/user/get-session-user';
 
 jest.mock('./helpers/challenge-helpers', () => {
   const originalModule = jest.requireActual<
@@ -138,6 +155,7 @@ describe('challengeRoutes', () => {
       setCookies = await devLogin();
       superPost = createSuperRequest({ method: 'POST', setCookies });
       superGet = createSuperRequest({ method: 'GET', setCookies });
+      await seedExam();
     });
 
     describe('POST /coderoad-challenge-completed', () => {
@@ -347,7 +365,33 @@ describe('challengeRoutes', () => {
           expect(response.body).toStrictEqual(
             isValidChallengeCompletionErrorMsg
           );
-          expect(response.statusCode).toBe(400);
+          expect(response.statusCode).toBe(403);
+        });
+
+        it('POST rejects backendProject requests without URL githubLinks', async () => {
+          const response = await superPost('/project-completed').send({
+            id: id1,
+            challengeType: challengeTypes.backEndProject,
+            // Solution is allowed to be localhost for backEndProject
+            solution: 'http://localhost:3000'
+          });
+
+          expect(response.body).toStrictEqual(
+            isValidChallengeCompletionErrorMsg
+          );
+          expect(response.statusCode).toBe(403);
+
+          const response_2 = await superPost('/project-completed').send({
+            id: id1,
+            challengeType: challengeTypes.backEndProject,
+            solution: 'http://localhost:3000',
+            githubLink: 'not-a-valid-url'
+          });
+
+          expect(response_2.body).toStrictEqual(
+            isValidChallengeCompletionErrorMsg
+          );
+          expect(response_2.statusCode).toBe(403);
         });
 
         it('POST rejects CodeRoad/CodeAlly projects when the user has not completed the required challenges', async () => {
@@ -506,7 +550,7 @@ describe('challengeRoutes', () => {
 
           // If a challenge has already been completed, it should return the
           // original completedDate
-          expect(resUpdate.body.completedDate).not.toBe(
+          expect(resUpdate.body.completedDate).toBe(
             resOriginal.body.completedDate
           );
           expect(resUpdate.statusCode).toBe(200);
@@ -760,7 +804,7 @@ describe('challengeRoutes', () => {
                 challengeType: multiFileCertProjectBody.challengeType,
                 files: testFiles,
                 completedDate: expect.any(Number),
-                isManuallyApproved: true
+                isManuallyApproved: false
               }
             ],
             savedChallenges: [
@@ -824,7 +868,7 @@ describe('challengeRoutes', () => {
                 challengeType: updatedMultiFileCertProjectBody.challengeType,
                 files: testFiles,
                 completedDate: expect.any(Number),
-                isManuallyApproved: true
+                isManuallyApproved: false
               },
               {
                 id: HtmlChallengeId,
@@ -986,7 +1030,7 @@ describe('challengeRoutes', () => {
           const { generatedExam } = response.body;
 
           expect(Array.isArray(generatedExam)).toBe(true);
-          expect(generatedExam).toHaveLength(1);
+          expect(generatedExam).toHaveLength(3);
 
           expect(generatedExam[0]).toHaveProperty('question');
           expect(typeof generatedExam[0].question).toBe('string');
@@ -998,7 +1042,7 @@ describe('challengeRoutes', () => {
           expect(Array.isArray(generatedExam[0].answers)).toBe(true);
           expect(generatedExam[0].answers).toHaveLength(5);
 
-          const answers = generatedExam[0].answers as GeneratedAnswer[];
+          const answers = generatedExam[0].answers as Answer[];
 
           answers.forEach(a => {
             expect(a).toHaveProperty('answer');
@@ -1017,7 +1061,7 @@ describe('challengeRoutes', () => {
         // Create and Run Simple C# Console Applications's id:
         const trophyChallengeId2 = '647f87dc07d29547b3bee1bf';
         const nonTrophyChallengeId = 'bd7123c8c441eddfaeb5bdef';
-        const solutionUrl = `https://learn.microsoft.com/api/gamestatus/${msUserId}`;
+        const solutionUrl = `https://learn.microsoft.com/api/achievements/user/${msUserId}`;
 
         const idIsMissingOrInvalid = {
           type: 'error',
@@ -1134,7 +1178,7 @@ describe('challengeRoutes', () => {
             mockVerifyTrophyWithMicrosoft.mockImplementationOnce(() =>
               Promise.resolve({
                 type: 'success',
-                msGameStatusApiUrl: solutionUrl
+                msUserAchievementsApiUrl: solutionUrl
               })
             );
             const msUsername = 'ANRandom';
@@ -1157,7 +1201,6 @@ describe('challengeRoutes', () => {
               completedDate
             });
 
-            // TODO: use a custom matcher for thisu
             expect(completedDate).toBeGreaterThan(now);
             expect(completedDate).toBeLessThan(now + 1000);
             expect(res.statusCode).toBe(200);
@@ -1177,7 +1220,7 @@ describe('challengeRoutes', () => {
             mockVerifyTrophyWithMicrosoft.mockImplementationOnce(() =>
               Promise.resolve({
                 type: 'success',
-                msGameStatusApiUrl: solutionUrl
+                msUserAchievementsApiUrl: solutionUrl
               })
             );
             const msUsername = 'ANRandom';
@@ -1190,7 +1233,7 @@ describe('challengeRoutes', () => {
             mockVerifyTrophyWithMicrosoft.mockImplementationOnce(() =>
               Promise.resolve({
                 type: 'success',
-                msGameStatusApiUrl: solutionUrl
+                msUserAchievementsApiUrl: solutionUrl
               })
             );
             const resTwo = await superPost(
@@ -1202,7 +1245,7 @@ describe('challengeRoutes', () => {
             mockVerifyTrophyWithMicrosoft.mockImplementationOnce(() =>
               Promise.resolve({
                 type: 'success',
-                msGameStatusApiUrl: solutionUrl
+                msUserAchievementsApiUrl: solutionUrl
               })
             );
             const resUpdate = await superPost(
@@ -1253,6 +1296,386 @@ describe('challengeRoutes', () => {
         });
       });
     });
+
+    describe('/exam-challenge-completed', () => {
+      afterEach(async () => {
+        await fastifyTestInstance.prisma.user.updateMany({
+          where: { id: defaultUserId },
+          data: {
+            completedChallenges: [],
+            completedExams: [],
+            progressTimestamps: []
+          }
+        });
+      });
+
+      describe('validation', () => {
+        test('POST rejects requests with no body', async () => {
+          const response = await superRequest('/exam-challenge-completed', {
+            method: 'POST',
+            setCookies
+          });
+
+          expect(response.body).toStrictEqual({
+            error: `Valid request body not found in attempt to submit exam.`
+          });
+          expect(response.statusCode).toBe(400);
+        });
+
+        test('POST rejects requests without valid ObjectID', async () => {
+          const response = await superRequest('/exam-challenge-completed', {
+            method: 'POST',
+            setCookies
+          }).send({ id: 'not-a-valid-id' });
+
+          expect(response.body).toStrictEqual({
+            error: `Valid request body not found in attempt to submit exam.`
+          });
+          expect(response.statusCode).toBe(400);
+        });
+
+        test('POST rejects requests with valid, but non existing ID', async () => {
+          const response = await superRequest('/exam-challenge-completed', {
+            method: 'POST',
+            setCookies
+          }).send({
+            id: '647e22d18acb466c97ccbef0',
+            challengeType: 17,
+            userCompletedExam: {
+              examTimeInSeconds: 111,
+              userExamQuestions: [
+                {
+                  id: 'q-id',
+                  question: '?',
+                  answer: {
+                    id: 'a-id',
+                    answer: 'a'
+                  }
+                }
+              ]
+            }
+          });
+
+          expect(response.body).toStrictEqual({
+            error: `An error occurred trying to get the exam from the database.`
+          });
+          expect(response.statusCode).toBe(400);
+        });
+
+        test('POST rejects requests without valid userCompletedExam schema', async () => {
+          const response = await superRequest('/exam-challenge-completed', {
+            method: 'POST',
+            setCookies
+          }).send({
+            id: examChallengeId,
+            challengeType: 17,
+            userCompletedExam: ''
+          });
+
+          expect(response.body).toStrictEqual({
+            error: `Valid request body not found in attempt to submit exam.`
+          });
+          expect(response.statusCode).toBe(400);
+        });
+
+        test('POST rejects requests without valid examTimeInSeconds schema', async () => {
+          const response = await superRequest('/exam-challenge-completed', {
+            method: 'POST',
+            setCookies
+          }).send({
+            id: examChallengeId,
+            challengeType: 17,
+            userCompletedExam: { examTimeInSeconds: 'a' }
+          });
+
+          expect(response.body).toStrictEqual({
+            error: `Valid request body not found in attempt to submit exam.`
+          });
+          expect(response.statusCode).toBe(400);
+        });
+
+        test('POST rejects requests without valid userExamQuestions schema', async () => {
+          const response = await superRequest('/exam-challenge-completed', {
+            method: 'POST',
+            setCookies
+          }).send({
+            id: examChallengeId,
+            challengeType: 17,
+            userCompletedExam: { examTimeInSeconds: 11, userExamQuestions: [] }
+          });
+
+          expect(response.body).toStrictEqual({
+            error: `Valid request body not found in attempt to submit exam.`
+          });
+          expect(response.statusCode).toBe(400);
+        });
+
+        test('POST rejects requests with prerequisites not completed', async () => {
+          const response = await superRequest('/exam-challenge-completed', {
+            method: 'POST',
+            setCookies
+          }).send({
+            id: examChallengeId,
+            challengeType: 17,
+            userCompletedExam: {
+              examTimeInSeconds: 111,
+              userExamQuestions: [
+                {
+                  id: 'q-id',
+                  question: '?',
+                  answer: {
+                    id: 'a-id',
+                    answer: 'a'
+                  }
+                }
+              ]
+            }
+          });
+
+          expect(response.body).toStrictEqual({
+            error: `You have not completed the required challenges to start the 'Exam Certification'.`
+          });
+          expect(response.statusCode).toBe(403);
+        });
+
+        test('POST rejects requests with invalid userCompletedExam values', async () => {
+          await fastifyTestInstance.prisma.user.updateMany({
+            where: { email: 'foo@bar.com' },
+            data: {
+              completedChallenges: completedTrophyChallenges
+            }
+          });
+
+          const response = await superRequest('/exam-challenge-completed', {
+            method: 'POST',
+            setCookies
+          }).send({
+            id: examChallengeId,
+            challengeType: 17,
+            userCompletedExam: {
+              examTimeInSeconds: 111,
+              userExamQuestions: [
+                {
+                  id: 'q-id',
+                  question: '?',
+                  answer: {
+                    id: 'a-id',
+                    answer: 'a'
+                  }
+                }
+              ]
+            }
+          });
+
+          expect(response.body).toStrictEqual({
+            error: `An error occurred trying to submit your exam.`
+          });
+          expect(response.statusCode).toBe(500);
+        });
+      });
+
+      describe('handling', () => {
+        beforeEach(async () => {
+          await fastifyTestInstance.prisma.user.updateMany({
+            where: { id: defaultUserId },
+            data: {
+              completedChallenges: completedTrophyChallenges
+            }
+          });
+        });
+
+        afterEach(async () => {
+          await fastifyTestInstance.prisma.user.updateMany({
+            where: { id: defaultUserId },
+            data: {
+              completedChallenges: [],
+              completedExams: [],
+              progressTimestamps: []
+            }
+          });
+        });
+
+        const submitExam = async (exam: ExamSubmission) => {
+          return superRequest('/exam-challenge-completed', {
+            method: 'POST',
+            setCookies
+          }).send({
+            id: examChallengeId,
+            challengeType: 17,
+            userCompletedExam: exam
+          });
+        };
+
+        test('POST handles submitting a failing exam', async () => {
+          const now = Date.now();
+
+          // Submit exam with 0 correct answers
+          const response = await submitExam(examWithZeroCorrect);
+
+          type GetSessionUserResponseBody = Static<
+            (typeof getSessionUser)['response']['200']
+          >['user'];
+
+          const res = (await superGet('/user/get-session-user')).body as {
+            user: GetSessionUserResponseBody;
+          };
+
+          const { completedChallenges, completedExams, calendar } =
+            res.user[defaultUsername]!;
+
+          // should have the 1 prerequisite challenge
+          expect(completedChallenges).toHaveLength(1);
+          expect(completedExams).toHaveLength(1);
+          expect(calendar).toStrictEqual({});
+          expect(completedChallenges).toEqual(completedTrophyChallenges);
+          expect(completedExams[0]).toEqual({
+            id: '647e22d18acb466c97ccbef8',
+            challengeType: 17,
+            completedDate: expect.any(Number),
+            examResults: mockResultsZeroCorrect
+          });
+
+          expect(completedExams[0]?.completedDate).toBeGreaterThan(now);
+          expect(response.body).toMatchObject({
+            points: 0,
+            alreadyCompleted: false,
+            examResults: mockResultsZeroCorrect
+          });
+          expect(response.statusCode).toBe(200);
+        });
+
+        test("POST always adds to the user's completedExams", async () => {
+          let now = Date.now();
+          // The first exam should be stored in the user's completedExams
+          await submitExam(examWithAllCorrect);
+
+          let { completedExams } =
+            await fastifyTestInstance.prisma.user.findFirstOrThrow({
+              where: { id: defaultUserId }
+            });
+
+          expect(completedExams).toHaveLength(1);
+          expect(completedExams[0]).toEqual(completedExamChallengeAllCorrect);
+          expect(completedExams[0]?.completedDate).toBeGreaterThan(now);
+          expect(completedExams[0]?.completedDate).toBeLessThan(Date.now());
+
+          now = Date.now();
+          // the second exam should be added to the exams, not replace the first
+          await submitExam(examWithOneCorrect);
+
+          completedExams = (
+            await fastifyTestInstance.prisma.user.findFirstOrThrow({
+              where: { id: defaultUserId }
+            })
+          ).completedExams;
+
+          expect(completedExams).toHaveLength(2);
+          expect(completedExams).toEqual(
+            expect.arrayContaining([
+              completedExamChallengeAllCorrect,
+              completedExamChallengeOneCorrect
+            ])
+          );
+          expect(completedExams[1]?.completedDate).toBeGreaterThan(now);
+          expect(completedExams[1]?.completedDate).toBeLessThan(Date.now());
+        });
+
+        test('POST updates user progress if they have not completed the exam before', async () => {
+          // Submit exam with 2/3 correct answers
+          const now = Date.now();
+          const res = await submitExam(examWithTwoCorrect);
+
+          const user = await fastifyTestInstance.prisma.user.findFirstOrThrow({
+            where: { id: defaultUserId }
+          });
+
+          // should add to completedChallenges
+          expect(user.completedChallenges).toHaveLength(2);
+          expect(user.completedChallenges).toMatchObject([
+            ...completedTrophyChallenges,
+            completedExamChallengeTwoCorrect
+          ]);
+          expect(user.completedChallenges[1]?.completedDate).toBeGreaterThan(
+            now
+          );
+
+          // should add to progressTimestamps
+          expect(user.progressTimestamps).toHaveLength(1);
+
+          expect(res.body).toMatchObject({
+            points: 1,
+            alreadyCompleted: false,
+            examResults: mockResultsTwoCorrect
+          });
+          expect(res.statusCode).toBe(200);
+        });
+
+        test('POST does not update user progress if new exam is not an improvement', async () => {
+          // Submit exam with 2/3 correct answers
+          await submitExam(examWithTwoCorrect);
+
+          const user1 = await fastifyTestInstance.prisma.user.findFirstOrThrow({
+            where: { id: defaultUserId }
+          });
+
+          // Submit exam with 2/3 correct answers (no improvement)
+          const res2 = await submitExam(examWithTwoCorrect);
+
+          const user2 = await fastifyTestInstance.prisma.user.findFirstOrThrow({
+            where: { id: defaultUserId }
+          });
+
+          // should not update user progress
+          expect(user2.completedChallenges).toEqual(user1.completedChallenges);
+          expect(user2.progressTimestamps).toEqual(user1.progressTimestamps);
+
+          expect(res2.body).toMatchObject({
+            points: 1,
+            alreadyCompleted: true,
+            examResults: mockResultsTwoCorrect
+          });
+          expect(res2.statusCode).toBe(200);
+        });
+
+        test('POST updates user progress if exam is an improvement', async () => {
+          // Submit exam with 2/3 correct answers
+          await submitExam(examWithTwoCorrect);
+          const user1 = await fastifyTestInstance.prisma.user.findUniqueOrThrow(
+            {
+              where: { id: defaultUserId }
+            }
+          );
+
+          // Submit improved exam
+          const res = await submitExam(examWithAllCorrect);
+
+          const user2 = await fastifyTestInstance.prisma.user.findFirstOrThrow({
+            where: { email: 'foo@bar.com' }
+          });
+
+          // should update existing completedChallenge
+          expect(user2.completedChallenges).toHaveLength(2);
+          expect(user2.completedChallenges).toMatchObject([
+            ...completedTrophyChallenges,
+            completedExamChallengeAllCorrect
+          ]);
+          expect(user2.completedChallenges[1]?.completedDate).toEqual(
+            user1.completedChallenges[1]?.completedDate
+          );
+
+          // they have not completed anything new, so progressTimestamps should
+          // remain the same
+          expect(user2.progressTimestamps).toEqual(user1.progressTimestamps);
+
+          expect(res.body).toMatchObject({
+            points: 1,
+            alreadyCompleted: true,
+            examResults: mockResultsAllCorrect
+          });
+          expect(res.statusCode).toBe(200);
+        });
+      });
+    });
   });
 
   describe('Unauthenticated user', () => {
@@ -1271,7 +1694,8 @@ describe('challengeRoutes', () => {
       { path: '/modern-challenge-completed', method: 'POST' },
       { path: '/save-challenge', method: 'POST' },
       { path: '/exam/647e22d18acb466c97ccbef8', method: 'GET' },
-      { path: '/ms-trophy-challenge-completed', method: 'POST' }
+      { path: '/ms-trophy-challenge-completed', method: 'POST' },
+      { path: '/exam-challenge-completed', method: 'POST' }
     ];
 
     endpoints.forEach(({ path, method }) => {

@@ -43,7 +43,6 @@ function bootUser(app) {
   const deleteMsUsername = createDeleteMsUsername(app);
   const postSubmitSurvey = createPostSubmitSurvey(app);
   const deleteUserSurveys = createDeleteUserSurveys(app);
-
   api.get('/account', sendNonUserToHome, deprecatedEndpoint);
   api.get('/account/unlink/:social', sendNonUserToHome, getUnlinkSocial);
   api.get('/user/get-session-user', getSessionUser);
@@ -452,6 +451,7 @@ function postResetProgress(req, res, next) {
       isRelationalDatabaseCertV8: false,
       isCollegeAlgebraPyCertV8: false,
       isFoundationalCSharpCertV8: false,
+      isJsAlgoDataStructCertV8: false,
       completedChallenges: [],
       completedExams: [],
       savedChallenges: [],
@@ -531,4 +531,5 @@ function createPostReportUserProfile(app) {
     );
   };
 }
+
 export default bootUser;

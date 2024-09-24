@@ -1,4 +1,3 @@
-import { Col, Row, Button } from '@freecodecamp/react-bootstrap';
 import { graphql } from 'gatsby';
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
@@ -9,10 +8,10 @@ import { bindActionCreators } from 'redux';
 import type { Dispatch } from 'redux';
 import { createSelector } from 'reselect';
 
-import { Container } from '@freecodecamp/ui';
+import { Container, Col, Row, Button } from '@freecodecamp/ui';
 import Spacer from '../../../components/helpers/spacer';
 import LearnLayout from '../../../components/layouts/learn';
-import { ChallengeNode, ChallengeMeta } from '../../../redux/prop-types';
+import { ChallengeNode, ChallengeMeta, Test } from '../../../redux/prop-types';
 import ChallengeDescription from '../components/challenge-description';
 import Hotkeys from '../components/hotkeys';
 import ChallengeTitle from '../components/challenge-title';
@@ -23,7 +22,8 @@ import {
   updateChallengeMeta,
   openModal,
   updateSolutionFormValues,
-  submitChallenge
+  submitChallenge,
+  initTests
 } from '../redux/actions';
 import { isChallengeCompletedSelector } from '../redux/selectors';
 import { setIsProcessing } from '../../../redux/actions';
@@ -52,6 +52,7 @@ const mapStateToProps = createSelector(
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
+      initTests,
       updateChallengeMeta,
       challengeMounted,
       updateSolutionFormValues,
@@ -67,6 +68,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
 interface MsTrophyProps {
   challengeMounted: (arg0: string) => void;
   data: { challengeNode: ChallengeNode };
+  initTests: (xs: Test[]) => void;
   isChallengeCompleted: boolean;
   isProcessing: boolean;
   setIsProcessing: (arg0: boolean) => void;
@@ -95,12 +97,19 @@ class MsTrophy extends Component<MsTrophyProps> {
       challengeMounted,
       data: {
         challengeNode: {
-          challenge: { title, challengeType, helpCategory }
+          challenge: {
+            fields: { tests },
+            title,
+            challengeType,
+            helpCategory
+          }
         }
       },
       pageContext: { challengeMeta },
+      initTests,
       updateChallengeMeta
     } = this.props;
+    initTests(tests);
     updateChallengeMeta({
       ...challengeMeta,
       title,
@@ -204,19 +213,18 @@ class MsTrophy extends Component<MsTrophyProps> {
                 <hr />
                 <Button
                   block={true}
-                  bsStyle='primary'
+                  variant='primary'
                   data-playwright-test-label='verify-trophy-button'
-                  className='btn-invert'
                   disabled={!msUsername || isProcessing}
                   onClick={this.handleSubmit}
                 >
                   {t('buttons.verify-trophy')}
                 </Button>
+                <Spacer size='xxSmall' />
                 <Button
                   block={true}
-                  bsStyle='primary'
+                  variant='primary'
                   data-playwright-test-label='ask-for-help-button'
-                  className='btn-invert'
                   onClick={openHelpModal}
                 >
                   {t('buttons.ask-for-help')}
@@ -242,8 +250,8 @@ export default connect(
 )(withTranslation()(MsTrophy));
 
 export const query = graphql`
-  query MsTrophyChallenge($slug: String!) {
-    challengeNode(challenge: { fields: { slug: { eq: $slug } } }) {
+  query MsTrophyChallenge($id: String!) {
+    challengeNode(id: { eq: $id }) {
       challenge {
         title
         description
@@ -255,6 +263,10 @@ export const query = graphql`
         translationPending
         fields {
           blockName
+          tests {
+            text
+            testString
+          }
         }
       }
     }

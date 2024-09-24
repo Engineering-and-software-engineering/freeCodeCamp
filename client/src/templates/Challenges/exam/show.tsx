@@ -1,5 +1,4 @@
 // Package Utilities
-import { Button } from '@freecodecamp/react-bootstrap';
 import { graphql, navigate } from 'gatsby';
 
 import React, { Component, RefObject } from 'react';
@@ -10,7 +9,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import type { Dispatch } from 'redux';
 import { createSelector } from 'reselect';
-import { Container, Col, Alert, Row } from '@freecodecamp/ui';
+import { Container, Col, Alert, Row, Button } from '@freecodecamp/ui';
 import { micromark } from 'micromark';
 
 // Local Utilities
@@ -36,7 +35,8 @@ import {
   closeModal,
   submitChallenge,
   setUserCompletedExam,
-  updateSolutionFormValues
+  updateSolutionFormValues,
+  initTests
 } from '../redux/actions';
 import { getGenerateExam } from '../../../utils/ajax';
 import { isChallengeCompletedSelector } from '../redux/selectors';
@@ -50,7 +50,8 @@ import {
   GeneratedExamResults,
   GeneratedExamQuestion,
   PrerequisiteChallenge,
-  SurveyResults
+  SurveyResults,
+  Test
 } from '../../../redux/prop-types';
 import { FlashMessages } from '../../../components/Flash/redux/flash-messages';
 import { formatSecondsToTime } from '../../../utils/format-seconds';
@@ -58,7 +59,7 @@ import ExitExamModal from './components/exit-exam-modal';
 import FinishExamModal from './components/finish-exam-modal';
 import ExamResults from './components/exam-results';
 import MissingPrerequisites from './components/missing-prerequisites';
-import FoundationCSharpSurveyAlert from './components/foundational-c-sharp-survey-alert';
+import FoundationalCSharpSurveyAlert from './components/foundational-c-sharp-survey-alert';
 
 import './exam.css';
 
@@ -101,6 +102,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
       setUserCompletedExam,
       clearExamResults,
       submitChallenge,
+      initTests,
       updateChallengeMeta,
       updateSolutionFormValues
     },
@@ -117,6 +119,7 @@ interface ShowExamProps {
   data: { challengeNode: ChallengeNode };
   examInProgress: boolean;
   examResults: GeneratedExamResults | null;
+  initTests: (arg0: Test[]) => void;
   isChallengeCompleted: boolean;
   isSignedIn: boolean;
   openExitExamModal: () => void;
@@ -175,12 +178,19 @@ class ShowExam extends Component<ShowExamProps, ShowExamState> {
       challengeMounted,
       data: {
         challengeNode: {
-          challenge: { challengeType, helpCategory, title }
+          challenge: {
+            fields: { tests },
+            challengeType,
+            helpCategory,
+            title
+          }
         }
       },
       pageContext: { challengeMeta },
+      initTests,
       updateChallengeMeta
     } = this.props;
+    initTests(tests);
     updateChallengeMeta({
       ...challengeMeta,
       title,
@@ -401,10 +411,7 @@ class ShowExam extends Component<ShowExamProps, ShowExamState> {
                     {title}
                   </div>
                   <span>|</span>
-                  <div
-                    data-cy='exam-time'
-                    data-playwright-test-label='exam-show-question-time'
-                  >
+                  <div data-playwright-test-label='exam-show-question-time'>
                     {t('learn.exam.time', {
                       t: formatSecondsToTime(examTimeInSeconds)
                     })}
@@ -468,8 +475,7 @@ class ShowExam extends Component<ShowExamProps, ShowExamState> {
                     block={true}
                     className='exam-button'
                     disabled={currentQuestionIndex <= 0}
-                    bsStyle='primary'
-                    data-cy='previous-exam-question-btn'
+                    variant='primary'
                     onClick={this.goToPreviousQuestion}
                   >
                     {t('buttons.previous-question')}
@@ -483,8 +489,7 @@ class ShowExam extends Component<ShowExamProps, ShowExamState> {
                         !userExamQuestions[currentQuestionIndex].answer.id
                       }
                       className='exam-button'
-                      bsStyle='primary'
-                      data-cy='finish-exam-btn'
+                      variant='primary'
                       onClick={openFinishExamModal}
                     >
                       {t('buttons.finish-exam')}
@@ -496,8 +501,7 @@ class ShowExam extends Component<ShowExamProps, ShowExamState> {
                         !userExamQuestions[currentQuestionIndex].answer.id
                       }
                       className='exam-button'
-                      bsStyle='primary'
-                      data-cy='next-exam-question-btn'
+                      variant='primary'
                       onClick={this.goToNextQuestion}
                     >
                       {t('buttons.next-question')}
@@ -511,8 +515,7 @@ class ShowExam extends Component<ShowExamProps, ShowExamState> {
                   <Button
                     block={true}
                     className='exam-button'
-                    bsStyle='primary'
-                    data-cy='exit-exam-btn'
+                    variant='primary'
                     onClick={openExitExamModal}
                   >
                     {t('buttons.exit-exam')}
@@ -545,7 +548,7 @@ class ShowExam extends Component<ShowExamProps, ShowExamState> {
                 <Spacer size='medium' />
 
                 {qualifiedForExam ? (
-                  <Alert data-cy='qualified-for-exam-alert' variant='info'>
+                  <Alert variant='info'>
                     <p>{t('learn.exam.qualified')}</p>
                   </Alert>
                 ) : (
@@ -555,20 +558,20 @@ class ShowExam extends Component<ShowExamProps, ShowExamState> {
                         missingPrerequisites={missingPrerequisites}
                       />
                     ) : (
-                      <FoundationCSharpSurveyAlert />
+                      <FoundationalCSharpSurveyAlert />
                     )}
                   </>
                 )}
-
                 <PrismFormatted text={description} />
                 <Spacer size='medium' />
                 <PrismFormatted text={instructions} />
 
                 <Button
                   block={true}
-                  bsStyle='primary'
-                  data-cy='start-exam-btn'
+                  variant='primary'
                   disabled={!qualifiedForExam}
+                  // `this.runExam` being an async callback is acceptable
+                  //eslint-disable-next-line @typescript-eslint/no-misused-promises
                   onClick={this.runExam}
                 >
                   {t('buttons.click-start-exam')}
@@ -593,8 +596,8 @@ export default connect(
 
 // GraphQL
 export const query = graphql`
-  query ExamChallenge($slug: String!) {
-    challengeNode(challenge: { fields: { slug: { eq: $slug } } }) {
+  query ExamChallenge($id: String!) {
+    challengeNode(id: { eq: $id }) {
       challenge {
         block
         challengeType
@@ -603,6 +606,10 @@ export const query = graphql`
         fields {
           blockHashSlug
           blockName
+          tests {
+            text
+            testString
+          }
         }
         helpCategory
         id

@@ -51,6 +51,10 @@
   margin-bottom: 0;
 }
 
+.site-footer h2 {
+  line-height: 1.1;
+}
+
 .trending-guides-articles {
   list-style-type: none;
   padding: 0;
@@ -90,7 +94,7 @@
 .footer-desc-col {
   padding-inline: 15px;
   margin-bottom: 30px;
-  align-self: center;
+  align-self: start;
 }
 
 .footer-desc-col a {
@@ -111,6 +115,29 @@ p.footer-donation a:hover {
   margin: 0 0 3rem;
 }
 
+.mobile-app-container {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+/* This rule to is ensure the li element doesn't take more space than it needs */
+.mobile-app-container li {
+  display: flex;
+  flex: initial;
+}
+
+.mobile-app-container img {
+  width: 9.5rem;
+  height: 3rem;
+  object-fit: cover;
+}
+
 .footer-bottom .our-nonprofit {
   display: flex;
   flex-direction: row;
@@ -125,6 +152,9 @@ p.footer-donation a:hover {
 @media (min-width: 500px) {
   .footer-col {
     font-size: 15;
+  }
+  .mobile-app-container {
+    flex-direction: row;
   }
 }
 

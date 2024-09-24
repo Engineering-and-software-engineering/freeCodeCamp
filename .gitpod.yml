@@ -1,5 +1,4 @@
-image:
-  file: .gitpod.Dockerfile
+image: ghcr.io/freecodecamp/gitpod:latest
 ports:
   - port: 27017 # mongodb
     onOpen: ignore
@@ -19,6 +18,14 @@ ports:
     visibility: public
   - port: 3300 # challenge editor client
     visibility: public
+  - port: 8025 # MailHog
+    visibility: public
+    onOpen: ignore
+  - port: 1025 # MailHog
+    onOpen: ignore
+  - port: 9323 # Playwright
+    visibility: public
+    onOpen: ignore
 
 tasks:
   - before: |
@@ -26,8 +33,7 @@ tasks:
       export COOKIE_DOMAIN=gitpod.io
       export HOME_LOCATION=$(gp url 8000)
       export API_LOCATION=$(gp url 3000)
-      export CYPRESS_BASE_URL=$(gp url 8000)
-      export REACT_APP_CHALLENGE_EDITOR_API_LOCATION=$(gp url 3200)
+      export CHALLENGE_EDITOR_API_LOCATION=$(gp url 3200)
       export CHALLENGE_EDITOR_CLIENT_LOCATION=$(gp url 3300)
       ' >> ~/.bashrc;
       exit;
@@ -39,7 +45,7 @@ tasks:
       (mongod --dbpath /workspace/data &)
 
   - name: server
-    before: export COOKIE_DOMAIN=gitpod.io && export HOME_LOCATION=$(gp url 8000) && export API_LOCATION=$(gp url 3000) && export CYPRESS_BASE_URL=$(gp url 8000)
+    before: export COOKIE_DOMAIN=gitpod.io && export HOME_LOCATION=$(gp url 8000) && export API_LOCATION=$(gp url 3000)
     # init is not executed for prebuilt workspaces and restarts,
     # so we should put all the heavy initialization here
     init: >
@@ -55,7 +61,7 @@ tasks:
       pnpm run develop:server
 
   - name: client
-    before: export HOME_LOCATION=$(gp url 8000) && export API_LOCATION=$(gp url 3000) && export CYPRESS_BASE_URL=$(gp url 8000)
+    before: export HOME_LOCATION=$(gp url 8000) && export API_LOCATION=$(gp url 3000)
     init: >
       cd ./client &&
       gp sync-await pnpm-install &&

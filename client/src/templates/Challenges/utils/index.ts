@@ -74,3 +74,68 @@ export function enhancePrismAccessibility(
     })
   );
 }
+
+// Make PrismJS code blocks collapsible
+export function makePrismCollapsible(
+  prismEnv: Prism.hooks.ElementHighlightedEnvironment
+): void {
+  const preElem = prismEnv?.element?.parentElement;
+  const sectionElem = preElem?.parentElement;
+  if (
+    !preElem ||
+    preElem.nodeName !== 'PRE' ||
+    preElem.tabIndex !== 0 ||
+    !sectionElem ||
+    sectionElem.nodeName !== 'SECTION'
+  ) {
+    return;
+  }
+
+  const details = document.createElement('details');
+  details.classList.add('code-details');
+
+  const summary = document.createElement('summary');
+  summary.classList.add('code-details-summary');
+  summary.innerHTML = i18next.t('learn.example-code');
+
+  details.appendChild(summary);
+  details.appendChild(preElem.cloneNode(true));
+  details.open = true;
+
+  sectionElem.replaceChild(details, preElem);
+}
+
+// Adjusts scrollbar arrows based on scrollbar width
+export function setScrollbarArrowStyles(scrollbarWidth: number): void {
+  const root = document.documentElement;
+
+  // make the arrow box a square
+  root.style.setProperty(
+    '--monaco-scrollbar-arrow-box-size',
+    `${scrollbarWidth}px`
+  );
+
+  // adjust arrow icon size to fit arrow box
+  const iconSize = scrollbarWidth < 11 ? scrollbarWidth : scrollbarWidth - 5;
+  const iconFontSize =
+    scrollbarWidth < 11 ? scrollbarWidth : scrollbarWidth - 5;
+  root.style.setProperty('--monaco-scrollbar-arrow-icon-size', `${iconSize}px`);
+  root.style.setProperty(
+    '--monaco-scrollbar-arrow-icon-font-size',
+    `${iconFontSize}px`
+  );
+
+  // position arrow icon in arrow box
+  const iconTopBottom =
+    scrollbarWidth < 11 ? 0 : scrollbarWidth / 2 - iconFontSize / 2 - 1;
+  const iconLeftPosition =
+    scrollbarWidth < 11 ? 0 : (scrollbarWidth - iconFontSize) / 2;
+  root.style.setProperty(
+    '--monaco-scrollbar-arrow-icon-top-bottom',
+    `${iconTopBottom}px`
+  );
+  root.style.setProperty(
+    '--monaco-scrollbar-arrow-icon-left',
+    `${iconLeftPosition}px`
+  );
+}

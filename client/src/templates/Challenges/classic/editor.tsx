@@ -10,8 +10,8 @@ import type {
 import { OS } from 'monaco-editor/esm/vs/base/common/platform.js';
 import Prism from 'prismjs';
 import React, { useEffect, Suspense, MutableRefObject, useRef } from 'react';
-import ReactDOM from 'react-dom';
-import { Provider, connect, useStore } from 'react-redux';
+import { createPortal } from 'react-dom';
+import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import store from 'store';
 
@@ -34,10 +34,7 @@ import {
 } from '../../../redux/prop-types';
 import { editorToneOptions } from '../../../utils/tone/editor-config';
 import { editorNotes } from '../../../utils/tone/editor-notes';
-import {
-  challengeTypes,
-  isFinalProject
-} from '../../../../../shared/config/challenge-types';
+import { challengeTypes } from '../../../../../shared/config/challenge-types';
 import {
   executeChallenge,
   saveEditorContent,
@@ -61,10 +58,15 @@ import {
   isChallengeCompletedSelector
 } from '../redux/selectors';
 import GreenPass from '../../../assets/icons/green-pass';
-import { enhancePrismAccessibility } from '../utils/index';
+import {
+  enhancePrismAccessibility,
+  makePrismCollapsible,
+  setScrollbarArrowStyles
+} from '../utils/index';
+import { initializeMathJax } from '../../../utils/math-jax';
 import { getScrollbarWidth } from '../../../utils/scrollbar-width';
+import { isProjectBased } from '../../../utils/curriculum-layout';
 import LowerJaw from './lower-jaw';
-
 import './editor.css';
 
 const MonacoEditor = Loadable(() => import('react-monaco-editor'));
@@ -75,6 +77,8 @@ export interface EditorProps {
   challengeFiles: ChallengeFiles;
   challengeType: number;
   containerRef?: React.RefObject<HTMLElement>;
+  block: string;
+  superBlock: string;
   description: string;
   dimensions?: Dimensions;
   editorRef: MutableRefObject<editor.IStandaloneCodeEditor | undefined>;
@@ -123,7 +127,6 @@ interface EditorProperties {
   outputZoneTop: number;
   outputZoneId: string;
   descriptionNode?: HTMLDivElement;
-  outputNode?: HTMLDivElement;
   descriptionWidget?: editor.IContentWidget;
   outputWidget?: editor.IOverlayWidget;
 }
@@ -188,6 +191,7 @@ const modeMap = {
   html: 'html',
   js: 'javascript',
   jsx: 'javascript',
+  ts: 'typescript',
   py: 'python',
   python: 'python'
 };
@@ -239,9 +243,8 @@ const initialData: EditorProperties = {
 };
 
 const Editor = (props: EditorProps): JSX.Element => {
-  const reduxStore = useStore();
   const { t } = useTranslation();
-  const { editorRef, initTests, resetAttempts } = props;
+  const { editorRef, initTests, resetAttempts, isMobileLayout } = props;
   // These refs are used during initialisation of the editor as well as by
   // callbacks.  Since they have to be initialised before editorWillMount and
   // editorDidMount are called, we cannot use useState.  Reason being that will
@@ -251,6 +254,8 @@ const Editor = (props: EditorProps): JSX.Element => {
   const monacoRef: MutableRefObject<typeof monacoEditor | null> =
     useRef<typeof monacoEditor>(null);
   const dataRef = useRef<EditorProperties>({ ...initialData });
+  const [lowerJawContainer, setLowerJawContainer] =
+    React.useState<HTMLDivElement | null>(null);
 
   const submitChallengeDebounceRef = useRef(
     debounce(props.submitChallenge, 1000, { leading: true, trailing: false })
@@ -282,7 +287,9 @@ const Editor = (props: EditorProps): JSX.Element => {
     selectionHighlight: false,
     overviewRulerBorder: false,
     hideCursorInOverviewRuler: true,
-    renderIndentGuides: props.challengeType === challengeTypes.python,
+    renderIndentGuides:
+      props.challengeType === challengeTypes.python ||
+      props.challengeType === challengeTypes.multifilePythonCertProject,
     minimap: {
       enabled: false
     },
@@ -291,14 +298,21 @@ const Editor = (props: EditorProps): JSX.Element => {
     scrollbar: {
       horizontal: 'hidden',
       vertical: 'visible',
-      verticalHasArrows: false,
+      verticalHasArrows: true,
       useShadows: false,
-      verticalScrollbarSize: getScrollbarWidth()
+      verticalScrollbarSize: getScrollbarWidth(),
+      // this helps the scroll bar fit properly between the arrows,
+      // but doesn't do anything for the arrows themselves
+      arrowSize: getScrollbarWidth()
     },
     parameterHints: {
       enabled: false
     },
-    tabSize: 2,
+    tabSize:
+      props.challengeType !== challengeTypes.python &&
+      props.challengeType !== challengeTypes.multifilePythonCertProject
+        ? 2
+        : 4,
     dragAndDrop: true,
     lightbulb: {
       enabled: false
@@ -392,6 +406,7 @@ const Editor = (props: EditorProps): JSX.Element => {
       addContentChangeListener();
       resetAttempts();
       showEditableRegion(editor);
+      initializeMathJax();
     }
 
     const storedAccessibilityMode = () => {
@@ -505,7 +520,7 @@ const Editor = (props: EditorProps): JSX.Element => {
         monaco.KeyMod.WinCtrl | monaco.KeyCode.Enter
       ],
       run: () => {
-        if (props.usesMultifileEditor && !isFinalProject(props.challengeType)) {
+        if (props.usesMultifileEditor && !isProjectBased(props.challengeType)) {
           if (challengeIsComplete()) {
             tryToSubmitChallenge();
           } else {
@@ -533,7 +548,8 @@ const Editor = (props: EditorProps): JSX.Element => {
         monaco.KeyMod.WinCtrl | monaco.KeyCode.KEY_S
       ],
       run:
-        props.challengeType === challengeTypes.multifileCertProject &&
+        (props.challengeType === challengeTypes.multifileCertProject ||
+          props.challengeType === challengeTypes.multifilePythonCertProject) &&
         props.isSignedIn
           ? // save to database
             props.saveChallenge
@@ -602,6 +618,9 @@ const Editor = (props: EditorProps): JSX.Element => {
       scrollGutterNode
     );
     editor.addContentWidget(scrollGutterWidget);
+
+    // update scrollbar arrows
+    setScrollbarArrowStyles(getScrollbarWidth());
   };
 
   const toggleAriaRoledescription = () => {
@@ -695,56 +714,23 @@ const Editor = (props: EditorProps): JSX.Element => {
 
   const tryToSubmitChallenge = submitChallengeDebounceRef.current;
 
-  function createLowerJaw(
-    outputNode: HTMLDivElement,
-    editor: editor.IStandaloneCodeEditor
-  ) {
-    const { output } = props;
-    const isChallengeComplete = challengeIsComplete();
-
-    ReactDOM.render(
-      <Provider store={reduxStore}>
-        <LowerJaw
-          openHelpModal={props.openHelpModal}
-          openResetModal={props.openResetModal}
-          tryToExecuteChallenge={tryToExecuteChallenge}
-          hint={output[1]}
-          testsLength={props.tests.length}
-          attempts={attemptsRef.current}
-          challengeIsCompleted={isChallengeComplete}
-          tryToSubmitChallenge={tryToSubmitChallenge}
-          isSignedIn={props.isSignedIn}
-          updateContainer={() => updateOutputViewZone(outputNode, editor)}
-        />
-      </Provider>,
-      outputNode
-    );
-  }
-
-  const updateOutputZone = () => {
-    const editor = dataRef.current.editor;
-    if (!editor || !dataRef.current.outputNode) return;
-
-    const outputNode = dataRef.current.outputNode;
-    createLowerJaw(outputNode, editor);
-  };
-
   // TODO: there's a potential performance gain to be had by only updating when
   // the outputViewZone has actually changed.
   const updateOutputViewZone = (
-    outputNode: HTMLDivElement,
-    editor: editor.IStandaloneCodeEditor
+    lowerJawContainer: HTMLDivElement,
+    editor?: editor.IStandaloneCodeEditor
   ) => {
+    if (!editor) return;
     // make sure the overlayWidget has resized before using it to set the height
-    outputNode.style.width = `${getEditorContentWidth(editor)}px`;
+    lowerJawContainer.style.width = `${getEditorContentWidth(editor)}px`;
     // We have to wait for the viewZone to finish rendering before adjusting the
     // position of the overlayWidget (i.e. trigger it via onComputedHeight). If
     // not the editor may report the wrong value for position of the lines.
-    editor?.changeViewZones(changeAccessor => {
+    editor.changeViewZones(changeAccessor => {
       changeAccessor.removeZone(dataRef.current.outputZoneId);
       const viewZone = {
         afterLineNumber: getLastLineOfEditableRegion(),
-        heightInPx: outputNode.offsetHeight,
+        heightInPx: lowerJawContainer.offsetHeight,
         domNode: document.createElement('div'),
         onComputedHeight: () =>
           dataRef.current.outputWidget &&
@@ -788,11 +774,18 @@ const Editor = (props: EditorProps): JSX.Element => {
     descContainer.classList.add('description-container');
     domNode.classList.add('editor-upper-jaw');
     domNode.appendChild(descContainer);
+    if (isMobileLayout) descContainer.appendChild(createBreadcrumb());
     descContainer.appendChild(jawHeading);
     descContainer.appendChild(desc);
     desc.innerHTML = description;
     Prism.hooks.add('complete', enhancePrismAccessibility);
+    Prism.hooks.add('complete', makePrismCollapsible);
     Prism.highlightAllUnder(desc);
+
+    // Since the description can be resized without React knowing about it, the
+    // zone needs updating in response.
+    const obs = new ResizeObserver(() => updateDescriptionZone());
+    obs.observe(domNode);
 
     domNode.style.userSelect = 'text';
 
@@ -809,16 +802,16 @@ const Editor = (props: EditorProps): JSX.Element => {
     return editor.getLayoutInfo().contentWidth - getScrollbarWidth();
   }
 
-  function createOutputNode(editor: editor.IStandaloneCodeEditor) {
-    if (dataRef.current.outputNode) return dataRef.current.outputNode;
-    const outputNode = document.createElement('div');
-    outputNode.classList.add('editor-lower-jaw');
-    outputNode.setAttribute('id', 'editor-lower-jaw');
-    outputNode.style.left = `${editor.getLayoutInfo().contentLeft}px`;
-    outputNode.style.width = `${getEditorContentWidth(editor)}px`;
-    outputNode.style.top = getOutputZoneTop();
-    dataRef.current.outputNode = outputNode;
-    return outputNode;
+  function createLowerJawContainer(editor: editor.IStandaloneCodeEditor) {
+    if (lowerJawContainer) return lowerJawContainer;
+    const container = document.createElement('div');
+    container.classList.add('editor-lower-jaw');
+    container.setAttribute('id', 'editor-lower-jaw');
+    container.style.left = `${editor.getLayoutInfo().contentLeft}px`;
+    container.style.width = `${getEditorContentWidth(editor)}px`;
+    container.style.top = getOutputZoneTop();
+    setLowerJawContainer(container);
+    return container;
   }
 
   function createScrollGutterNode(
@@ -850,7 +843,8 @@ const Editor = (props: EditorProps): JSX.Element => {
   }
 
   const onChange = (editorValue: string) => {
-    const { updateFile, fileKey } = props;
+    const { updateFile, fileKey, isResetting } = props;
+    if (isResetting) return;
     // TODO: now that we have getCurrentEditableRegion, should the overlays
     // follow that directly? We could subscribe to changes to that and redraw if
     // those imply that the positions have changed (i.e. if the content height
@@ -877,6 +871,35 @@ const Editor = (props: EditorProps): JSX.Element => {
     }
     updateFile({ fileKey, editorValue, editableRegionBoundaries });
   };
+
+  function createBreadcrumb(): HTMLElement {
+    const { block, superBlock } = props;
+    const breadcrumb = document.createElement('nav');
+    breadcrumb.setAttribute('aria-label', `${t('aria.breadcrumb-nav')}`);
+    const breadcrumbList = document.createElement('ol'),
+      breadcrumbLeft = document.createElement('li'),
+      breadcrumbLeftLink = document.createElement('a'),
+      breadcrumbRight = document.createElement('li'),
+      breadcrumbRightLink = document.createElement('a');
+    breadcrumbLeftLink.innerHTML = t(`intro:${superBlock}.title`);
+    breadcrumbRightLink.innerHTML = t(
+      `intro:${superBlock}.blocks.${block}.title`
+    );
+    breadcrumbLeftLink.setAttribute('href', `/learn/${superBlock}`);
+    breadcrumbRightLink.setAttribute('href', `/learn/${superBlock}/#${block}`);
+    breadcrumbLeft.appendChild(breadcrumbLeftLink);
+    breadcrumbRight.appendChild(breadcrumbRightLink);
+    breadcrumbList.setAttribute(
+      'data-playwright-test-label',
+      'breadcrumb-mobile'
+    );
+    breadcrumbList.className = 'breadcrumbs';
+    breadcrumbList.appendChild(breadcrumbLeft);
+    breadcrumbList.appendChild(breadcrumbRight);
+    breadcrumb.appendChild(breadcrumbList);
+
+    return breadcrumb;
+  }
 
   // TODO: DRY this and the update function
   function initializeEditableRegion(
@@ -1049,7 +1072,7 @@ const Editor = (props: EditorProps): JSX.Element => {
   function addWidgetsToRegions(editor: editor.IStandaloneCodeEditor) {
     const descriptionNode = createDescription(editor);
 
-    const outputNode = createOutputNode(editor);
+    const lowerJawNode = createLowerJawContainer(editor);
 
     if (!dataRef.current.descriptionWidget) {
       dataRef.current.descriptionWidget = createWidget(
@@ -1075,11 +1098,10 @@ const Editor = (props: EditorProps): JSX.Element => {
       dataRef.current.outputWidget = createWidget(
         editor,
         'output.widget',
-        outputNode,
+        lowerJawNode,
         getOutputZoneTop
       );
       editor.addOverlayWidget(dataRef.current.outputWidget);
-      editor.changeViewZones(updateOutputZone);
     }
 
     editor.onDidScrollChange(() => {
@@ -1107,7 +1129,6 @@ const Editor = (props: EditorProps): JSX.Element => {
       // ask monaco to update regardless.
       redecorateEditableRegion();
       updateDescriptionZone();
-      updateOutputZone();
     });
   }
 
@@ -1213,7 +1234,6 @@ const Editor = (props: EditorProps): JSX.Element => {
 
   useEffect(() => {
     const { model, insideEditDecId } = dataRef.current;
-    const lowerJawElement = dataRef.current.outputNode;
     const isChallengeComplete = challengeIsComplete();
     const range = model?.getDecorationRange(insideEditDecId);
     if (range && isChallengeComplete) {
@@ -1225,8 +1245,6 @@ const Editor = (props: EditorProps): JSX.Element => {
         }
       );
     }
-    dataRef.current.outputNode = lowerJawElement;
-    updateOutputZone();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.tests]);
 
@@ -1237,10 +1255,6 @@ const Editor = (props: EditorProps): JSX.Element => {
     // need to untrap it if the user had it set to false.
     if (!isTabTrapped()) {
       setMonacoTabTrapped(false);
-    }
-    if (hasEditableRegion()) {
-      updateDescriptionZone();
-      updateOutputZone();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.dimensions]);
@@ -1265,6 +1279,7 @@ const Editor = (props: EditorProps): JSX.Element => {
       : theme === Themes.Default
         ? 'vs-custom'
         : editorSystemTheme;
+
   return (
     <Suspense fallback={<Loader loaderDelay={600} />}>
       <span className='notranslate'>
@@ -1276,6 +1291,24 @@ const Editor = (props: EditorProps): JSX.Element => {
           theme={editorTheme}
         />
       </span>
+      {lowerJawContainer !== null &&
+        createPortal(
+          <LowerJaw
+            openHelpModal={props.openHelpModal}
+            openResetModal={props.openResetModal}
+            tryToExecuteChallenge={tryToExecuteChallenge}
+            hint={props.output[1]}
+            testsLength={props.tests.length}
+            attempts={attemptsRef.current}
+            challengeIsCompleted={challengeIsComplete()}
+            tryToSubmitChallenge={tryToSubmitChallenge}
+            isSignedIn={props.isSignedIn}
+            updateContainer={() =>
+              updateOutputViewZone(lowerJawContainer, dataRef.current.editor)
+            }
+          />,
+          lowerJawContainer
+        )}
     </Suspense>
   );
 };

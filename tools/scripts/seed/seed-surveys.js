@@ -1,7 +1,9 @@
 const path = require('path');
 const debug = require('debug');
-require('dotenv').config({ path: path.resolve(__dirname, '../../../.env') });
 const { MongoClient, ObjectId } = require('mongodb');
+
+const { userIds } = require('./user-data');
+require('dotenv').config({ path: path.resolve(__dirname, '../../../.env') });
 
 const args = process.argv.slice(2);
 
@@ -74,17 +76,14 @@ const certifiedUserSurvey = {
 
 const client = new MongoClient(MONGOHQ_URL, { useNewUrlParser: true });
 
-log('Connected successfully to mongo');
-
-const db = client.db('freecodecamp');
-const survey = db.collection('Survey');
-
 const run = async () => {
-  await survey.deleteMany({
-    _id: {
-      $in: surveyIds
-    }
-  });
+  await client.db('admin').command({ ping: 1 });
+  log('Connected successfully to mongo');
+
+  const db = client.db('freecodecamp');
+  const survey = db.collection('Survey');
+
+  await survey.deleteMany({ userId: { $in: userIds } });
   log('Survey info deleted');
 
   if (!args.includes('delete-only')) {

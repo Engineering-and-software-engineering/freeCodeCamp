@@ -1,5 +1,6 @@
 import { HandlerProps } from 'react-reflex';
-import { SuperBlocks } from '../../../shared/config/superblocks';
+import { SuperBlocks } from '../../../shared/config/curriculum';
+import { BlockTypes } from '../../../shared/config/blocks';
 import { Themes } from '../components/settings/theme';
 import { type CertTitle } from '../../config/cert-and-project-map';
 
@@ -18,33 +19,15 @@ export type CurrentCert = {
 };
 
 export type MarkdownRemark = {
-  fields: [{ component: string; nodeIdentity: string; slug: string }];
-  fileAbsolutePath: string;
   frontmatter: {
     block: string;
-    isBeta: boolean;
     superBlock: SuperBlocks;
     // TODO: make enum like superBlock
     certification: string;
     title: CertTitle;
   };
-  headings: [
-    {
-      depth: number;
-      value: string;
-      id: string;
-    }
-  ];
   html: string;
-  htmlAst: Record<string, unknown>;
   id: string;
-  rawMarkdownBody: string;
-  timeToRead: number;
-  wordCount: {
-    paragraphs: number;
-    sentences: number;
-    words: number;
-  };
 };
 
 export type MultipleChoiceAnswer = {
@@ -87,9 +70,83 @@ export interface VideoLocaleIds {
   portuguese?: string;
 }
 
+// English types for animations
+export interface Dialogue {
+  text: string;
+  align: 'left' | 'right' | 'center';
+}
+
+export interface CharacterPosition {
+  x?: number;
+  y?: number;
+  z?: number;
+}
+
+export interface SceneCommand {
+  background?: string;
+  character: string;
+  position?: CharacterPosition;
+  opacity?: number;
+  startTime: number;
+  finishTime?: number;
+  dialogue?: Dialogue;
+}
+
+export type Characters =
+  | 'Alice'
+  | 'Amy'
+  | 'Anna'
+  | 'Bob'
+  | 'Brian'
+  | 'Candidate'
+  | 'David'
+  | 'Delivery Man'
+  | 'Expert'
+  | 'Jake'
+  | 'James'
+  | 'Jessica'
+  | 'Jim'
+  | 'Josh'
+  | 'Linda'
+  | 'Lisa'
+  | 'Maria'
+  | 'Mark'
+  | 'Riker'
+  | 'Sarah'
+  | 'Second Candidate'
+  | 'Sophie'
+  | 'Tom';
+
+export interface SetupCharacter {
+  character: Characters;
+  position: CharacterPosition;
+  opacity: number;
+  isTalking?: boolean;
+}
+
+export interface SetupAudio {
+  filename: string;
+  startTime: number;
+  startTimestamp?: number;
+  finishTimestamp?: number;
+}
+
+export interface SceneSetup {
+  background: string;
+  characters: SetupCharacter[];
+  audio: SetupAudio;
+  alwaysShowDialogue?: boolean;
+}
+
+export interface FullScene {
+  setup: SceneSetup;
+  commands: SceneCommand[];
+}
+
 export interface PrerequisiteChallenge {
   id: string;
   title: string;
+  slug?: string;
 }
 
 export type ChallengeWithCompletedNode = {
@@ -108,12 +165,13 @@ export type ChallengeWithCompletedNode = {
 
 export type ChallengeNode = {
   challenge: {
-    audioPath: string;
     block: string;
+    blockType: BlockTypes;
     certification: string;
     challengeOrder: number;
     challengeType: number;
     dashedName: string;
+    demoType: 'onClick' | 'onLoad' | null;
     description: string;
     challengeFiles: ChallengeFiles;
     fields: Fields;
@@ -139,13 +197,14 @@ export type ChallengeNode = {
     msTrophyId: string;
     notes: string;
     prerequisites: PrerequisiteChallenge[];
-    removeComments: boolean;
     isLocked: boolean;
     isPrivate: boolean;
     order: number;
-    question: Question;
+    questions: Question[];
+    quizzes: Quiz[];
     assignments: string[];
     required: Required[];
+    scene: FullScene;
     solutions: {
       [T in FileKey]: FileKeyChallenge;
     };
@@ -155,7 +214,6 @@ export type ChallengeNode = {
     tail: string[];
     template: string;
     tests: Test[];
-    time: string;
     title: string;
     translationPending: boolean;
     url: string;
@@ -167,6 +225,16 @@ export type ChallengeNode = {
   };
 };
 
+export type Quiz = {
+  questions: QuizQuestion[];
+};
+
+export type QuizQuestion = {
+  question: string;
+  distractors: string[];
+  answer: string;
+};
+
 export type CertificateNode = {
   challenge: {
     // TODO: use enum
@@ -176,7 +244,7 @@ export type CertificateNode = {
 };
 
 export type AllChallengesInfo = {
-  challengeEdges: { node: ChallengeNode }[];
+  challengeNodes: ChallengeNode[];
   certificateNodes: CertificateNode[];
 };
 
@@ -280,6 +348,7 @@ export type ClaimedCertifications = {
   isSciCompPyCertV7: boolean;
   isDataAnalysisPyCertV7: boolean;
   isMachineLearningPyCertV7: boolean;
+  isJsAlgoDataStructCertV8: boolean;
 };
 
 type SavedChallenges = SavedChallenge[];
@@ -289,11 +358,14 @@ export type SavedChallenge = {
   challengeFiles: SavedChallengeFiles;
 };
 
+// TODO: remove unused properties and stop returning them from api? (e.g.
+// history, ext, name)
 export type SavedChallengeFile = {
   fileKey: string;
   ext: Ext;
   name: string;
   history?: string[];
+  editableRegionBoundaries?: number[];
   contents: string;
 };
 
@@ -321,7 +393,6 @@ export type ChallengeMeta = {
   isFirstStep: boolean;
   nextChallengePath: string | null;
   prevChallengePath: string | null;
-  removeComments: boolean;
   superBlock: SuperBlocks;
   title?: string;
   challengeType?: number;
@@ -354,7 +425,7 @@ export type ChallengeFile = {
   name: string;
   editableRegionBoundaries?: number[];
   usesMultifileEditor?: boolean;
-  error: null | string;
+  error?: unknown;
   head: string;
   tail: string;
   seed: string;

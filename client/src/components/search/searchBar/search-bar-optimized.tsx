@@ -32,11 +32,10 @@ const SearchBarOptimized = ({
   return (
     <div className='fcc_searchBar' data-testid='fcc_searchBar' ref={innerRef}>
       <div className='fcc_search_wrapper'>
-        <div className='ais-SearchBox' data-cy='ais-SearchBox'>
+        <div className='ais-SearchBox'>
           <form
             action=''
             className='ais-SearchBox-form'
-            data-cy='ais-SearchBox-form'
             onSubmit={onSubmit}
             role='search'
           >
@@ -57,11 +56,7 @@ const SearchBarOptimized = ({
               value={value}
               ref={inputElementRef}
             />
-            <button
-              className='ais-SearchBox-submit'
-              type='submit'
-              data-playwright-test-label='fcc-search-button'
-            >
+            <button className='ais-SearchBox-submit' type='submit'>
               <Magnifier />
             </button>
             {value && (
@@ -69,7 +64,6 @@ const SearchBarOptimized = ({
                 className='ais-SearchBox-reset'
                 onClick={onClick}
                 type='button'
-                data-playwright-test-label='fcc-search-clear'
               >
                 <InputReset />
               </button>

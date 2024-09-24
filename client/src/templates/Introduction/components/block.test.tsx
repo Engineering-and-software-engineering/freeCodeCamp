@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { SuperBlocks } from '../../../../../shared/config/superblocks';
+import { SuperBlocks } from '../../../../../shared/config/curriculum';
 import { createStore } from '../../../redux/create-store';
 import {
   ChallengeFiles,
@@ -52,11 +52,10 @@ const defaultProps = {
         },
         notes: 'mockNotes',
         prerequisites: [] as PrerequisiteChallenge[],
-        removeComments: false,
         isLocked: false,
         isPrivate: false,
         order: 1,
-        question: {} as Question,
+        questions: [] as Question[],
         assignments: ['mockAssignment'],
         required: [],
         solutions: {
@@ -71,7 +70,6 @@ const defaultProps = {
         tail: ['mockTail'],
         template: 'mockTemplate',
         tests: [] as Test[],
-        time: 'mockTime',
         title: 'mockTitle',
         translationPending: false,
         url: 'https://mockurl.com',

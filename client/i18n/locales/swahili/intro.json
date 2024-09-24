@@ -194,7 +194,7 @@
         ]
       },
       "learn-more-about-css-pseudo-selectors-by-building-a-balance-sheet": {
-        "title": "Pata Maelezo Zaidi Kuhusu CSS Pseudo Selectors Kwa Kuunda Balance Sheet",
+        "title": "Learn More About CSS Pseudo Selectors by Building A Balance Sheet",
         "intro": [
           "Unaweza kutumia CSS pseudo selectors kubadilisha vipengee mahususi vya HTML.",
           "Katika kozi hii, utaunda laha kwa kutumia pseudo selectors. Utajifunza jinsi ya kubadilisha mtindo wa kipengele unapoelea juu yake kwa kutumia kipanya chako, na kuanzisha matukio mengine kwenye ukurasa wako wa tovuti."
@@ -217,7 +217,7 @@
     }
   },
   "javascript-algorithms-and-data-structures": {
-    "title": "Algorithms za JavaScript na Data Structures",
+    "title": "Legacy JavaScript Algorithms and Data Structures",
     "intro": [
       "Ingawa HTML na CSS hudhibiti maudhui na mtindo wa ukurasa, JavaScript inatumika kuifanya ishirikiane. Katika Uthibitishaji wa Algorithm ya JavaScript na Miundo ya Data, utajifunza misingi ya JavaScript ikijumuisha variables, arrays, objects, loops, na functions.",
       "Baada ya kuelewa misingi yake, utatumia maarifa hayo kwa kuunda algoriti ili kudhibiti strings, kurekebisha nambari, na hata kukokotoa mzingo wa Kituo cha Kimataifa cha Anga cha Juu.",
@@ -299,128 +299,192 @@
       }
     }
   },
-  "2022/javascript-algorithms-and-data-structures": {
+  "javascript-algorithms-and-data-structures-v8": {
     "title": "JavaScript Algorithms and Data Structures (Beta)",
     "intro": [
-      "While HTML and CSS control the content and styling of a page, JavaScript is used to make it interactive. In the JavaScript Algorithm and Data Structures Certification, you'll learn the fundamentals of JavaScript like variables, arrays, objects, loops, functions, the DOM and more.",
-      "In addition to the fundamentals, you will learn about Object Oriented Programming (OOP), Functional Programming (FP), algorithmic thinking, how to work with local storage and how to fetch data from an API."
+      "Developers use HTML and CSS to control the content and styling of a page. And they use JavaScript to make that page interactive.",
+      "In this JavaScript Algorithm and Data Structures Certification, you'll learn the JavaScript fundamentals like variables, arrays, objects, loops, functions, the DOM and more.",
+      "You'll also learn about Object Oriented Programming (OOP), Functional Programming, algorithmic thinking, how to work with local storage, and how to fetch data using an API."
     ],
     "note": "Note: Some browser extensions, such as ad-blockers and script-blockers can interfere with the tests. If you face issues, we recommend disabling extensions that modify or block the content of pages while taking the course.",
     "blocks": {
-      "build-a-caesars-cipher-project": {
-        "title": "Unda Mradi wa Cipher wa Kaisari",
-        "intro": ["", ""]
-      },
-      "build-a-cash-register-project": {
-        "title": "Unda Mradi wa Cash Register",
+      "build-a-pokemon-search-app-project": {
+        "title": "Build a Pokémon Search App Project",
         "intro": [
           "This is one of the required projects to earn your certification.",
-          "For this project, you will build a cash register web app."
+          "For this project, you will build a Pokémon search app."
+        ]
+      },
+      "build-a-cash-register-project": {
+        "title": "Build a Cash Register Project",
+        "intro": [
+          "This is one of the required projects to earn your certification.",
+          "For this project, you'll build a cash register web app."
         ]
       },
       "build-a-palindrome-checker-project": {
-        "title": "Unda Mradi wa Palindrome Checker",
+        "title": "Build a Palindrome Checker Project",
         "intro": [
           "This is one of the required projects to earn your certification.",
-          "For this project, you will build an application that checks if a word is a palindrome."
+          "For this project, you'll build an application that checks whether a given word is a palindrome."
         ]
       },
       "build-a-roman-numeral-converter-project": {
-        "title": "Unda Mradi wa Kubadilisha Nambari za Kirumi",
+        "title": "Build a Roman Numeral Converter Project",
         "intro": [
           "This is one of the required projects to claim your certification.",
-          "For this project, you will build an application that converts integers to Roman numerals."
+          "For this project, you'll build an application that converts integers to Roman numerals."
         ]
       },
       "build-a-telephone-number-validator-project": {
-        "title": "Unda Mradi wa Kuthibitisha Nambari ya Simu",
+        "title": "Build a Telephone Number Validator Project",
         "intro": [
           "This is one of the required projects to claim your certification.",
-          "For this project, you will build an application that checks if a number is a valid United States phone number."
+          "For this project, you'll build an application that checks if a number is a valid United States phone number."
         ]
       },
       "learn-basic-javascript-by-building-a-role-playing-game": {
-        "title": "Jifunze Misingi ya JavaScript kwa Kuunda Mchezo wa Role Playing",
+        "title": "Learn Basic JavaScript by Building a Role Playing Game",
         "intro": [
-          "JavaScript is a scripting language you can use to make web pages interactive. It is one of the core technologies of the web, along with HTML and CSS, and is supported by all modern browsers.",
-          "In this practice project, you'll learn fundamental programming concepts in JavaScript by building a role playing game. You'll learn to work with arrays, strings, objects, functions, loops, if/else statements, and more."
+          "JavaScript is a powerful scripting language that you can use to make web pages interactive. It's one of the core technologies of the web, along with HTML and CSS. All modern browsers support JavaScript.",
+          "In this practice project, you'll learn fundamental programming concepts in JavaScript by coding your own Role Playing Game. You'll learn how to work with arrays, strings, objects, functions, loops, <code>if/else</code> statements, and more."
         ]
       },
       "learn-form-validation-by-building-a-calorie-counter": {
-        "title": "Jifunze Uthibitishaji wa Fomu kwa Kuunda Calorie Counter",
+        "title": "Learn Form Validation by Building a Calorie Counter",
         "intro": [
-          "When building out web applications, there will be times where you will need to work with user input and form validation. In this calorie counter project, you will learn how to handle user input, perform calculations based on that input, and dynamically update the interface to display the results.",
-          "In this practice project, you'll learn basic regular expressions, template literals, the <code>addEventListener()</code> method and more."
+          "Sometimes when you're coding a web application, you'll need to be able to accept input from a user. In this calorie counter project, you'll learn how to validate user input, perform calculations based on that input, and dynamically update your interface to display the results.",
+          "In this practice project, you'll learn basic regular expressions, template literals, the <code>addEventListener()</code> method, and more."
         ]
       },
       "learn-functional-programming-by-building-a-spreadsheet": {
-        "title": "Jifunze Functional Programming kwa Kuunda Spreadsheet",
+        "title": "Learn Functional Programming by Building a Spreadsheet",
         "intro": [
-          "Functional Programming is a popular approach to software development. In Functional Programming, code is organized into smaller, basic functions that can be combined to build complex programs.",
-          "In this spreadsheet application project, you'll learn about parsing and evaluating mathematical expressions, implementing spreadsheet functions, handling cell references, and creating interactive web interfaces with dynamic content updates based on user input.  This project will cover concepts like the <code>map()</code> method, <code>find()</code> method, <code>parseInt()</code>, the <code>includes()</code> method and more."
+          "Functional Programming is a popular approach to software development. In Functional Programming, developers organize code into smaller functions, then combine those functions to build complex programs.",
+          "In this spreadsheet application project, you'll learn about parsing and evaluating mathematical expressions, implementing spreadsheet functions, handling cell references, and creating interactive web interfaces. You'll learn how to dynamically update the page based on user input.",
+          "This project will cover concepts like the <code>map()</code>, <code>find()</code>, and <code>includes()</code> methods and the <code>parseInt()</code> function."
         ]
       },
       "learn-modern-javascript-methods-by-building-football-team-cards": {
-        "title": "Jifunze Mbinu za Kisasa za JavaScript Kwa Kuunda Kadi za Timu ya Soka",
+        "title": "Learn Modern JavaScript Methods by Building Football Team Cards",
         "intro": [
-          "A common aspect of building web applications is to work with data sets and output that information on the screen. In this football team cards project, you'll learn how to work with DOM manipulation, object destructuring, event handling, and data filtering.",
-          "This project will cover concepts like the switch statement, default parameters, <code>Object.freeze()</code>, the <code>map()</code> method and more."
+          "One common aspect of building web applications: processing datasets, and then outputting information to the screen. In this sports team cards project, you'll learn how to work with DOM manipulation, object destructuring, event handling, and data filtering.",
+          "This project will cover concepts like, default parameters, <code>Object.freeze()</code>, and reinforce your knowledge of the <code>switch</code> statement and <code>map()</code> method."
         ]
       },
       "learn-advanced-array-methods-by-building-a-statistics-calculator": {
-        "title": "Jifunze Mbinu za Kina za Array kwa Kuunda Kikokotoo cha Takwimu",
+        "title": "Learn Advanced Array Methods by Building a Statistics Calculator",
         "intro": [
-          "Getting comfortable with working with array manipulation methods such as <code>map()</code>, <code>reduce()</code>, and <code>filter()</code> is a fundamental part of JavaScript.",
-          "In this statistics calculator project, you'll gain experience in handling user input, DOM manipulation, and method chaining by performing statistical calculations like mean, median, mode, variance, and standard deviation."
+          "As you expand your JavaScript skills, you'll want to get comfortable with array manipulation methods, such as <code>map()</code>, <code>reduce()</code>, and <code>filter()</code>.",
+          "In this statistics calculator project, you'll gain experience with handling user input, DOM manipulation, and method chaining. You'll get practice by performing statistical calculations like mean, median, mode, variance, and standard deviation."
         ]
       },
       "learn-basic-oop-by-building-a-shopping-cart": {
         "title": "Learn Basic OOP by Building a Shopping Cart",
         "intro": [
-          "OOP, or Object Oriented Programming, is one of the major approaches to the software development process. In OOP, objects and classes organize code to describe things and what they can do.",
-          "In this shopping cart project, you'll learn learn how to define and utilize classes, create class instances, and implement methods for data manipulation. This project will cover concepts including the ternary operator, spread operator, the <code>this</code> keyword and more."
+          "OOP, or Object Oriented Programming, is one of the major approaches to the software development process. In OOP, developers use objects and classes to structure their code.",
+          "In this shopping cart project, you'll learn how to define classes and use them. You'll create class instances and implement methods for data manipulation.",
+          "This project will cover concepts like the ternary operator, the spread operator, the <code>this</code> keyword, and more."
         ]
       },
       "learn-fetch-and-promises-by-building-an-fcc-authors-page": {
-        "title": "Jifunze Fetch na Promises Kwa Kuunda Ukurasa wa Waandishi wa fCC",
+        "title": "Learn Fetch and Promises by Building an fCC Authors Page",
         "intro": [
-          "A common aspect of web development is learning how to fetch data from an external API and work with asynchronous JavaScript.  This freeCodeCamp authors page project will show you how to work with the fetch method and dynamically update the DOM to display the fetched data,",
-          "This project will also teach you how to paginate your data so you can load results in batches. "
+          "One common aspect of web development is learning how to fetch data from an external API, then work with asynchronous JavaScript.",
+          "This freeCodeCamp authors page project will show you how to use the fetch method, then dynamically update the DOM to display the fetched data.",
+          "This project will also teach you how to paginate your data so you can load results in batches."
         ]
       },
       "learn-regular-expressions-by-building-a-spam-filter": {
-        "title": "Jifunze Regular Expressions kwa Kuunda Spam Filter",
+        "title": "Learn Regular Expressions by Building a Spam Filter",
         "intro": [
-          "Regular expressions, often shortened to \"regex\" or \"regexp\", are patterns that help programmers match, search, and replace text. Regular expressions are very powerful, but can be hard to read because they use special characters to make more complex, flexible matches.",
-          "In this spam filter project, you'll learn how to use special characters, capture groups, positive and negative lookaheads, and other techniques to match any text you want."
+          "Regular expressions, often shortened to \"regex\" or \"regexp\", are patterns that help programmers match, search, and replace text. Regular expressions are powerful, but can be difficult to understand because they use so many special characters.",
+          "In this spam filter project, you'll learn about capture groups, positive lookaheads, negative lookaheads, and other techniques to match any text you want."
         ]
       },
       "learn-basic-algorithmic-thinking-by-building-a-number-sorter": {
-        "title": "Jifunze Msingi wa Algorithmic Thinking kwa Kuunda Kipanga Nambari",
+        "title": "Learn Basic Algorithmic Thinking by Building a Number Sorter",
         "intro": [
-          "In computer science there are fundamental sorting algorithms that all developers should learn.  In this number sorter project, you will learn how to implement and visualize different sorting algorithms like bubble sort, selection sort, and insertion sort using JavaScript.",
-          "This project will help you understand the fundamental concepts behind these algorithms and how they can be applied to sort numerical data in a web applications."
+          "In computer science, there are fundamental sorting algorithms that all developers should learn. In this number sorter project, you'll learn how to implement and visualize different sorting algorithms like bubble sort, selection sort, and insertion sort – all with JavaScript.",
+          "This project will help you understand the fundamental concepts behind these algorithms, and how you can apply them to sort numerical data in web applications."
+        ]
+      },
+      "review-algorithmic-thinking-by-building-a-dice-game": {
+        "title": "Review Algorithmic Thinking by Building a Dice Game",
+        "intro": [
+          "Algorithmic thinking involves the ability to break down complex problems into a sequence of well-defined, step-by-step instructions.",
+          "In this Dice game project, you’ll learn how to manage game state, implement game logic for rolling dice, keeping score, and applying rules for various combinations.",
+          "This project covers concepts such as event handling, array manipulation, conditional logic, and updating the user interface dynamically based on game state."
         ]
       },
       "learn-intermediate-oop-by-building-a-platformer-game": {
         "title": "Learn Intermediate OOP by Building a Platformer Game",
         "intro": [
-          "Building games allows you to grasp fundamental programming principles while creating a dynamic and interactive gaming experience.",
-          "In this platformer game project, you will continue to learn about classes, objects, inheritance, and encapsulation. You will also learn how to design and organize game elements efficiently and gain insights into problem-solving and code reusability."
+          "Coding a game is a great way to grasp fundamental programming principles, while also creating an interactive gaming experience.",
+          "In this platformer game project, you'll continue to learn about classes, objects, inheritance, and encapsulation. You'll also learn how to design and organize game elements efficiently and gain insights into problem-solving and code reusability."
         ]
       },
       "learn-localstorage-by-building-a-todo-app": {
         "title": "Learn localStorage by Building a Todo App",
         "intro": [
-          "Local storage is a web browser feature that allows web applications to store key-value pairs persistently within a user's browser, enabling data to be saved and retrieved across page sessions.",
-          "In this TODO application, you will learn how to handle form inputs, manage local storage, perform CRUD (Create, Read, Update, Delete) operations on tasks, implementing event listeners, and toggling UI elements."
+          "Local storage is a web browser feature that lets web applications store key-value pairs persistently within a user's browser. This allows web apps to save data during one session, then retrieve it in a later page session.",
+          "In this TODO application, you'll learn how to handle form inputs, manage local storage, perform CRUD (Create, Read, Update, Delete) operations on tasks, implement event listeners, and toggle UI elements."
         ]
       },
       "learn-the-date-object-by-building-a-date-formatter": {
         "title": "Learn the Date Object by Building a Date Formatter",
         "intro": [
-          "Working with dates in JavaScript can be both powerful and challenging, as you navigate through various methods, formats, and time zones. In this project you will learn how to work with the JavaScript Date object, including its methods and properties, and learn how to format dates effectively.",
+          "Working with dates in JavaScript can be challenging. You have to navigate various methods, formats, and time zones. In this project, you'll learn how to work with the JavaScript Date object, including its methods and properties. You'll also learn how to correctly format dates.",
           "This project will cover concepts such as the <code>getDate()</code>, <code>getMonth()</code>, and <code>getFullYear()</code> methods."
+        ]
+      },
+      "learn-asynchronous-programming-by-building-an-fcc-forum-leaderboard": {
+        "title": "Learn Asynchronous Programming by Building an fCC Forum Leaderboard",
+        "intro": [
+          "JavaScript is an asynchronous programming language. And this project will help you gain proficiency in asynchronous concepts. You'll code your own freeCodeCamp forum leaderboard.",
+          "This project will cover the Fetch API, promises, Async/Await, and the try..catch statement."
+        ]
+      },
+      "learn-basic-string-and-array-methods-by-building-a-music-player": {
+        "title": "Learn Basic String and Array Methods by Building a Music Player",
+        "intro": [
+          "Now let's learn some essential string and array methods like the <code>find()</code>, <code>forEach()</code>, <code>map()</code>, and <code>join()</code>. These methods are crucial for developing dynamic web applications.",
+          "In this project, you'll code a basic MP3 player using HTML, CSS, and JavaScript. The project covers fundamental concepts such as handling audio playback, managing a playlist, implementing play, pause, next, previous, and shuffle functionalities. You'll even learn how to dynamically update your user interface based on the current song."
+        ]
+      },
+      "learn-recursion-by-building-a-decimal-to-binary-converter": {
+        "title": "Learn Recursion by Building a Decimal to Binary Converter",
+        "intro": [
+          "Recursion is a programming concept where a function calls itself. This can reduce a complex problem into simpler sub-problems, until they become straightforward to solve.",
+          "In this project, you’ll build a decimal-to-binary converter using JavaScript. You’ll learn the fundamental concepts of recursion, explore the call stack, and build out a visual representation of the recursion process through an animation."
+        ]
+      },
+      "learn-introductory-javascript-by-building-a-pyramid-generator": {
+        "title": "Learn Introductory JavaScript by Building a Pyramid Generator",
+        "intro": [
+          "JavaScript is a powerful scripting language that you can use to make web pages interactive. It's one of the core technologies of the web, along with HTML and CSS. All modern browsers support JavaScript.",
+          "In this practice project, you'll learn fundamental programming concepts in JavaScript by coding your own Pyramid Generator. You'll learn how to work with arrays, strings, functions, loops, <code>if/else</code> statements, and more."
+        ]
+      },
+      "review-js-fundamentals-by-building-a-gradebook-app": {
+        "title": "Review JavaScript Fundamentals by Building a Gradebook App",
+        "intro": [
+          "In this mini project, you will get to review JavaScript fundamentals like functions, variables, conditionals and more by building a gradebook app.",
+          "This will give you an opportunity to solve small problems and get a better understanding of the basics."
+        ]
+      },
+      "learn-basic-debugging-by-building-a-random-background-color-changer": {
+        "title": "Learn Basic Debugging by Building a Random Background Color Changer",
+        "intro": [
+          "Debugging is the process of going through your code, finding any issues, and fixing them.",
+          "In this project, you will help CamperBot build a random background color changer and help them find and fix errors."
+        ]
+      },
+      "review-dom-manipulation-by-building-a-rock-paper-scissors-game": {
+        "title": "Review DOM Manipulation by Building a Rock, Paper, Scissors Game",
+        "intro": [
+          "In the previous projects you learned how to work with basic DOM manipulation. Now it is time to review what you have learned by building a Rock, Paper, Scissors game.",
+          "In this mini project, you will review conditionals, functions, <code>getElementById</code>, and more. This project will give you an opportunity to solve small problems and get a better understanding of the basics."
         ]
       }
     }
@@ -554,7 +618,7 @@
         "title": "Hifadhidata ya Periodic Table",
         "intro": [
           "Hii ni mojawapo ya miradi inayohitajika ili kupata cheti chako.",
-          "Kwa mradi huu, utaunda hati ya Bash ili kupata maelezo kuhusu vipengele vya kemikali kutoka kwa hifadhidata ya periodic table."
+          "For this project, you will create a Bash script to get information about chemical elements from a periodic table database."
         ]
       },
       "build-a-salon-appointment-scheduler-project": {
@@ -712,24 +776,140 @@
     }
   },
   "scientific-computing-with-python": {
-    "title": "Scientific Computing na Python",
+    "title": "Scientific Computing with Python (Beta)",
     "intro": [
-      "Python ni mojawapo ya lugha maarufu zaidi za programu leo. Unaweza kuitumia kwa kila kitu kuanzia uandishi wa kimsingi hadi ujifunzaji wa mashine.",
-      "Katika cheti hiki cha Scientific Computing na Python, utajifunza misingi ya Python kama vile variables, loops, conditionals, na functions. Kisha utaongeza haraka miundo changamano ya data, mitandao, hifadhidata za uhusiano, na taswira ya data."
+      "The Scientific Computing with Python (Beta) curriculum will equip you with the skills to analyze and manipulate data using Python, a powerful and versatile programming language. You'll learn key concepts like data structures, algorithm, Object Oriented Programming, and how to perform complex calculations using a variety of tools.",
+      "This comprehensive course will guide you through the fundamentals of scientific computing, including data structures, and algorithms."
     ],
     "note": "",
     "blocks": {
-      "python-for-everybody": {
-        "title": "Python kwa kila Mtu",
+      "learn-string-manipulation-by-building-a-cipher": {
+        "title": "Learn String Manipulation by Building a Cipher",
         "intro": [
-          "Python kwa kila Mtu ni mfululizo wa kozi za video za bure zinazofundisha misingi ya kutumia Python 3.",
-          "Kozi hizo ziliundwa na Dk. Charles Severance (pia anajulikana kama Dk. Chuck). Yeye ni Profesa wa Kliniki katika Shule ya Habari ya Chuo Kikuu cha Michigan, ambapo anafundisha kozi mbalimbali zinazozingatia teknolojia ikiwa ni pamoja na programu, muundo wa hifadhidata, na ukuzaji wa wavuti."
+          "Python is a powerful and popular programming language widely used for data science, data visualization, web development, game development, machine learning and more.",
+          "In this project, you'll learn fundamental programming concepts in Python, such as variables, functions, loops, and conditional statements. You'll use these to code your first programs."
         ]
       },
-      "scientific-computing-with-python-projects": {
-        "title": "Miradi ya Scientific Computing with Python",
+      "learn-how-to-work-with-numbers-and-strings-by-implementing-the-luhn-algorithm": {
+        "title": "Learn How to Work with Numbers and Strings by Implementing the Luhn Algorithm",
         "intro": [
-          "Ni wakati wa kujaribu ujuzi wako wa Python. Kwa kukamilisha miradi hii, utaonyesha kuwa una ujuzi mzuri wa msingi wa Python na unahitimu kwa Cheti cha Scientific Computing with Python."
+          "The Luhn Algorithm is widely used for error-checking in various applications, such as verifying credit card numbers.",
+          "By building this project, you'll gain experience working with numerical computations and string manipulation."
+        ]
+      },
+      "learn-list-comprehension-by-building-a-case-converter-program": {
+        "title": "Learn Python List Comprehension by Building a Case Converter Program",
+        "intro": [
+          "List Comprehension is a way to construct a new Python list from an iterable types: lists, tuples, and strings. All without using a for loop or the `.append()` list method.",
+          "In this project, you'll write a program that takes a string formatted in Camel Case or Pascal Case, then converts it into Snake Case.",
+          "The project has two phases: first you'll use a for loop to implement the program. Then you'll learn how to use List Comprehension instead of a loop to achieve the same results."
+        ]
+      },
+      "learn-regular-expressions-by-building-a-password-generator": {
+        "title": "Learn Regular Expressions by Building a Password Generator",
+        "intro": [
+          "A Python module is a file that contains a set of statements and definitions that you can use in your code.",
+          "In this project, you'll learn how to import modules from the Python standard library. You'll also learn how to use Regular Expressions by building your own password generator program."
+        ]
+      },
+      "learn-algorithm-design-by-building-a-shortest-path-algorithm": {
+        "title": "Learn Algorithm Design by Building a Shortest Path Algorithm",
+        "intro": [
+          "Algorithms are step-by-step procedures that developers use to perform calculations and solve computational problems.",
+          "In this project, you'll learn how to use functions, loops, conditional statements, and dictionary comprehensions to implement a Shortest Path algorithm."
+        ]
+      },
+      "learn-recursion-by-solving-the-tower-of-hanoi-puzzle": {
+        "title": "Learn Recursion by Solving the Tower of Hanoi Puzzle",
+        "intro": [
+          "Recursion is a programming approach that allows you to solve complicated computational problems with just a little code.",
+          "In this project, you'll start with a loop-based approach to solving the tower of Hanoi mathematical puzzle. Then you'll learn how to implement a recursive solution."
+        ]
+      },
+      "learn-data-structures-by-building-the-merge-sort-algorithm": {
+        "title": "Learn Data Structures by Building the Merge Sort Algorithm",
+        "intro": [
+          "The Merge Sort Algorithm is a sorting algorithm based on the divide and conquer principle.",
+          "In this project, you'll learn how to interact with data structures by sorting a list of random numbers using the Merge Sort Algorithm."
+        ]
+      },
+      "learn-classes-and-objects-by-building-a-sudoku-solver": {
+        "title": "Learn Classes and Objects by Building a Sudoku Solver",
+        "intro": [
+          "Classes and objects are important programming concepts. These Object-Oriented Programming tools help developers to achieve code modularity, abstraction, and readability. And they promote reusability.",
+          "In this Sudoku Solver project, you'll learn how to use classes and objects to build a Sudoku grid and to solve a Sudoku puzzle."
+        ]
+      },
+      "learn-tree-traversal-by-building-a-binary-search-tree": {
+        "title": "Learn Tree Traversal by Building a Binary Search Tree",
+        "intro": [
+          "A Binary Search Tree (BST) is an common data structure where data is sorted hierarchically.",
+          "In this project, you'll learn how to construct your own BST and perform an in-order traversal. You'll also learn key operations like insertion, search, and deletion."
+        ]
+      },
+      "learn-lambda-functions-by-building-an-expense-tracker": {
+        "title": "Learn Lambda Functions by Building an Expense Tracker",
+        "intro": [
+          "Lambda functions give you a concise way to write small, throwaway functions in your code.",
+          "In this project, you'll explore the power of Lambda Functions by creating an expense tracker. Your resulting app will demonstrate how you can use Lambda Functions for efficient, streamlined operations."
+        ]
+      },
+      "build-an-arithmetic-formatter-project": {
+        "title": "Build an Arithmetic Formatter Project",
+        "intro": [
+          "This is one of the required projects to claim your certification."
+        ]
+      },
+      "build-a-time-calculator-project": {
+        "title": "Build a Time Calculator Project",
+        "intro": [
+          "This is one of the required projects to claim your certification."
+        ]
+      },
+      "build-a-budget-app-project": {
+        "title": "Build a Budget App Project",
+        "intro": [
+          "This is one of the required projects to claim your certification."
+        ]
+      },
+      "build-a-polygon-area-calculator-project": {
+        "title": "Build a Polygon Area Calculator Project",
+        "intro": [
+          "This is one of the required projects to claim your certification."
+        ]
+      },
+      "build-a-probability-calculator-project": {
+        "title": "Build a Probability Calculator Project",
+        "intro": [
+          "This is one of the required projects to claim your certification."
+        ]
+      },
+      "learn-interfaces-by-building-an-equation-solver": {
+        "title": "Learn Interfaces by Building an Equation Solver",
+        "intro": [
+          "Abstract classes enable you to define formal interfaces - objects acting as blueprints for classes.",
+          "In this project, you'll discover how to implement an interface in Python while building a simple equation solver program."
+        ]
+      },
+      "learn-special-methods-by-building-a-vector-space": {
+        "title": "Learn Special Methods by Building a Vector Space",
+        "intro": [
+          "Python special methods are called in response to specific operations and enable you to customize the behaviour of your objects in a detailed and effective way.",
+          "In this project, you are going to explore some of the most common special methods while learning about vectors by building a vector space."
+        ]
+      },
+      "learn-encapsulation-by-building-a-projectile-trajectory-calculator": {
+        "title": "Learn Encapsulation by Building a Projectile Trajectory Calculator",
+        "intro": [
+          "Encapsulation is a core OOP principle based on writing code that limits direct access to data.",
+          "In this project, you'll discover new concepts related to encapsulation, such as getters, setters, and name mangling, and you'll use them together with what you already learned to create a program that calculates a projectile trajectory."
+        ]
+      },
+      "learn-the-bisection-method-by-finding-the-square-root-of-a-number": {
+        "title": "Learn the Bisection Method by Finding the Square Root of a Number",
+        "intro": [
+          "Numerical methods are used to approximate solutions to mathematical problems that are difficult or impossible to solve analytically.",
+          "In this project, you will explore the numerical method of bisection to find the square root of a number by iteratively narrowing down the possible range of values that contain the square root."
         ]
       }
     }
@@ -807,7 +987,7 @@
     "note": "",
     "blocks": {
       "tensorflow": {
-        "title": "Tensorflow",
+        "title": "TensorFlow",
         "intro": [
           "TensorFlow ni mfumo wa chanzo huria ambao hurahisisha utumiaji wa ujifunzaji wa mashine na mtandao wa neva.",
           "Kozi ifuatayo ya video iliundwa na Tim Ruscica, pia inajulikana kama “Tech With Tim”. Itakusaidia kuelewa TensorFlow na baadhi ya uwezo wake wenye nguvu."
@@ -962,13 +1142,29 @@
       }
     }
   },
+  "python-for-everybody": {
+    "title": "Legacy Python for Everybody",
+    "intro": [
+      "Python is one of the most popular, flexible programming languages today. You can use it for everything from basic scripting to machine learning."
+    ],
+    "note": "",
+    "blocks": {
+      "python-for-everybody": {
+        "title": "Python for Everybody",
+        "intro": [
+          "Python for everybody is a free video course series that teaches the basics of using Python 3.",
+          "The courses were created by Dr. Charles Severance (also known as Dr. Chuck). He is a Clinical Professor at the University of Michigan School of Information, where he teaches various technology-oriented courses including programming, database design, and web development."
+        ]
+      }
+    }
+  },
   "coding-interview-prep": {
     "title": "Matayarisho ya Mahojiano ya Coding",
     "intro": [
       "Ikiwa unatafuta mazoezi ya coding bila malipo ili kujiandaa kwa mahojiano yako ya kazini, tumekushughulikia.",
       "Sehemu hii ina mamia ya changamoto za usimbaji ambazo hujaribu ujuzi wako wa kanuni, miundo ya data na hisabati. Pia ina idadi ya miradi ya kwenda nyumbani unayoweza kutumia kuimarisha ujuzi wako, au kuongeza kwenye wasifu yako."
     ],
-    "note": "Mradi wa Euler Project umehamishwa hadi kwenye mkondo wake. Rudi kwenye mtaala ili kuona orodha ya kozi tunazotoa.",
+    "note": "The Project Euler Project and Rosetta Code have been moved to their own courses. Go back to the curriculum to see the list of courses we offer.",
     "blocks": {
       "algorithms": {
         "title": "Algorithms",
@@ -990,56 +1186,115 @@
           "Mahojiano ya kuprogramu yamekuwa ya kusisitiza kila wakati. Waombaji kazi wakati mwingine hupewa mradi wa kurudi nyumbani ili kukamilishwa nje ya usaili. Aina hizi za mahojiano kawaida huhitaji kazi nyingi, lakini ni njia nzuri kwa waajiri kuona jinsi unavyoweza kufanya kazi.",
           "Unda miradi ya usimbaji ya bonasi hapa chini kwa mazoezi ya ziada. Chukua muda wako, uzifanye vizuri, na uziweke kwenye wasifu wako ili kuonyesha waajiri watarajiwa."
         ]
-      },
-      "rosetta-code": {
-        "title": "Rosetta Code",
-        "intro": [
-          "Ongeza ujuzi wako wa kibunifu wa kutatua matatizo kwa kazi hizi zisizolipishwa za kupanga kutoka maktaba ya Kanuni ya Rosetta ya kawaida.",
-          "Changamoto hizi zinaweza kuwa ngumu, lakini zitasukuma mantiki yako ya algorithm kufikia kiwango kipya.",
-          "<a href='https://rosettacode.org/wiki/Rosetta_Code' target='_blank' rel='noopener noreferrer nofollow'>Sifa: Rosetta Code</a>"
-        ]
       }
     }
   },
   "the-odin-project": {
-    "title": "Mradi wa Odin",
+    "title": "The Odin Project - freeCodeCamp Remix (Beta)",
     "intro": [
-      "Mradi wa Odin ni mojawapo ya nyenzo za \"Ninatamani ningekuwa nazo nilipokuwa najifunza\". ",
-      "Sio kila mtu anayeweza kupata elimu ya sayansi ya kompyuta au pesa za kuhudhuria shule ya usimbaji ya kina na hakuna kati ya hizo zinazofaa kwa kila mtu.",
-      "Mradi huu umeundwa ili kujaza pengo la watu wanaojaribu kuudukua wao wenyewe lakini bado wanataka elimu ya hali ya juu."
+      "The Odin Project was created in 2013 by a lone developer, Erik Trautman. Over the years, an open source community has sprung up to maintain and expand the project.",
+      "freeCodeCamp has expanded upon the open source curriculum to make it run interactively in the browser, with tests to evaluate your code and ensure you've understood key concepts.",
+      "If you want the original experience of configuring all of The Odin Project to run on your local computer, you can check out the original Odin Project on <a href='https://www.theodinproject.com/' target='_blank' rel='noopener noreferrer nofollow'>The Odin Project website</a>. A huge thanks to The Odin Project community for continuing to maintain this valuable learning resource for developers all around the world.",
+      "This course is unofficial, and not endorsed by The Odin Project. Changes to The Odin Project curriculum content have been made, and all instructional material for this course is licenced under <a href='https://creativecommons.org/licenses/by-nc-sa/4.0/' target='_blank' rel='noopener noreferrer nofollow'>CC-BY-SA-NC 4.0</a>",
+      "<a href='https://creativecommons.org/licenses/by-nc-sa/4.0/deed' target='_blank' rel='noopener noreferrer nofollow'>&copy; The Odin Project</a>",
+      "This course includes content from <a href='javascript.info'>JavaScript.info</a>, which is licenced under <a href='https://creativecommons.org/licenses/by-nc-sa/4.0/' target='_blank' rel='noopener noreferrer nofollow'>CC-BY-NC-SA 4.0</a>"
     ],
     "blocks": {
       "top-learn-html-foundations": {
         "title": "Jifunze Misingi ya HTML",
-        "intro": ["Maelezo yanapaswa kuamuliwa"]
+        "intro": [
+          "Get a solid grasp of HTML essentials with this course. From structuring web pages to understanding semantic tags, you'll build a strong foundation for creating well-organized and accessible content on the web."
+        ]
       },
       "top-working-with-text": {
         "title": "Kufanya kazi na maandishi",
-        "intro": ["Maelezo yanapaswa kuamuliwa"]
+        "intro": [
+          "Explore the intricacies of working with text in web development. Learn about text formatting, manipulation, and presentation to enhance your skills in creating web content."
+        ]
       },
       "top-links-and-images": {
         "title": "Viungo na Picha",
-        "intro": ["Maelezo yanapaswa kuamuliwa"]
+        "intro": [
+          "Learn how to incorporate links and images into your web projects. This course covers the fundamentals of creating links and embedding images to make your websites more interactive and visually appealing."
+        ]
       },
       "top-build-a-recipe-project": {
         "title": "Jifunze Misingi ya HTML kwa Kuunda Ukurasa wa Mapishi",
-        "intro": ["Maelezo yanapaswa kuamuliwa"]
+        "intro": [
+          "Put your HTML skills into practice by building a recipe page. This hands-on project allows you to apply your knowledge and create a functional web page while reinforcing key concepts of HTML development."
+        ]
       },
       "top-learn-css-foundations": {
         "title": "Jifunze Misingi ya CSS",
-        "intro": ["Maelezo yanapaswa kuamuliwa"]
+        "intro": [
+          "Dive into the world of Cascading Style Sheets (CSS) and learn how to style your HTML elements. Explore styling properties, selectors, and layouts to bring your web pages to life."
+        ]
       },
       "top-learn-css-foundations-projects": {
         "title": "Jifunze Miradi ya Msingi wa CSS",
-        "intro": ["Maelezo yanapaswa kuamuliwa"]
+        "intro": [
+          "Take your CSS skills to the next level by working on practical projects. This course provides hands-on experience in applying CSS to create responsive designs for real-world scenarios."
+        ]
       },
       "top-learn-css-specificity": {
         "title": "Jifunze Umaalumu wa CSS",
-        "intro": ["Maelezo yanapaswa kuamuliwa"]
+        "intro": [
+          "Learn CSS specificity and gain a better understanding of how styles are applied to HTML elements. This course explores the nuances of CSS rules and helps you write efficient and targeted styles for your web pages."
+        ]
       },
       "top-the-box-model": {
         "title": "Jifunze Box Model",
-        "intro": ["Maelezo yanapaswa kuamuliwa"]
+        "intro": [
+          "Learn the CSS box model with this course. Understand how elements are rendered on the web, and learn to manipulate spacing, borders, and padding to achieve your desired layout and design."
+        ]
+      },
+      "top-introduction-to-flexbox": {
+        "title": "Introduction to Flexbox",
+        "intro": [
+          "Discover the power of Flexbox, a layout model that simplifies the design of flexible and responsive web layouts. Learn how to create dynamic and adaptive page structures with ease."
+        ]
+      },
+      "top-learn-block-and-inline": {
+        "title": "Learn the difference between Block and Inline",
+        "intro": [
+          "Explore the distinctions between block and inline elements in HTML and CSS. This course provides insights into how these display types affect layout and behavior, empowering you to make informed design decisions."
+        ]
+      },
+      "top-learn-variables-and-operators": {
+        "title": "Learn Variables and Operators",
+        "intro": [
+          "Get started with JavaScript by learning about variables and operators. This course covers the fundamentals of JavaScript programming, including data types, operators, and variable declarations."
+        ]
+      },
+      "top-learn-data-types-and-conditionals": {
+        "title": "Learn Data Types and Conditionals",
+        "intro": ["Learn about data types and conditionals in JavaScript."]
+      },
+      "top-learn-function-basics": {
+        "title": "Learn Function Basics",
+        "intro": ["Learn about functions in JavaScript."]
+      },
+      "top-basic-function-projects": {
+        "title": "Basic Function Projects",
+        "intro": [
+          "Put your JavaScript skills to the test by building basic functions."
+        ]
+      },
+      "top-learn-arrays-and-loops": {
+        "title": "Learn Arrays and Loops",
+        "intro": ["Learn about arrays and loops in JavaScript."]
+      },
+      "top-learn-to-solve-problems-and-understand-errors": {
+        "title": "Learn to Solve Problems and Understand Errors",
+        "intro": [
+          "Learn how to solve problems and understand errors in JavaScript."
+        ]
+      },
+      "top-build-a-rock-paper-scissors-game": {
+        "title": "Build a Rock Paper Scissor Game",
+        "intro": [
+          "Put your JavaScript skills to the test by building a Rock Paper Scissors game."
+        ]
       }
     }
   },
@@ -1151,132 +1406,1974 @@
   },
   "a2-english-for-developers": {
     "title": "A2 English for Developers (Beta)",
+    "note": "This certification is currently in active development. While there isn't a claimable certification available for this section at the moment, one will be available soon. In the meantime, you're welcome to explore the courses we have created below.",
     "intro": [
-      "This course teaches the English language, designed for developers.",
-      "More text here."
+      "In this English for Developers Curriculum, you'll learn the essentials of English communication. This will follow the A2 level of the Common European Framework of Reference (CEFR). And we've focused on vocabulary that is particularly useful for developers.",
+      "The first half of the curriculum will help you get comfortable with English grammar and usage. It will give you tons of hands-on practice. You'll learn basics like introducing yourself, making small talk, and discussing your work.",
+      "In the second half, you'll practice vocabulary specific to software development. You'll learn how to describe code, discuss tech trends, and participate in stand-up meetings.",
+      "This entire A2-level curriculum includes 105 different dialogues. Each is designed to build your vocabulary and boost your confidence when speaking in a professional tech setting."
     ],
     "blocks": {
       "learn-greetings-in-your-first-day-at-the-office": {
         "title": "Learn Greetings in your First Day at the Office",
-        "intro": ["Learn greetings."]
+        "intro": [
+          "In this first course, you'll learn common expressions for situations you may encounter on your first day at work. You'll learn about introductions, getting to know people, asking for lunch recommendations, and getting an access card from security."
+        ]
       },
       "learn-introductions-in-an-online-team-meeting": {
         "title": "Learn Introductions in an Online Team Meeting",
-        "intro": ["Learn introductions."]
+        "intro": [
+          "In this course, you'll learn how to give a personal introduction. You'll also learn how to state your profession, and share your goals in group meetings."
+        ]
       },
       "learn-conversation-starters-in-the-break-room": {
         "title": "Learn Conversation Starters in the Break Room",
-        "intro": ["Learn conversation starters."]
+        "intro": [
+          "In this course, you'll learn how to start a conversation in casual settings. You'll also learn how to talk about your hobbies and personality traits. You'll even learn how to ask about places around the town."
+        ]
       },
       "learn-how-to-talk-about-a-typical-workday-and-tasks": {
         "title": "Learn How to Talk About a Typical Workday and Tasks",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you'll learn how to talk about your workday and the tasks that you perform in the workplace and how to share them with others. It mainly focuses on the structures used for describing your activities and task-related vocabulary."
+        ]
       },
       "learn-how-to-discuss-your-morning-or-evening-routine": {
         "title": "Learn How to Discuss Your Morning or Evening Routine",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you'll learn how to talk about details of your routine and share them with someone else. It mainly focuses on the structures used for declaring routine actions and related vocabulary."
+        ]
       },
       "learn-how-to-describe-your-current-project": {
         "title": "Learn How to Describe Your Current Project",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you'll learn how to talk about the projects that you are involved in and how to inform others of what you are doing in these projects. It mainly focuses on the structures used for informing it and on the related vocabulary."
+        ]
       },
       "learn-how-to-ask-and-share-about-educational-and-professional-background": {
         "title": "Learn How to Ask and Share About Educational and Professional Background",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you'll learn how to ask about another person's educational and professional backgrounds and you'll learn how to share information about your background as well."
+        ]
       },
       "learn-how-to-talk-about-hobbies-and-interests": {
         "title": "Learn How to Talk About Hobbies and Interests",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you'll learn different ways to talk about hobbies and things that interest you. You'll also learn how to ask about other people's hobbies and how to invite them to join you in these activities."
+        ]
       },
       "learn-how-to-discuss-roles-and-responsibilies": {
         "title": "Learn How to Discuss Roles and Responsibilities",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you'll discuss people's roles and responsibilities in a company and out of it. You'll discover how to ask about these roles and responsibilities and how to share information about you related to the topic."
+        ]
       },
       "learn-how-to-have-a-conversation-about-preferences-and-motivations": {
         "title": "Learn How to Have a Conversation About Preferences and Motivations",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you'll learn how to ask about what motivates people in their personal and professional lives, answer questions related to your motivations, and discuss about people's preferences."
+        ]
       },
       "learn-how-to-discuss-popular-trends-in-technology": {
         "title": "Learn How to Discuss Popular Trends in Technology",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you'll learn how to discuss about things that everybody's talking about in technology these days."
+        ]
       },
       "learn-how-to-clarify-information-in-different-interactions": {
         "title": "Learn How to Clarify Information in Different Interactions",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you'll learn how to check to see if the information you had is correct and how to ask for clarification when something is not clear to you."
+        ]
       },
       "learn-how-to-use-basic-programming-vocabulary-in-conversations": {
         "title": "Learn How to Use Basic Programming Vocabulary in Conversations",
-        "intro": ["", ""]
+        "intro": [
+          "This course will present basic vocabulary related to programming. You'll learn how to ask questions related to basic programming concepts."
+        ]
       },
       "learn-how-to-use-code-related-concepts-and-terms": {
         "title": "Learn How to Use Code-related Concepts and Terms",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you will be introduced to terms related to coding and learn how to use them in conversation."
+        ]
       },
       "learn-how-to-discuss-tech-trends-and-updates": {
         "title": "Learn How to Discuss Tech Trends and Updates",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you will be introduced to some recent trends in the world of technology and learn how to discuss them in English."
+        ]
       },
       "learn-how-to-help-a-coworker-troubleshoot-on-github": {
         "title": "Learn How to Help a Coworker Troubleshoot on GitHub",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you will learn expression related to how to ask for help from a coworker as well as how to offer them some assistance."
+        ]
       },
       "learn-how-to-share-your-progress-in-weekly-stand-up-meetings": {
         "title": "Learn How to Share Your Progress in Weekly Stand-up Meetings",
-        "intro": ["", ""]
+        "intro": [
+          "This course will show you how to talk about your projects in terms of what you have already done and what you are currently doing in them."
+        ]
       },
       "learn-how-to-ask-for-clarification-on-code-understanding": {
         "title": "Learn How to Ask for Clarification on Code Understanding",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you will see how you can ask questions to clarify things which are not very clear to you in a code."
+        ]
       },
       "learn-how-to-document-code-for-a-project": {
         "title": "Learn How to Document Code for a Project",
-        "intro": ["", ""]
+        "intro": [
+          "This course will show you expressions related to what to do when documenting code."
+        ]
       },
       "learn-how-to-read-and-understand-code-documentation": {
         "title": "Learn How to Read and Understand Code Documentation",
-        "intro": ["", ""]
+        "intro": [
+          "This course will present more expressions related to code documentation and bring tips on how to understand it."
+        ]
       },
       "learn-how-to-analyze-code-documentation": {
         "title": "Learn How to Analyze Code Documentation",
-        "intro": ["", ""]
-      },
-      "learn-how-to-follow-basic-email-convention": {
-        "title": "Learn How to Follow Basic Email Convention",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you will see some ideas to help you to approach documentation and analyze it in simple terms."
+        ]
       },
       "learn-how-to-share-progress-and-accomplishments": {
         "title": "Learn How to Share Progress and Accomplishments",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you will learn how to share your progress with coworkers and tell about what successes you've had in your projects."
+        ]
       },
       "learn-how-to-talk-about-updates-and-plans-for-tasks-and-projects": {
-        "title": "Learn How to Talk About Updates and Plans for Tasks and Projects",
-        "intro": ["", ""]
+        "title": "Learn How to Talk about Updates and Plans for Tasks and Projects",
+        "intro": [
+          "This course will show you how to speak about the most recent advancements in your projects and about your plans."
+        ]
       },
       "learn-how-to-express-agreement-or-disagreement": {
         "title": "Learn How to Express Agreement or Disagreement",
-        "intro": ["", ""]
+        "intro": [
+          "This course will introduce how to say that you agree with what another person says and to tell them politely that you do not agree with them."
+        ]
       },
       "learn-how-to-offer-technical-support-and-guidance": {
         "title": "Learn How to Offer Technical Support and Guidance",
-        "intro": ["", ""]
+        "intro": [
+          "In this course, you will see ways of offering some help in terms of technical specifics to another person."
+        ]
       },
       "learn-how-to-request-and-receive-guidance": {
         "title": "Learn How to Request and Receive Guidance",
-        "intro": ["", ""]
+        "intro": [
+          "This course will show you how to ask for assistance from a coworker when you need it."
+        ]
       },
       "learn-how-to-provide-explanations-when-helping-others": {
         "title": "Learn How to Provide Explanations When Helping Others",
+        "intro": [
+          "This course will provide you with ways to explain things to other people while assisting them."
+        ]
+      }
+    }
+  },
+  "b1-english-for-developers": {
+    "title": "B1 English for Developers (Beta)",
+    "note": "This certification is currently in active development. While there isn't a claimable certification available for this section at the moment, one will be available soon. In the meantime, you're welcome to explore the courses we have created below.",
+    "intro": ["Placeholder intro"],
+    "blocks": {
+      "learn-how-to-describe-places-and-events": {
+        "title": "Learn How to Describe Places and Events",
+        "intro": [""]
+      },
+      "learn-how-to-talk-about-past-experiences": {
+        "title": "Learn How to Talk About Past Experiences",
+        "intro": ["", ""]
+      },
+      "learn-how-to-talk-about-past-activities": {
+        "title": "Learn How to Talk About Past Activities",
+        "intro": ["", ""]
+      },
+      "learn-present-perfect-while-talking-about-accessibility": {
+        "title": "Learn Present Perfect while Talking About Accessibility",
+        "intro": ["", ""]
+      },
+      "learn-how-to-plan-future-events": {
+        "title": "Learn How to Plan Future Events",
+        "intro": ["", ""]
+      },
+      "learn-future-continuous-while-describing-actions": {
+        "title": "Learn Future Continuous while Describing Actions",
+        "intro": ["", ""]
+      },
+      "learn-how-to-use-conditionals": {
+        "title": "Learn How to Use Conditionals",
+        "intro": ["", ""]
+      },
+      "learn-how-to-share-feedback": {
+        "title": "Learn How to Share Feedback",
+        "intro": ["", ""]
+      },
+      "learn-how-to-share-your-opinion": {
+        "title": "Learn How to Share Your Opinion",
+        "intro": ["", ""]
+      },
+      "learn-how-to-express-agreement": {
+        "title": "Learn How to Express Agreement",
+        "intro": ["", ""]
+      },
+      "learn-how-to-express-disagreement": {
+        "title": "Learn How to Express Disagreement",
+        "intro": ["", ""]
+      },
+      "learn-how-to-express-concerns": {
+        "title": "Learn How to Express Concerns",
+        "intro": ["", ""]
+      },
+      "learn-how-to-express-decisions-based-on-comparisons": {
+        "title": "Learn How to Express Decisions Based on Comparisons",
+        "intro": ["", ""]
+      },
+      "learn-how-to-use-modal-verbs": {
+        "title": "Learn How to Use Modal Verbs",
+        "intro": ["", ""]
+      },
+      "learn-how-to-manage-a-conversation": {
+        "title": "Learn How to Manage a Conversation",
+        "intro": ["", ""]
+      },
+      "learn-how-to-clarify-misunderstandings": {
+        "title": "Learn How to Clarify Misunderstandings",
+        "intro": ["", ""]
+      },
+      "learn-about-speculation-and-requests": {
+        "title": "Learn About Speculation and Requests",
+        "intro": ["", ""]
+      },
+      "learn-about-adverbial-phrases": {
+        "title": "Learn About Adverbial Phrases",
+        "intro": ["", ""]
+      },
+      "learn-how-to-use-adjectives-in-conversations": {
+        "title": "Learn How to Use Adjectives in Conversations",
+        "intro": ["", ""]
+      },
+      "learn-determiners-and-advanced-use-of-articles": {
+        "title": "Learn Determiners and Advanced Use of Articles",
+        "intro": ["", ""]
+      },
+      "learn-how-to-use-reported-speech": {
+        "title": "Learn How to Use Reported Speech",
+        "intro": ["", ""]
+      },
+      "learn-how-to-use-prepositions-according-to-context": {
+        "title": "Learn How to Use Prepositions According to Context",
+        "intro": ["", ""]
+      },
+      "learn-how-to-talk-about-numbers-with-a-coworker": {
+        "title": "Learn How to Talk About Numbers with a Coworker",
+        "intro": ["", ""]
+      },
+      "learn-common-phrasal-verbs-and-idioms": {
+        "title": "Learn Common Phrasal Verbs and Idioms",
         "intro": ["", ""]
       }
     }
   },
-  "example-certification": {
-    "title": "Mfano wa Uthibitisho",
+  "rosetta-code": {
+    "title": "Rosetta Code",
+    "intro": [
+      "Level up your creative problem solving skills with these free programming tasks from the classic Rosetta Code library.",
+      "These challenges can prove to be difficult, but they will push your algorithm logic to new heights.",
+      "<a href='https://rosettacode.org/wiki/Rosetta_Code' target='_blank' rel='noopener noreferrer nofollow'>Attribute: Rosetta Code</a>"
+    ],
+    "blocks": {
+      "rosetta-code-challenges": {
+        "title": "Rosetta Code Challenges",
+        "intro": ["These are the challenges for Rosetta Code."]
+      }
+    }
+  },
+  "front-end-development": {
+    "title": "Front End Development",
     "intro": ["placeholder"],
     "blocks": {
-      "example-certification-exam": {
-        "title": "Mfano wa Mtihani wa Cheti",
-        "intro": ["placeholder"]
+      "efpl": {
+        "title": "0",
+        "intro": []
+      },
+      "xpmy": {
+        "title": "1",
+        "intro": []
+      },
+      "workshop-cat-photo-app": {
+        "title": "Build a Cat Photo App",
+        "intro": [
+          "HTML stands for HyperText Markup Language and it represents the content and structure of a web page.",
+          "In this workshop, you will learn how to work with basic HTML elements such as headings, paragraphs, images, links, and lists."
+        ]
+      },
+      "lab-recipe-page": {
+        "title": "Build a Recipe Page",
+        "intro": [
+          "For this lab, you will create a web page of your favorite recipe."
+        ]
+      },
+      "gwyd": {
+        "title": "4",
+        "intro": []
+      },
+      "lab-travel-agency-page": {
+        "title": "Build a Travel Agency Page",
+        "intro": [
+          "For this lab, you will create a web page of a travel agency."
+        ]
+      },
+      "vipr": {
+        "title": "6",
+        "intro": []
+      },
+      "lab-video-compilation-page": {
+        "title": "Build a Video Compilation Page",
+        "intro": ["For this lab, you will create a video compilation web page."]
+      },
+      "bzfv": {
+        "title": "8",
+        "intro": []
+      },
+      "snuv": {
+        "title": "9",
+        "intro": []
+      },
+      "uowk": {
+        "title": "10",
+        "intro": []
+      },
+      "evdc": {
+        "title": "11",
+        "intro": []
+      },
+      "workshop-blog-page": {
+        "title": "Build a Cat Blog Page",
+        "intro": [
+          "In this workshop, you will learn how to build an HTML only blog page using semantic elements including the <code>main</code>, <code>nav</code>, <code>article</code> and <code>footer</code> elements."
+        ]
+      },
+      "szcd": {
+        "title": "13",
+        "intro": []
+      },
+      "ijdq": {
+        "title": "14",
+        "intro": []
+      },
+      "pwwg": {
+        "title": "15",
+        "intro": []
+      },
+      "cfgp": {
+        "title": "16",
+        "intro": []
+      },
+      "workshop-hotel-feedback-form": {
+        "title": "Build a Hotel Feedback Form",
+        "intro": [
+          "In this workshop, you will learn how to work with forms by building a Hotel Feedback Form.",
+          "You will learn how to work with labels, inputs, fieldsets, legends, textareas and buttons."
+        ]
+      },
+      "lab-survey-form": {
+        "title": "Build a Survey Form",
+        "intro": ["For this lab, you will create a survey form."]
+      },
+      "wgot": {
+        "title": "19",
+        "intro": []
+      },
+      "workshop-final-exams-table": {
+        "title": "Build a Final Exams Table",
+        "intro": [
+          "In this workshop, you will learn how to work with HTML tables by building a table of final exams."
+        ]
+      },
+      "xdvu": {
+        "title": "21",
+        "intro": []
+      },
+      "rsve": {
+        "title": "22",
+        "intro": []
+      },
+      "xzam": {
+        "title": "23",
+        "intro": []
+      },
+      "isho": {
+        "title": "24",
+        "intro": []
+      },
+      "ghoc": {
+        "title": "25",
+        "intro": []
+      },
+      "lab-checkout-page": {
+        "title": "Build a Checkout Page",
+        "intro": ["In this lab, you will create an accessible checkout page."]
+      },
+      "fqai": {
+        "title": "27",
+        "intro": []
+      },
+      "cayd": {
+        "title": "28",
+        "intro": []
+      },
+      "pspj": {
+        "title": "29",
+        "intro": []
+      },
+      "qpra": {
+        "title": "30",
+        "intro": []
+      },
+      "joim": {
+        "title": "31",
+        "intro": []
+      },
+      "gvtb": {
+        "title": "32",
+        "intro": []
+      },
+      "cqhu": {
+        "title": "33",
+        "intro": []
+      },
+      "tmdc": {
+        "title": "34",
+        "intro": []
+      },
+      "hqia": {
+        "title": "35",
+        "intro": []
+      },
+      "dxpc": {
+        "title": "36",
+        "intro": []
+      },
+      "liti": {
+        "title": "37",
+        "intro": []
+      },
+      "lab-business-card": {
+        "title": "Design a Business Card",
+        "intro": [
+          "In this lab, you'll create a business card and style it using CSS."
+        ]
+      },
+      "gnuk": {
+        "title": "39",
+        "intro": []
+      },
+      "zlfj": {
+        "title": "40",
+        "intro": []
+      },
+      "ioqd": {
+        "title": "41",
+        "intro": []
+      },
+      "sdul": {
+        "title": "42",
+        "intro": []
+      },
+      "lab-stylized-to-do-list": {
+        "title": "Build a Stylized To-Do List",
+        "intro": [
+          "In this lab, you'll build a To-Do list and apply different styles to the links"
+        ]
+      },
+      "humj": {
+        "title": "44",
+        "intro": []
+      },
+      "pahx": {
+        "title": "45",
+        "intro": []
+      },
+      "rzdx": {
+        "title": "46",
+        "intro": []
+      },
+      "sgpy": {
+        "title": "47",
+        "intro": []
+      },
+      "ljmt": {
+        "title": "48",
+        "intro": []
+      },
+      "lxpk": {
+        "title": "49",
+        "intro": []
+      },
+      "lzqy": {
+        "title": "50",
+        "intro": []
+      },
+      "gvel": {
+        "title": "51",
+        "intro": []
+      },
+      "hgxz": {
+        "title": "52",
+        "intro": []
+      },
+      "bgrw": {
+        "title": "53",
+        "intro": []
+      },
+      "sbnz": {
+        "title": "54",
+        "intro": []
+      },
+      "lab-event-flyer-page": {
+        "title": "Build an Event Flyer Page",
+        "intro": [
+          "In this lab, you will use absolute and relative CSS units to create an event flyer page."
+        ]
+      },
+      "ywfm": {
+        "title": "56",
+        "intro": []
+      },
+      "yspe": {
+        "title": "57",
+        "intro": []
+      },
+      "ohhu": {
+        "title": "58",
+        "intro": []
+      },
+      "syga": {
+        "title": "59",
+        "intro": []
+      },
+      "sdym": {
+        "title": "60",
+        "intro": []
+      },
+      "ivpx": {
+        "title": "61",
+        "intro": []
+      },
+      "xnph": {
+        "title": "62",
+        "intro": []
+      },
+      "fvcj": {
+        "title": "63",
+        "intro": []
+      },
+      "ogdb": {
+        "title": "64",
+        "intro": []
+      },
+      "zxiy": {
+        "title": "65",
+        "intro": []
+      },
+      "qpze": {
+        "title": "66",
+        "intro": []
+      },
+      "uqiy": {
+        "title": "67",
+        "intro": []
+      },
+      "jnqt": {
+        "title": "68",
+        "intro": []
+      },
+      "vkei": {
+        "title": "69",
+        "intro": []
+      },
+      "jows": {
+        "title": "70",
+        "intro": []
+      },
+      "ipmw": {
+        "title": "71",
+        "intro": []
+      },
+      "nxbr": {
+        "title": "72",
+        "intro": []
+      },
+      "qzcx": {
+        "title": "73",
+        "intro": []
+      },
+      "wozq": {
+        "title": "74",
+        "intro": []
+      },
+      "lab-confidential-email-page": {
+        "title": "Build a Confidential Email Page",
+        "intro": [
+          "For this lab, you will create a web page of a confidential email using HTML and CSS."
+        ]
+      },
+      "zter": {
+        "title": "76",
+        "intro": []
+      },
+      "rfiq": {
+        "title": "77",
+        "intro": []
+      },
+      "tcwi": {
+        "title": "78",
+        "intro": []
+      },
+      "uptf": {
+        "title": "79",
+        "intro": []
+      },
+      "lab-page-of-playing-cards": {
+        "title": "Build a Page of Playing Cards",
+        "intro": [
+          "For this lab, you will use flexbox to create a webpage of playing cards."
+        ]
+      },
+      "kqao": {
+        "title": "81",
+        "intro": []
+      },
+      "habq": {
+        "title": "82",
+        "intro": []
+      },
+      "vqut": {
+        "title": "83",
+        "intro": []
+      },
+      "ujcf": {
+        "title": "84",
+        "intro": []
+      },
+      "lab-newspaper-article": {
+        "title": "Build a Newspaper Article",
+        "intro": [
+          "In this lab, you will build a newspaper article page using HTML and CSS."
+        ]
+      },
+      "hbme": {
+        "title": "86",
+        "intro": []
+      },
+      "ioby": {
+        "title": "87",
+        "intro": []
+      },
+      "dyvj": {
+        "title": "88",
+        "intro": []
+      },
+      "rjsv": {
+        "title": "89",
+        "intro": []
+      },
+      "lab-tribute-page": {
+        "title": "Build a Tribute Page",
+        "intro": [
+          "For this lab, you will build a tribute page for a subject of your choosing, fictional or real."
+        ]
+      },
+      "fnde": {
+        "title": "91",
+        "intro": []
+      },
+      "gxjm": {
+        "title": "92",
+        "intro": []
+      },
+      "swpl": {
+        "title": "93",
+        "intro": []
+      },
+      "hcje": {
+        "title": "94",
+        "intro": []
+      },
+      "lab-book-inventory-app": {
+        "title": "Build a Book Inventory App",
+        "intro": ["For this lab, you will create a book inventory app."]
+      },
+      "huyd": {
+        "title": "96",
+        "intro": []
+      },
+      "kbwy": {
+        "title": "97",
+        "intro": []
+      },
+      "rxzk": {
+        "title": "98",
+        "intro": []
+      },
+      "xobh": {
+        "title": "99",
+        "intro": []
+      },
+      "pgyf": {
+        "title": "100",
+        "intro": []
+      },
+      "rrtt": {
+        "title": "101",
+        "intro": []
+      },
+      "rbnd": {
+        "title": "102",
+        "intro": []
+      },
+      "xebj": {
+        "title": "103",
+        "intro": []
+      },
+      "jkdt": {
+        "title": "104",
+        "intro": []
+      },
+      "lab-technical-documentation-page": {
+        "title": "Build a Technical Documentation Page",
+        "intro": [
+          "For this lab, you will build a technical documentation page to serve as instruction or reference for a topic."
+        ]
+      },
+      "xcti": {
+        "title": "106",
+        "intro": []
+      },
+      "scec": {
+        "title": "107",
+        "intro": []
+      },
+      "mtbl": {
+        "title": "108",
+        "intro": []
+      },
+      "vlov": {
+        "title": "109",
+        "intro": []
+      },
+      "lab-availability-table": {
+        "title": "Build an Availability Table",
+        "intro": ["For this lab, you will create an availability table."]
+      },
+      "sget": {
+        "title": "111",
+        "intro": []
+      },
+      "huge": {
+        "title": "112",
+        "intro": []
+      },
+      "agbl": {
+        "title": "113",
+        "intro": []
+      },
+      "ogko": {
+        "title": "114",
+        "intro": []
+      },
+      "harp": {
+        "title": "115",
+        "intro": []
+      },
+      "nsiq": {
+        "title": "116",
+        "intro": []
+      },
+      "geuv": {
+        "title": "117",
+        "intro": []
+      },
+      "fdam": {
+        "title": "118",
+        "intro": []
+      },
+      "yqma": {
+        "title": "119",
+        "intro": []
+      },
+      "dorc": {
+        "title": "120",
+        "intro": []
+      },
+      "adzu": {
+        "title": "121",
+        "intro": []
+      },
+      "lab-moon-orbit": {
+        "title": "Build a Moon Orbit",
+        "intro": [
+          "For this lab, you will create an animation of the moon orbiting the earth."
+        ]
+      },
+      "lugl": {
+        "title": "123",
+        "intro": []
+      },
+      "lab-personal-portfolio": {
+        "title": "Build a Personal Portfolio",
+        "intro": [
+          "For this project, you will build your own personal portfolio page."
+        ]
+      },
+      "lvqc": {
+        "title": "125",
+        "intro": []
+      },
+      "oxbd": {
+        "title": "126",
+        "intro": []
+      },
+      "wvjx": {
+        "title": "127",
+        "intro": []
+      },
+      "uquz": {
+        "title": "128",
+        "intro": []
+      },
+      "kdgd": {
+        "title": "129",
+        "intro": []
+      },
+      "wryp": {
+        "title": "130",
+        "intro": []
+      },
+      "workshop-greeting-bot": {
+        "title": "Build a Greeting Bot",
+        "intro": [
+          "For this workshop, you will learn how to work with JavaScript fundamentals by building a greeting bot.",
+          "You will learn about variables, <code>let</code>, <code>const</code>, <code>console.log</code> and basic string usage."
+        ]
+      },
+      "zmzg": {
+        "title": "132",
+        "intro": []
+      },
+      "dthi": {
+        "title": "133",
+        "intro": []
+      },
+      "yskn": {
+        "title": "134",
+        "intro": []
+      },
+      "tpni": {
+        "title": "135",
+        "intro": []
+      },
+      "hoec": {
+        "title": "136",
+        "intro": []
+      },
+      "workshop-teacher-chatbot": {
+        "title": "Build a Teacher Chatbot",
+        "intro": [
+          "In this workshop, you will continue to learn more about JavaScript strings by building a chatbot.",
+          "You will learn how to work with template literals, and the <code>indexOf</code> method."
+        ]
+      },
+      "axgb": {
+        "title": "138",
+        "intro": []
+      },
+      "rwac": {
+        "title": "139",
+        "intro": []
+      },
+      "hxwa": {
+        "title": "141",
+        "intro": []
+      },
+      "xkbo": {
+        "title": "142",
+        "intro": []
+      },
+      "lab-fortune-teller": {
+        "title": "Build a Fortune Teller",
+        "intro": [
+          "In this lab, you will build a fortune teller by randomly selecting a fortune from the avaialble fortunes."
+        ]
+      },
+      "wfyg": {
+        "title": "144",
+        "intro": []
+      },
+      "guqy": {
+        "title": "145",
+        "intro": []
+      },
+      "nkge": {
+        "title": "146",
+        "intro": []
+      },
+      "hafd": {
+        "title": "147",
+        "intro": []
+      },
+      "phko": {
+        "title": "148",
+        "intro": []
+      },
+      "wjzt": {
+        "title": "149",
+        "intro": []
+      },
+      "tsdq": {
+        "title": "150",
+        "intro": []
+      },
+      "workshop-calculator": {
+        "title": "Build a Calculator",
+        "intro": [
+          "In this workshop, you will review working with functions by building a calculator."
+        ]
+      },
+      "lab-email-masker": {
+        "title": "Build an Email Masker",
+        "intro": [
+          "In this lab, you'll build an email masker that will take an email address and obscure it."
+        ]
+      },
+      "lab-sentence-maker": {
+        "title": "Build a Sentence Maker",
+        "intro": [
+          "In this lab, you will create different stories by assigning different words to different variables."
+        ]
+      },
+      "workshop-loan-qualification-checker": {
+        "title": "Build a Loan Qualification Checker",
+        "intro": [
+          "In this workshop, you will continue to learn how to work with conditionals by building a loan qualification checker app.",
+          "You will learn more about <code>if</code> statements, and how to use comparison operators and multiple conditions in an <code>if</code> statement."
+        ]
+      },
+      "lab-leap-year-calculator": {
+        "title": "Build a Leap Year Calculator ",
+        "intro": [
+          "In this lab you will use conditional statements and loops to determine if a year is a leap year."
+        ]
+      },
+      "pljo": {
+        "title": "156",
+        "intro": []
+      },
+      "avln": {
+        "title": "157",
+        "intro": []
+      },
+      "mexq": {
+        "title": "158",
+        "intro": []
+      },
+      "ifgn": {
+        "title": "159",
+        "intro": []
+      },
+      "workshop-shopping-list": {
+        "title": "Build a Shopping List",
+        "intro": [
+          "In this workshop, you will practice working with arrays by building a shopping list.",
+          "You will review how to add and remove elements from an array using methods like <code>push</code>, <code>pop</code>, <code>shift</code>, and <code>unshift</code>."
+        ]
+      },
+      "mokm": {
+        "title": "161",
+        "intro": []
+      },
+      "froz": {
+        "title": "162",
+        "intro": []
+      },
+      "ozth": {
+        "title": "163",
+        "intro": []
+      },
+      "dvnt": {
+        "title": "164",
+        "intro": []
+      },
+      "ekdb": {
+        "title": "165",
+        "intro": []
+      },
+      "ezek": {
+        "title": "166",
+        "intro": []
+      },
+      "lab-factorial-calculator": {
+        "title": "Build a Factorial Calculator ",
+        "intro": ["In this lab, you will build a factorial calculator."]
+      },
+      "lgfm": {
+        "title": "168",
+        "intro": []
+      },
+      "kgtw": {
+        "title": "169",
+        "intro": []
+      },
+      "ljmq": {
+        "title": "170",
+        "intro": []
+      },
+      "kcci": {
+        "title": "171",
+        "intro": []
+      },
+      "puhe": {
+        "title": "172",
+        "intro": []
+      },
+      "ttrm": {
+        "title": "173",
+        "intro": []
+      },
+      "hjtr": {
+        "title": "174",
+        "intro": []
+      },
+      "ccnu": {
+        "title": "175",
+        "intro": []
+      },
+      "lab-gradebook-app": {
+        "title": "Build a Gradebook App",
+        "intro": ["For this lab, you will create a gradebook app."]
+      },
+      "epfc": {
+        "title": "177",
+        "intro": []
+      },
+      "lab-inventory-management-program": {
+        "title": "Build an Inventory Management Program",
+        "intro": [
+          "For this lab, you will build an inventory management program using JavaScript."
+        ]
+      },
+      "fbbn": {
+        "title": "179",
+        "intro": []
+      },
+      "lnmg": {
+        "title": "180",
+        "intro": []
+      },
+      "wead": {
+        "title": "181",
+        "intro": []
+      },
+      "eekl": {
+        "title": "182",
+        "intro": []
+      },
+      "plic": {
+        "title": "183",
+        "intro": []
+      },
+      "vjmm": {
+        "title": "184",
+        "intro": []
+      },
+      "bxtv": {
+        "title": "185",
+        "intro": []
+      },
+      "xiqk": {
+        "title": "186",
+        "intro": []
+      },
+      "quyu": {
+        "title": "187",
+        "intro": []
+      },
+      "esfh": {
+        "title": "188",
+        "intro": []
+      },
+      "gibb": {
+        "title": "189",
+        "intro": []
+      },
+      "whrm": {
+        "title": "190",
+        "intro": []
+      },
+      "fhxc": {
+        "title": "191",
+        "intro": []
+      },
+      "arqa": {
+        "title": "192",
+        "intro": []
+      },
+      "ubpx": {
+        "title": "193",
+        "intro": []
+      },
+      "lbyi": {
+        "title": "194",
+        "intro": []
+      },
+      "lab-real-time-counter": {
+        "title": "Build a Real Time Counter",
+        "intro": ["In this lab, you will build a real-time character counter"]
+      },
+      "fmbk": {
+        "title": "196",
+        "intro": []
+      },
+      "lab-lightbox-viewer": {
+        "title": "Build a Lightbox Viewer",
+        "intro": [
+          "In this lab, you will build a lighbox viewer for viewing images in a focused mode."
+        ]
+      },
+      "workshop-rps-game": {
+        "title": "Build a Rock, Paper, Scissors Game",
+        "intro": [
+          "In this workshop, you will review DOM manipulation and events by building a Rock, Paper, Scissors Game."
+        ]
+      },
+      "uglc": {
+        "title": "199",
+        "intro": []
+      },
+      "lab-football-team-cards": {
+        "title": "Build a Set of Football Team Cards",
+        "intro": [
+          "One common aspect of building web applications is processing datasets and outputting information to the screen. In this project, you will use DOM manipulation, object destructuring, event handling, and data filtering to build a set of football team cards."
+        ]
+      },
+      "iejn": {
+        "title": "201",
+        "intro": []
+      },
+      "arrr": {
+        "title": "202",
+        "intro": []
+      },
+      "kaqq": {
+        "title": "203",
+        "intro": []
+      },
+      "ksfc": {
+        "title": "204",
+        "intro": []
+      },
+      "xeqa": {
+        "title": "205",
+        "intro": []
+      },
+      "lab-random-background-color-changer": {
+        "title": "Debug a Random Background Color Changer",
+        "intro": [
+          "For this lab, you will debug a random background color changer and fix the errors to make it work properly."
+        ]
+      },
+      "dqth": {
+        "title": "207",
+        "intro": []
+      },
+      "ilop": {
+        "title": "208",
+        "intro": []
+      },
+      "qrer": {
+        "title": "209",
+        "intro": []
+      },
+      "unyy": {
+        "title": "210",
+        "intro": []
+      },
+      "svsl": {
+        "title": "211",
+        "intro": []
+      },
+      "wnmj": {
+        "title": "212",
+        "intro": []
+      },
+      "zalp": {
+        "title": "213",
+        "intro": []
+      },
+      "hhvp": {
+        "title": "214",
+        "intro": []
+      },
+      "egkv": {
+        "title": "215",
+        "intro": []
+      },
+      "qlvw": {
+        "title": "216",
+        "intro": []
+      },
+      "cyrl": {
+        "title": "217",
+        "intro": []
+      },
+      "lupt": {
+        "title": "218",
+        "intro": []
+      },
+      "yvqn": {
+        "title": "219",
+        "intro": []
+      },
+      "xtfk": {
+        "title": "220",
+        "intro": []
+      },
+      "xnpr": {
+        "title": "221",
+        "intro": []
+      },
+      "lvts": {
+        "title": "222",
+        "intro": []
+      },
+      "foal": {
+        "title": "223",
+        "intro": []
+      },
+      "crzf": {
+        "title": "224",
+        "intro": []
+      },
+      "xofr": {
+        "title": "225",
+        "intro": []
+      },
+      "bsmn": {
+        "title": "226",
+        "intro": []
+      },
+      "pehm": {
+        "title": "227",
+        "intro": []
+      },
+      "cvsw": {
+        "title": "228",
+        "intro": []
+      },
+      "qjws": {
+        "title": "229",
+        "intro": []
+      },
+      "fgbp": {
+        "title": "230",
+        "intro": []
+      },
+      "jbst": {
+        "title": "232",
+        "intro": []
+      },
+      "peyf": {
+        "title": "233",
+        "intro": []
+      },
+      "bdqj": {
+        "title": "234",
+        "intro": []
+      },
+      "ndlf": {
+        "title": "235",
+        "intro": []
+      },
+      "cpmq": {
+        "title": "236",
+        "intro": []
+      },
+      "yshh": {
+        "title": "237",
+        "intro": []
+      },
+      "wyxz": {
+        "title": "238",
+        "intro": []
+      },
+      "dtfv": {
+        "title": "239",
+        "intro": []
+      },
+      "lab-quicksort-algorithm": {
+        "title": "Build the Quicksort Algorithm",
+        "intro": [
+          "For this lab, you will implement the Quicksort algorithm using JavaScript."
+        ]
+      },
+      "manv": {
+        "title": "241",
+        "intro": []
+      },
+      "bnvw": {
+        "title": "242",
+        "intro": []
+      },
+      "xkhk": {
+        "title": "243",
+        "intro": []
+      },
+      "yaxm": {
+        "title": "244",
+        "intro": []
+      },
+      "lab-roman-numeral-converter": {
+        "title": "Build a Roman Numeral Converter Project",
+        "intro": [
+          "For this lab, you'll build an application that converts integers to Roman numerals."
+        ]
+      },
+      "lofk": {
+        "title": "246",
+        "intro": []
+      },
+      "udia": {
+        "title": "247",
+        "intro": []
+      },
+      "wevl": {
+        "title": "248",
+        "intro": []
+      },
+      "lab-cash-register": {
+        "title": "Build a Cash Register",
+        "intro": ["For this lab, you will build a cash register."]
+      },
+      "xayi": {
+        "title": "250",
+        "intro": []
+      },
+      "mjbe": {
+        "title": "251",
+        "intro": []
+      },
+      "byqx": {
+        "title": "252",
+        "intro": []
+      },
+      "alda": {
+        "title": "253",
+        "intro": []
+      },
+      "lkyc": {
+        "title": "254",
+        "intro": []
+      },
+      "cvaf": {
+        "title": "255",
+        "intro": []
+      },
+      "tdgy": {
+        "title": "256",
+        "intro": []
+      },
+      "saxu": {
+        "title": "257",
+        "intro": []
+      },
+      "kagw": {
+        "title": "258",
+        "intro": []
+      },
+      "mbib": {
+        "title": "259",
+        "intro": []
+      },
+      "oxiv": {
+        "title": "260",
+        "intro": []
+      },
+      "mdrz": {
+        "title": "261",
+        "intro": []
+      },
+      "nixz": {
+        "title": "262",
+        "intro": []
+      },
+      "zywg": {
+        "title": "263",
+        "intro": []
+      },
+      "wraf": {
+        "title": "264",
+        "intro": []
+      },
+      "lab-linked-list-class": {
+        "title": "Build a Linked List Class",
+        "intro": [
+          "For this lab, you will build a linked list class using JavaScript."
+        ]
+      },
+      "muyw": {
+        "title": "266",
+        "intro": []
+      },
+      "mvzb": {
+        "title": "267",
+        "intro": []
+      },
+      "rmpy": {
+        "title": "268",
+        "intro": []
+      },
+      "plfo": {
+        "title": "269",
+        "intro": []
+      },
+      "xdyh": {
+        "title": "270",
+        "intro": []
+      },
+      "ybrh": {
+        "title": "271",
+        "intro": []
+      },
+      "vjgg": {
+        "title": "272",
+        "intro": []
+      },
+      "kaui": {
+        "title": "273",
+        "intro": []
+      },
+      "lab-nth-fibonacci-number-generator": {
+        "title": "Build the nth Fibonacci number generator",
+        "intro": [
+          "For this lab, you will implement the nth Fibonacci number generator."
+        ]
+      },
+      "cfyv": {
+        "title": "275",
+        "intro": []
+      },
+      "sgau": {
+        "title": "276",
+        "intro": []
+      },
+      "clak": {
+        "title": "277",
+        "intro": []
+      },
+      "fcom": {
+        "title": "278",
+        "intro": []
+      },
+      "ffpt": {
+        "title": "279",
+        "intro": []
+      },
+      "vyzp": {
+        "title": "280",
+        "intro": []
+      },
+      "lab-pokemon-search-app": {
+        "title": "Build a Pokémon Search App",
+        "intro": ["For this project, you will build a Pokémon search app."]
+      },
+      "fihs": {
+        "title": "282",
+        "intro": []
+      },
+      "icdr": {
+        "title": "283",
+        "intro": []
+      },
+      "zdsj": {
+        "title": "284",
+        "intro": []
+      },
+      "mzae": {
+        "title": "285",
+        "intro": []
+      },
+      "gjbf": {
+        "title": "286",
+        "intro": []
+      },
+      "mbpv": {
+        "title": "287",
+        "intro": []
+      },
+      "eeez": {
+        "title": "288",
+        "intro": []
+      },
+      "xweg": {
+        "title": "289",
+        "intro": []
+      },
+      "khuu": {
+        "title": "290",
+        "intro": []
+      },
+      "xdly": {
+        "title": "291",
+        "intro": []
+      },
+      "rhhl": {
+        "title": "292",
+        "intro": []
+      },
+      "trvf": {
+        "title": "293",
+        "intro": []
+      },
+      "kwmg": {
+        "title": "294",
+        "intro": []
+      },
+      "nodx": {
+        "title": "295",
+        "intro": []
+      },
+      "erfj": {
+        "title": "296",
+        "intro": []
+      },
+      "zcef": {
+        "title": "297",
+        "intro": []
+      },
+      "hfwi": {
+        "title": "298",
+        "intro": []
+      },
+      "rnwr": {
+        "title": "299",
+        "intro": []
+      },
+      "oeqv": {
+        "title": "300",
+        "intro": []
+      },
+      "rdzk": {
+        "title": "301",
+        "intro": []
+      },
+      "vtpz": {
+        "title": "302",
+        "intro": []
+      },
+      "dfwl": {
+        "title": "303",
+        "intro": []
+      },
+      "adzm": {
+        "title": "304",
+        "intro": []
+      },
+      "yani": {
+        "title": "305",
+        "intro": []
+      },
+      "voks": {
+        "title": "306",
+        "intro": []
+      },
+      "uwum": {
+        "title": "307",
+        "intro": []
+      },
+      "ukem": {
+        "title": "308",
+        "intro": []
+      },
+      "sdjg": {
+        "title": "309",
+        "intro": []
+      },
+      "buzx": {
+        "title": "310",
+        "intro": []
+      },
+      "pexz": {
+        "title": "311",
+        "intro": []
+      },
+      "prlo": {
+        "title": "312",
+        "intro": []
+      },
+      "jsnd": {
+        "title": "313",
+        "intro": []
+      },
+      "lpdx": {
+        "title": "314",
+        "intro": []
+      },
+      "tkgg": {
+        "title": "315",
+        "intro": []
+      },
+      "coip": {
+        "title": "316",
+        "intro": []
+      },
+      "wkxy": {
+        "title": "317",
+        "intro": []
+      },
+      "hzab": {
+        "title": "318",
+        "intro": []
+      },
+      "ggea": {
+        "title": "319",
+        "intro": []
+      },
+      "vgvz": {
+        "title": "320",
+        "intro": []
+      },
+      "jkfc": {
+        "title": "321",
+        "intro": []
+      },
+      "jsbo": {
+        "title": "322",
+        "intro": []
+      },
+      "zhhp": {
+        "title": "323",
+        "intro": []
+      },
+      "nwwd": {
+        "title": "324",
+        "intro": []
+      },
+      "iuad": {
+        "title": "325",
+        "intro": []
+      },
+      "gora": {
+        "title": "326",
+        "intro": []
+      },
+      "vpkl": {
+        "title": "327",
+        "intro": []
+      },
+      "qmur": {
+        "title": "328",
+        "intro": []
+      },
+      "lzvx": {
+        "title": "329",
+        "intro": []
+      },
+      "mfwu": {
+        "title": "330",
+        "intro": []
+      },
+      "dfcd": {
+        "title": "331",
+        "intro": []
+      },
+      "vfje": {
+        "title": "332",
+        "intro": []
+      },
+      "workshop-bash-boilerplate": {
+        "title": "Build a Boilerplate",
+        "intro": [
+          "The terminal allows you to send text commands to your computer that can manipulate the file system, run programs, automate tasks, and much more.",
+          "In this 170-lesson workshop, you will learn terminal commands by creating a website boilerplate using only the command line."
+        ]
+      },
+      "ovvb": {
+        "title": "334",
+        "intro": []
+      },
+      "thsj": {
+        "title": "335",
+        "intro": []
+      },
+      "cvvu": {
+        "title": "336",
+        "intro": []
+      },
+      "workshop-mario-database": {
+        "title": "Build a Mario Database",
+        "intro": [
+          "A relational database organizes data into tables that are linked together through relationships.",
+          "In this 165-lesson workshop, you will learn the basics of a relational database by creating a PostgreSQL database filled with video game characters."
+        ]
+      },
+      "lab-celestial-bodies-database": {
+        "title": "Build a Celestial Bodies Database",
+        "intro": [
+          "For this project, you will build a database of celestial bodies using PostgreSQL."
+        ]
+      },
+      "oxxf": {
+        "title": "339",
+        "intro": []
+      },
+      "ynqt": {
+        "title": "340",
+        "intro": []
+      },
+      "hnta": {
+        "title": "341",
+        "intro": []
+      },
+      "workshop-bash-five-programs": {
+        "title": "Build Five Programs",
+        "intro": [
+          "Bash scripts combine terminal commands and logic into programs that can execute or automate tasks, and much more.",
+          "In this 220-lesson workshop, you will learn more terminal commands and how to use them within Bash scripts by creating five small programs."
+        ]
+      },
+      "keqo": {
+        "title": "343",
+        "intro": []
+      },
+      "pegc": {
+        "title": "344",
+        "intro": []
+      },
+      "udfh": {
+        "title": "345",
+        "intro": []
+      },
+      "workshop-sql-student-database-part-1": {
+        "title": "Build a Student Database: Part 1",
+        "intro": [
+          "SQL, or Structured Query Language, is the language for communicating with a relational database.",
+          "In this 140-lesson workshop, you will create a Bash script that uses SQL to enter information about your computer science students into PostgreSQL."
+        ]
+      },
+      "workshop-sql-student-database-part-2": {
+        "title": "Build a Student Database: Part 2",
+        "intro": [
+          "SQL join commands are used to combine information from multiple tables in a relational database",
+          "In this 140-lesson workshop, you will complete your student database while diving deeper into SQL commands."
+        ]
+      },
+      "lab-world-cup-database": {
+        "title": "Build a World Cup Database",
+        "intro": [
+          "For this project, you will create a Bash script that enters information from World Cup games into PostgreSQL, then query the database for useful statistics."
+        ]
+      },
+      "workshop-kitty-ipsum-translator": {
+        "title": "Build a Kitty Ipsum Translator",
+        "intro": [
+          "There's more to Bash commands than you might think.",
+          "In this 140-lesson workshop, you will learn some more complex commands, and the details of how commands work."
+        ]
+      },
+      "workshop-bike-rental-shop": {
+        "title": "Build a Bike Rental Shop",
+        "intro": [
+          "In this 210-lesson workshop, you will build an interactive Bash program that stores rental information for your bike rental shop using PostgreSQL."
+        ]
+      },
+      "lab-salon-appointment-scheduler": {
+        "title": "Build a Salon Appointment Scheduler",
+        "intro": [
+          "For this lab, you will create an interactive Bash program that uses PostgreSQL to track the customers and appointments for your salon."
+        ]
+      },
+      "zygv": {
+        "title": "352",
+        "intro": []
+      },
+      "movb": {
+        "title": "353",
+        "intro": []
+      },
+      "dzsr": {
+        "title": "354",
+        "intro": []
+      },
+      "workshop-castle": {
+        "title": "Build a Castle",
+        "intro": [
+          "Nano is a program that allows you to edit files right in the terminal.",
+          "In this 40-lesson workshop, you will learn how to edit files in the terminal with Nano while building a castle."
+        ]
+      },
+      "cysa": {
+        "title": "356",
+        "intro": []
+      },
+      "pzmc": {
+        "title": "357",
+        "intro": []
+      },
+      "trpm": {
+        "title": "358",
+        "intro": []
+      },
+      "workshop-sql-reference-object": {
+        "title": "Build an SQL Reference Object",
+        "intro": [
+          "Git is a version control system that keeps track of all the changes you make to your codebase.",
+          "In this 240-lesson workshop, you will learn how Git keeps track of your code by creating an object containing commonly used SQL commands."
+        ]
+      },
+      "lab-periodic-table-database": {
+        "title": "Build a Periodic Table Database",
+        "intro": [
+          "For this lab, you will create a Bash script to get information about chemical elements from a periodic table database."
+        ]
+      },
+      "lab-number-guessing-game": {
+        "title": "Build a Number Guessing Game",
+        "intro": [
+          "For this lab, you will use Bash scripting, PostgreSQL, and Git to create a number guessing game that runs in the terminal and saves user information."
+        ]
+      },
+      "mgoc": {
+        "title": "362",
+        "intro": []
+      },
+      "ibmn": {
+        "title": "363",
+        "intro": []
+      },
+      "zpjj": {
+        "title": "364",
+        "intro": []
+      },
+      "ghfk": {
+        "title": "365",
+        "intro": []
+      },
+      "ugfq": {
+        "title": "366",
+        "intro": []
+      },
+      "pfui": {
+        "title": "367",
+        "intro": []
+      },
+      "qjov": {
+        "title": "368",
+        "intro": []
+      },
+      "niie": {
+        "title": "369",
+        "intro": []
+      },
+      "workshop-npm-packages": {
+        "title": "Managing Packages with npm",
+        "intro": [
+          "npm (Node Package Manager), is a command line tool to install, create, and share packages of JavaScript code written for Node.js. There are many open source packages available on npm, so before starting a project, take some time to explore so you don't end up recreating the wheel for things like working with dates or fetching data from an API.",
+          "In this workshop, you'll learn the basics of using npm, including how to work with the <code>package.json</code> file and how to manage your installed dependencies."
+        ]
+      },
+      "hjku": {
+        "title": "371",
+        "intro": []
+      },
+      "workshop-node-and-express": {
+        "title": "Basic Node and Express",
+        "intro": [
+          "Node.js is a JavaScript runtime that allows developers to write backend (server-side) programs in JavaScript. Node.js comes with a handful of built-in modules — small, independent programs — that help with this. Some of the core modules include HTTP, which acts like a server, and File System, a module to read and modify files.",
+          "In the last set of courses you learned to install and manage packages from npm, which are collections of smaller modules. These packages can help you build larger, more complex applications.",
+          "Express is a lightweight web application framework, and is one of the most popular packages on npm. Express makes it much easier to create a server and handle routing for your application, which handles things like directing people to the correct page when they visit a certain endpoint like <pre>/blog</pre>.",
+          "In this course, you'll learn the basics of Node and Express including how to create a server, serve different files, and handle different requests from the browser."
+        ]
+      },
+      "zzhp": {
+        "title": "373",
+        "intro": []
+      },
+      "lab-request-header-parser-microservice": {
+        "title": "Build a Request Header Parser Microservice",
+        "intro": [
+          "In this lab, you will build a request header parser microservice"
+        ]
+      },
+      "lab-url-shortener-microservice": {
+        "title": "Build a URL Shortener Microservice",
+        "intro": ["In this lab, you will build a URL Shortener Microservice"]
+      },
+      "lab-exercise-tracker": {
+        "title": "Build an Exercise Tracker",
+        "intro": ["In this lab, you will build an exercise tracker"]
+      },
+      "kegi": {
+        "title": "377",
+        "intro": []
+      },
+      "nqhi": {
+        "title": "378",
+        "intro": []
+      },
+      "vnfu": {
+        "title": "379",
+        "intro": []
+      },
+      "rlli": {
+        "title": "380",
+        "intro": []
+      },
+      "rjpv": {
+        "title": "381",
+        "intro": []
+      },
+      "xbri": {
+        "title": "382",
+        "intro": []
+      },
+      "kwhp": {
+        "title": "383",
+        "intro": []
+      },
+      "nkjt": {
+        "title": "384",
+        "intro": []
+      },
+      "pgjj": {
+        "title": "385",
+        "intro": []
+      },
+      "exom": {
+        "title": "386",
+        "intro": []
+      },
+      "bvqc": {
+        "title": "387",
+        "intro": []
+      },
+      "xish": {
+        "title": "388",
+        "intro": []
+      },
+      "oadg": {
+        "title": "389",
+        "intro": []
+      },
+      "front-end-development-certification-exam": {
+        "title": "Front End Development Certification Exam",
+        "intro": ["", ""]
       }
     }
   },
@@ -1291,10 +3388,14 @@
     "legacy-desc": "Kozi hizi si sehemu tena ya njia ya uthibitishaji, lakini bado zinapatikana kwako ili kuendeleza masomo yako.",
     "legacy-go-back": "Nenda kwenye toleo la sasa la mtaala.",
     "course-maintenance": "Kozi hizi zinaendelea na matengenezo. Ikiwa hazifanyi kazi, unaweza kujifunza jinsi ya kuziendesha ndani ya mashine kwenye <0>https://www.freecodecamp.org/news/how-to-run-freecodecamps-relational-databases-curriculum-using-docker-vscode- na-coderoad</0>.",
+    "course-disabling-soon": "The browser version of these courses will be temporarily disabled soon and your virtual machines will be deleted. Any progress in your virtual machines will be lost. If you have any files you want from them, you should save them to your computer. We apologize for any inconvenience. We hope to have an improved browser version of these courses available again in the next few weeks.",
+    "course-disabled": "These courses are temporarily unavailable to run in the browser. We apologize for any inconvenience. You can learn how to run them locally at <0>https://www.freecodecamp.org/news/how-to-run-freecodecamps-relational-databases-curriculum-using-docker-vscode-and-coderoad</0>. We hope to have an improved browser version available again soon.",
+    "run-locally": "For now, we recommend running the courses locally on your computer. You can learn how at <0>https://www.freecodecamp.org/news/how-to-run-freecodecamps-relational-databases-curriculum-using-docker-vscode-and-coderoad</0>.",
     "progress-wont-save": "Maendeleo yako hayatahifadhiwa kwenye akaunti yako ya freeCodeCamp unapoyaendesha ndani ya mashine yako.",
     "go-back-to-learn": "Rudi kwenye toleo thabiti la mtaala.",
     "read-database-cert-article": "Tafadhali soma chapisho hili la jukwaa kabla ya kuendelea.",
     "enable-cookies": "Lazima uwashe third-party cookies kabla ya kuanza.",
-    "english-only": "Kozi katika sehemu hii zinapatikana kwa Kiingereza pekee. Tuna uwezo wa kutafsiri mada na utangulizi pekee kwa sasa, si masomo yenyewe."
+    "english-only": "Kozi katika sehemu hii zinapatikana kwa Kiingereza pekee. Tuna uwezo wa kutafsiri mada na utangulizi pekee kwa sasa, si masomo yenyewe.",
+    "exam-english-only": "Please note that the certification exam is currently available only in English. The rest of the courses are available in some languages."
   }
 }

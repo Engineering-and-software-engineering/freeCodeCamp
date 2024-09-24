@@ -2,10 +2,8 @@ import {
   CardNumberElement,
   CardExpiryElement,
   useStripe,
-  useElements,
-  Elements
+  useElements
 } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
 import type {
   StripeCardNumberElementChangeEvent,
   StripeCardExpiryElementChangeEvent
@@ -13,11 +11,8 @@ import type {
 import React, { useState } from 'react';
 
 import { PaymentProvider } from '../../../../shared/config/donation-settings';
-import envData from '../../../config/env.json';
 import { Themes } from '../settings/theme';
 import { DonationApprovalData, PostPayment } from './types';
-
-const { stripePublicKey }: { stripePublicKey: string | null } = envData;
 
 interface FormPropTypes {
   onDonationStateChange: (donationState: DonationApprovalData) => void;
@@ -35,13 +30,13 @@ interface Element {
 
 type PaymentInfoValidation = Element[];
 
-const StripeCardForm = ({
+export default function StripeCardForm({
   theme,
   t,
   onDonationStateChange,
   postPayment,
   processing
-}: FormPropTypes): JSX.Element => {
+}: FormPropTypes): JSX.Element {
   const [isSubmissionValid, setSubmissionValidity] = useState(true);
   const [isTokenizing, setTokenizing] = useState(false);
   const [paymentInfoValidation, setPaymentValidity] =
@@ -80,9 +75,11 @@ const StripeCardForm = ({
   }
 
   const options = {
+    // Ref: https://docs.stripe.com/js/appendix/style
     style: {
       base: {
         fontSize: '18px',
+        fontFamily: 'Lato, sans-serif',
         color: `${theme === Themes.Night ? '#fff' : '#0a0a23'}`,
         '::placeholder': {
           color: `#858591`
@@ -160,25 +157,10 @@ const StripeCardForm = ({
       <button
         className='confirm-donation-btn'
         disabled={!stripe || !elements || isSubmitting}
-        data-cy='donation-confirmation-button'
         type='submit'
       >
         {t('buttons.donate')}
       </button>
     </form>
   );
-};
-
-const CardFormWrapper = (props: FormPropTypes): JSX.Element | null => {
-  if (!stripePublicKey) {
-    return null;
-  } else {
-    return (
-      <Elements stripe={loadStripe(stripePublicKey)}>
-        <StripeCardForm {...props} />
-      </Elements>
-    );
-  }
-};
-
-export default CardFormWrapper;
+}

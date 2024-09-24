@@ -2,6 +2,13 @@ const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 
 const { challengeTypes } = require('../../shared/config/challenge-types');
+const { SuperBlocks } = require('../../shared/config/curriculum');
+const {
+  availableCharacters,
+  availableBackgrounds,
+  availableAudios,
+  availableAlignments
+} = require('./scene-assets');
 
 const slugRE = new RegExp('^[a-z0-9-]+$');
 const slugWithSlashRE = new RegExp('^[a-z0-9-/]+$');
@@ -26,18 +33,109 @@ const prerequisitesJoi = Joi.object().keys({
   title: Joi.string().required()
 });
 
+const positionJoi = Joi.object().keys({
+  x: Joi.number().required().strict(),
+  y: Joi.number().required().strict(),
+  z: Joi.number().required().strict()
+});
+
+const setupCharacterJoi = Joi.object().keys({
+  character: Joi.string()
+    .valid(...availableCharacters)
+    .required(),
+  position: positionJoi.required(),
+  opacity: Joi.number().strict()
+});
+
+const setupAudioJoi = Joi.object().keys({
+  filename: Joi.string()
+    .valid(...availableAudios)
+    .required(),
+  startTime: Joi.number().required().strict(),
+  startTimestamp: Joi.number().strict(),
+  finishTimestamp: Joi.number().strict()
+});
+
+const setupJoi = Joi.object().keys({
+  background: Joi.string()
+    .valid(...availableBackgrounds)
+    .required(),
+  characters: Joi.array().items(setupCharacterJoi).min(1).required(),
+  audio: setupAudioJoi.required(),
+  alwaysShowDialogue: Joi.boolean()
+});
+
+const DialogueJoi = Joi.object().keys({
+  text: Joi.string().required(),
+  align: Joi.string().valid(...availableAlignments)
+});
+
+const commandJoi = Joi.object().keys({
+  background: Joi.string().valid(...availableBackgrounds),
+  character: Joi.string()
+    .valid(...availableCharacters)
+    .required(),
+  position: positionJoi,
+  opacity: Joi.number().strict(),
+  startTime: Joi.number().required().strict(),
+  finishTime: Joi.number().strict(),
+  dialogue: DialogueJoi
+});
+
+const questionJoi = Joi.object().keys({
+  text: Joi.string().required(),
+  answers: Joi.array()
+    .items(
+      Joi.object().keys({
+        answer: Joi.string().required(),
+        feedback: Joi.string().allow(null)
+      })
+    )
+    .required(),
+  solution: Joi.number().required()
+});
+
+const quizJoi = Joi.object().keys({
+  questions: Joi.array()
+    .items(
+      Joi.object().keys({
+        question: Joi.string().required(),
+        distractors: Joi.array()
+          .items(Joi.string().required())
+          .min(3)
+          .max(3)
+          .required(),
+        answer: Joi.string().required()
+      })
+    )
+    .min(20)
+    .max(20)
+    .required()
+});
+
 const schema = Joi.object()
   .keys({
-    audioPath: Joi.string(),
     block: Joi.string().regex(slugRE).required(),
     blockId: Joi.objectId(),
+    blockType: Joi.when('superBlock', {
+      is: [SuperBlocks.FrontEndDevelopment],
+      then: Joi.valid(
+        'workshop',
+        'lab',
+        'lecture',
+        'review',
+        'quiz',
+        'exam'
+      ).required(),
+      otherwise: Joi.valid(null)
+    }),
     challengeOrder: Joi.number(),
-    removeComments: Joi.bool().required(),
-    certification: Joi.string().regex(slugRE),
-    challengeType: Joi.number().min(0).max(22).required(),
+    certification: Joi.string().regex(slugWithSlashRE),
+    challengeType: Joi.number().min(0).max(23).required(),
     checksum: Joi.number(),
     // TODO: require this only for normal challenges, not certs
     dashedName: Joi.string().regex(slugRE),
+    demoType: Joi.string().valid('onClick', 'onLoad'),
     description: Joi.when('challengeType', {
       is: [
         challengeTypes.step,
@@ -57,7 +155,11 @@ const schema = Joi.object()
       'HTML-CSS',
       'Python',
       'Backend Development',
-      'C-Sharp'
+      'C-Sharp',
+      'English',
+      'Odin',
+      'Euler',
+      'Rosetta'
     ),
     videoUrl: Joi.string().allow(''),
     fillInTheBlank: Joi.object().keys({
@@ -89,7 +191,7 @@ const schema = Joi.object()
     }),
     // video challenges only:
     videoId: Joi.when('challengeType', {
-      is: [challengeTypes.video, challengeTypes.dialogue],
+      is: [challengeTypes.video],
       then: Joi.string().required()
     }),
     videoLocaleIds: Joi.when('challengeType', {
@@ -108,17 +210,19 @@ const schema = Joi.object()
         cid: Joi.number().required()
       })
     }),
-    question: Joi.object().keys({
-      text: Joi.string().required(),
-      answers: Joi.array()
-        .items(
-          Joi.object().keys({
-            answer: Joi.string().required(),
-            feedback: Joi.string().allow(null)
-          })
-        )
-        .required(),
-      solution: Joi.number().required()
+    questions: Joi.when('challengeType', {
+      is: [
+        challengeTypes.video,
+        challengeTypes.multipleChoice,
+        challengeTypes.theOdinProject
+      ],
+      then: Joi.array().items(questionJoi).min(1).required(),
+      otherwise: Joi.forbidden()
+    }),
+    quizzes: Joi.when('challengeType', {
+      is: challengeTypes.quiz,
+      then: Joi.array().items(quizJoi).min(1).required(),
+      otherwise: Joi.forbidden()
     }),
     required: Joi.array().items(
       Joi.object().keys({
@@ -133,25 +237,30 @@ const schema = Joi.object()
       then: Joi.array().items(Joi.string()).required(),
       otherwise: Joi.array().items(Joi.string())
     }),
+    scene: Joi.object().keys({
+      setup: setupJoi.required(),
+      commands: Joi.array().items(commandJoi)
+    }),
     solutions: Joi.array().items(Joi.array().items(fileJoi).min(1)),
     superBlock: Joi.string().regex(slugWithSlashRE),
     superOrder: Joi.number(),
     suborder: Joi.number(),
-    tests: Joi.array().items(
-      // public challenges
-      Joi.object().keys({
-        id: Joi.string().allow(''),
-        text: Joi.string().required(),
-        testString: Joi.string().allow('').required()
-      }),
-      // our tests used in certification verification
-      Joi.object().keys({
-        id: Joi.string().required(),
-        title: Joi.string().required()
-      })
-    ),
+    tests: Joi.array()
+      .items(
+        // public challenges
+        Joi.object().keys({
+          id: Joi.string().allow(''),
+          text: Joi.string().required(),
+          testString: Joi.string().allow('').required()
+        }),
+        // our tests used in certification verification
+        Joi.object().keys({
+          id: Joi.string().required(),
+          title: Joi.string().required()
+        })
+      )
+      .required(),
     template: Joi.string().allow(''),
-    time: Joi.string().allow(''),
     title: Joi.string().required(),
     translationPending: Joi.bool().required(),
     url: Joi.when('challengeType', {
