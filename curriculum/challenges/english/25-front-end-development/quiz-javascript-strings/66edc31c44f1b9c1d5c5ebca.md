@@ -7,7 +7,7 @@ dashedName: quiz-javascript-strings
 
 # --description--
 
-Answer all of the questions below correctly to pass the quiz.
+To pass the quiz, you must correctly answer at least 17 of the 20 of the questions below.
 
 # --quizzes--
 
@@ -15,401 +15,441 @@ Answer all of the questions below correctly to pass the quiz.
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+How can you access the second character of the string `JavaScript` using bracket notation?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`'JavaScript'.charAt(2)`
 
 ---
 
-Placeholder distractor 3
+`'JavaScript'.charAt(1)`
 
-### --answer--
+---
 
-Placeholder answer
+`'JavaScript'[2]`
+
+#### --answer--
+
+`'JavaScript'[1]`
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+Which option demonstrates string interpolation?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`'Hello, ' + user + '!'`
 
 ---
 
-Placeholder distractor 3
+`'Hello, $user!'`
 
-### --answer--
+---
 
-Placeholder answer
+`` `Hello, {user}!` ``
+
+#### --answer--
+
+`` `Hello, ${user}!` ``
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+Which option creates a string with a newline character?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`'\t'`
 
 ---
 
-Placeholder distractor 3
+`'\b'`
 
-### --answer--
+---
 
-Placeholder answer
+`'\p'`
+
+#### --answer--
+
+`'\n'`
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+Which option creates a string with a tab character?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`'\n'`
 
 ---
 
-Placeholder distractor 3
+`'\b'`
 
-### --answer--
+---
 
-Placeholder answer
+`'\p'`
+
+#### --answer--
+
+`'\t'`
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+Which option creates a string object?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`String('Hello')`
 
 ---
 
-Placeholder distractor 3
+`'Hello'`
 
-### --answer--
+---
 
-Placeholder answer
+`createString('Hello')`
+
+#### --answer--
+
+`new String('Hello')`
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+Which option extracts a substring consisting of the first three characters from the string `JavaScript`?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`'JavaScript'.substring(3)`
 
 ---
 
-Placeholder distractor 3
+`'JavaScript'.substring(0, 4)`
 
-### --answer--
+---
 
-Placeholder answer
+`'JavaScript'.extract(0, 3)`
+
+#### --answer--
+
+`'JavaScript'.substring(0, 3)`
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+What is the purpose of the `prompt()` function?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+It displays a message in the console.
 
 ---
 
-Placeholder distractor 3
+It displays an alert box with a message.
 
-### --answer--
+---
 
-Placeholder answer
+It displays a confirmation box with a message.
+
+#### --answer--
+
+It displays a dialog box that prompts the user for input.
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+What is the difference between a string object and a string primitive?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+String objects have methods, string primitives do not.
 
 ---
 
-Placeholder distractor 3
+String primitives are created using the `String` constructor, string objects are created using string literals.
 
-### --answer--
+---
 
-Placeholder answer
+There is no difference between a string object and a string primitive.
+
+#### --answer--
+
+String objects are created using the `String` constructor, string primitives are created using string literals.
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+How can you obtain the ASCII index of a character in a string?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`str.charCode()`
 
 ---
 
-Placeholder distractor 3
+`str.codeAt()`
 
-### --answer--
+---
 
-Placeholder answer
+`str.fromCharCode()`
+
+#### --answer--
+
+`str.charCodeAt()`
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+How can you obtain the character corresponding to an ASCII value?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`String.toASCII()`
 
 ---
 
-Placeholder distractor 3
+`String.toChar()`
 
-### --answer--
+---
 
-Placeholder answer
+`String.toCode()`
+
+#### --answer--
+
+`String.fromCharCode()`
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+Which function converts a number variable `num` to a string?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`num.toNumber()`
 
 ---
 
-Placeholder distractor 3
+`num.toChar()`
 
-### --answer--
+---
 
-Placeholder answer
+`num.toText()`
+
+#### --answer--
+
+`num.toString()`
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+How can you check if the string `JavaScript` contains a specific substring?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`'JavaScript'.has()`
 
 ---
 
-Placeholder distractor 3
+`'JavaScript'.contains()`
 
-### --answer--
+---
 
-Placeholder answer
+`'JavaScript'.exists()`
+
+#### --answer--
+
+`'JavaScript'.includes()`
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+Which method extracts a substring from the string `JavaScript`?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`'JavaScript'.splice()`
 
 ---
 
-Placeholder distractor 3
+`'JavaScript'.extract()`
 
-### --answer--
+---
 
-Placeholder answer
+`'JavaScript'.cut()`
+
+#### --answer--
+
+`'JavaScript'.slice()`
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+How do you convert the string `JavaScript` to uppercase?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`'JavaScript'.upper()`
 
 ---
 
-Placeholder distractor 3
+`'JavaScript'.toUpper()`
 
-### --answer--
+---
 
-Placeholder answer
+`'JavaScript'.toUppercase()`
+
+#### --answer--
+
+`'JavaScript'.toUpperCase()`
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+How do you convert the string `JavaScript` to lowercase?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`'JavaScript'.lower()`
 
 ---
 
-Placeholder distractor 3
+`'JavaScript'.toLower()`
 
-### --answer--
+---
 
-Placeholder answer
+`'JavaScript'.toLowercase()`
+
+#### --answer--
+
+`'JavaScript'.toLowerCase()`
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+How do you replace all occurances of `a` with `b` in the string `JavaScript`?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`'JavaScript'.replace('a', 'b')`
 
 ---
 
-Placeholder distractor 3
+`'JavaScript'.replace('b', 'a')`
 
-### --answer--
+---
 
-Placeholder answer
+`'JavaScript'.replaceAll('b', 'a')`
+
+#### --answer--
+
+`'JavaScript'.replaceAll('a', 'b')`
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+How do you repeat a string a specified number of times?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`str.times()`
 
 ---
 
-Placeholder distractor 3
+`str.repeatTimes()`
 
-### --answer--
+---
 
-Placeholder answer
+`str.repeatNumber()`
+
+#### --answer--
+
+`str.repeat()`
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+What will the following code return: `'abc'.repeat(3)`?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+'abcabc'
 
 ---
 
-Placeholder distractor 3
+'abcabcabcabc'
 
-### --answer--
+---
 
-Placeholder answer
+It will throw an error.
+
+#### --answer--
+
+'abcabcabc'
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+How do you remove whitespace from the beginning and end of a string?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`str.strip()`
 
 ---
 
-Placeholder distractor 3
+`str.removeWhitespace()`
 
-### --answer--
+---
 
-Placeholder answer
+`str.trimWhitespace()`
+
+#### --answer--
+
+`str.trim()`
 
 ### --question--
 
-Placeholder question
+#### --text--
 
-### --distractors--
+Which method can be used to check if a string starts with a specific substring?
 
-Placeholder distractor 1
+#### --distractors--
 
----
-
-Placeholder distractor 2
+`str.beginsWith()`
 
 ---
 
-Placeholder distractor 3
+`str.starts()`
 
-### --answer--
+---
 
-Placeholder answer
+`str.hasPrefix()`
+
+#### --answer--
+
+`str.startsWith()`
 
